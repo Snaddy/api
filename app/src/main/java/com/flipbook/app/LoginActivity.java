@@ -16,9 +16,10 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -30,6 +31,9 @@ public class LoginActivity extends AppCompatActivity {
     private Button loginButton;
     private EditText email;
     private EditText password;
+
+    JSONObject data = new JSONObject();
+    JSONObject user = new JSONObject();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,39 +47,33 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final RequestQueue requestQueue = Volley.newRequestQueue(LoginActivity.this);
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, URL ,new Response.Listener<String>() {
+                try {
+                    data.put("email", email.getText().toString());
+                    data.put("password", password.getText().toString());
+                    user.put("user", data);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, URL, user ,new Response.Listener<JSONObject>() {
                     @Override
-                    public void onResponse(String response) {
-                        if(response.equals("success")){
-                            startActivity(new Intent(getApplicationContext(), WelcomeActivity.class));
+                    public void onResponse(JSONObject response) {
+                        try {
+                            System.out.println(response.names().get(0).toString());
+                            if(response.getString("status").equals("success")){
+                                startActivity(new Intent(getApplicationContext(), WelcomeActivity.class));
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                        requestQueue.stop();
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(LoginActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
-                        requestQueue.stop();
                     }
-                }){
-                    @Override
-                    protected Map<String, String> getParams() throws AuthFailureError {
-                        HashMap<String, String> hashMap = new HashMap<String, String>();
-                        hashMap.put("email", email.getText().toString());
-                        hashMap.put("password", password.getText().toString());
-                        return hashMap;
-                    }
-
-                    @Override
-                    public Map<String, String> getHeaders() throws AuthFailureError {
-                        HashMap<String, String> headers = new HashMap<String, String>();
-                        headers.put("Accept", "application/json");
-                        headers.put("Content-Type", "application/json");
-                        return headers;
-                    }
-                };
-                requestQueue.add(stringRequest);
+                });
+                RequestQueue requestQueue = Volley.newRequestQueue(LoginActivity.this);
+                requestQueue.add(jsonObjectRequest);
             }
         });
     }
