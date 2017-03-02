@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@drawable/bg">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:padding="40dp"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <Button
+            android:text="Sign up"
+            android:layout_width="match_parent"
+            android:id="@+id/signup"
+            android:background="@color/colorPrimary"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="@android:color/background_light"
+            android:layout_alignBottom="@+id/linearLayout"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_height="70dp"
+            android:layout_marginBottom="20dp"
+            android:textAlignment="center"
+            android:elevation="0dp"
+            android:textStyle="normal|bold"
+            android:textSize="18sp" />
+
+        <Button
+            android:text="Login"
+            android:layout_width="match_parent"
+            android:id="@+id/login"
+            android:textColor="@android:color/background_light"
+            android:background="@color/colorPrimary"
+            android:layout_below="@+id/signup"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_height="70dp"
+            android:textStyle="normal|bold"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+</RelativeLayout>

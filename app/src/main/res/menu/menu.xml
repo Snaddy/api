@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- Settings, should always be in the overflow -->
+    <item
+        android:id="@+id/home"
+        app:showAsAction="always"
+        android:title="home"
+        android:icon="@drawable/home" />
+
+    <!-- Settings, should always be in the overflow -->
+    <item android:id="@+id/notificiations"
+        app:showAsAction="always"
+        android:title="notifications"
+        android:icon="@drawable/notifications" />
+
+    <item
+        android:id="@+id/newPost"
+        app:showAsAction="always"
+        android:title="newPost"
+        android:icon="@drawable/newpost" />
+
+    <item
+        android:id="@+id/search"
+        app:showAsAction="always"
+        android:title="search"
+        android:icon="@drawable/search" />
+
+    <item
+        android:id="@+id/action_favorite"
+        app:showAsAction="always"
+        android:title="home"
+        android:icon="@drawable/profile" />
+</menu>
