@@ -29,21 +29,21 @@ public class LaunchActivity extends Activity {
 
         if(prefs.getString("auth_token", "") != "" &&
                 prefs.getString("email", "") != ""){
-            startActivity(new Intent(getApplicationContext(), WelcomeActivity.class));
+            startActivity(new Intent(getApplicationContext(), WelcomeActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
             finish();
         }
 
         signUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), RegisterActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                startActivity(new Intent(getApplicationContext(), RegisterActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
             }
         });
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), LoginActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                startActivity(new Intent(getApplicationContext(), LoginActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
             }
         });
     }

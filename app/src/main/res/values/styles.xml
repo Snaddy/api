@@ -8,4 +8,8 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="noAnim" parent="android:Theme">
+        <item name="android:windowAnimationStyle">@null</item>
+    </style>
+
 </resources>

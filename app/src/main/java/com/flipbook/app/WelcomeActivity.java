@@ -1,8 +1,11 @@
 package com.flipbook.app;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,7 +35,7 @@ public class WelcomeActivity extends AppCompatActivity {
     private final static String GET_POSTS_URL = "https://aqueous-river-91475.herokuapp.com/api/v1/posts.json";
     ImageButton home, notifications, newPost, search, profile;
 
-    private TextView txtResponse;
+    private TextView txtResponse, title;
     private String jsonResponse, getEmail, getToken;
 
     @Override
@@ -53,7 +56,12 @@ public class WelcomeActivity extends AppCompatActivity {
 
         txtResponse = (TextView) findViewById(R.id.posts);
 
+        title = (TextView) findViewById(R.id.title);
+        Typeface face=Typeface.createFromAsset(getAssets(),"fonts/futura.ttf");
+        title.setTypeface(face);
+
         home.setImageResource(R.drawable.home_selected);
+        home.setClickable(false);
 
          final JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, GET_POSTS_URL, null,new Response.Listener<JSONArray>() {
             @Override
@@ -66,7 +74,7 @@ public class WelcomeActivity extends AppCompatActivity {
                         JSONObject post = (JSONObject) response.get(i);
                         String data = post.getString("caption");
 
-                        jsonResponse += data;
+                        jsonResponse += post;
                     }
                     txtResponse.setText(jsonResponse);
                 } catch (JSONException e) {
@@ -94,5 +102,12 @@ public class WelcomeActivity extends AppCompatActivity {
          };
         RequestQueue requestQueue = RequestSingleton.getInstance(WelcomeActivity.this.getApplicationContext()).getRequestQueue();
         RequestSingleton.getInstance(WelcomeActivity.this).addToRequestQueue(jsonArrayRequest);
+
+        profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), ProfileActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
+            }
+        });
     }
 }
