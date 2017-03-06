@@ -48,20 +48,7 @@ public class WelcomeActivity extends AppCompatActivity {
         getEmail = prefs.getString("email", "");
         getToken = prefs.getString("auth_token", "");
 
-        home = (ImageButton) findViewById(R.id.home);
-        notifications = (ImageButton) findViewById(R.id.notifications);
-        newPost = (ImageButton) findViewById(R.id.newPost);
-        search = (ImageButton) findViewById(R.id.search);
-        profile = (ImageButton) findViewById(R.id.profile);
-
         txtResponse = (TextView) findViewById(R.id.posts);
-
-        title = (TextView) findViewById(R.id.title);
-        Typeface face=Typeface.createFromAsset(getAssets(),"fonts/futura.ttf");
-        title.setTypeface(face);
-
-        home.setImageResource(R.drawable.home_selected);
-        home.setClickable(false);
 
          final JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, GET_POSTS_URL, null,new Response.Listener<JSONArray>() {
             @Override
@@ -102,12 +89,5 @@ public class WelcomeActivity extends AppCompatActivity {
          };
         RequestQueue requestQueue = RequestSingleton.getInstance(WelcomeActivity.this.getApplicationContext()).getRequestQueue();
         RequestSingleton.getInstance(WelcomeActivity.this).addToRequestQueue(jsonArrayRequest);
-
-        profile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), ProfileActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
-            }
-        });
     }
 }

@@ -14,34 +14,11 @@ import android.widget.TextView;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    ImageButton home, notifications, newPost, search, profile;
-    TextView title;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        title = (TextView) findViewById(R.id.title);
-        Typeface face=Typeface.createFromAsset(getAssets(),"fonts/futura.ttf");
-        title.setTypeface(face);
-
-        home = (ImageButton) findViewById(R.id.home);
-        notifications = (ImageButton) findViewById(R.id.notifications);
-        newPost = (ImageButton) findViewById(R.id.newPost);
-        search = (ImageButton) findViewById(R.id.search);
-        profile = (ImageButton) findViewById(R.id.profile);
-
-        profile.setImageResource(R.drawable.profile_selected);
-        profile.setClickable(false);
-
-        home.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), WelcomeActivity.class));
-                overridePendingTransition(0, 0);
-            }
-        });
     }
 
     public void onPause(){
