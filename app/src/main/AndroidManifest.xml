@@ -11,6 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
 
+
         <activity android:name=".LaunchActivity"
             android:screenOrientation="portrait"
             android:launchMode = "singleTask">

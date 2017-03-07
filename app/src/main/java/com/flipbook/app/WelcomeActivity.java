@@ -6,7 +6,9 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,10 +35,11 @@ import java.util.Map;
 public class WelcomeActivity extends AppCompatActivity {
 
     private final static String GET_POSTS_URL = "https://aqueous-river-91475.herokuapp.com/api/v1/posts.json";
-    ImageButton home, notifications, newPost, search, profile;
 
-    private TextView txtResponse, title;
-    private String jsonResponse, getEmail, getToken;
+    private String getEmail, getToken;
+    private ImageButton home;
+    private ListView feed;
+    private PostAdapter postAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,22 +51,31 @@ public class WelcomeActivity extends AppCompatActivity {
         getEmail = prefs.getString("email", "");
         getToken = prefs.getString("auth_token", "");
 
-        txtResponse = (TextView) findViewById(R.id.posts);
+        postAdapter = new PostAdapter(this, R.layout.postitem);
+
+        home = (ImageButton) findViewById(R.id.home);
+        home.setImageResource(R.drawable.home_selected);
+
+        feed = (ListView) findViewById(R.id.feed);
+        feed.setAdapter(postAdapter);
 
          final JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, GET_POSTS_URL, null,new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 try {
-                    //loop through json Arrays
-                    jsonResponse = "";
+                    //loop through json Array
 
                     for (int i = 0; i < response.length(); i++){
                         JSONObject post = (JSONObject) response.get(i);
-                        String data = post.getString("caption");
+                        JSONObject user = (JSONObject) post.get("user");
+                        String username = user.getString("username");
+                        String caption = post.getString("caption");
+                        String likes = post.getString("get_likes_count");
 
-                        jsonResponse += post;
+                        Posts posts = new Posts(username, caption, likes);
+
+                        postAdapter.add(posts);
                     }
-                    txtResponse.setText(jsonResponse);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

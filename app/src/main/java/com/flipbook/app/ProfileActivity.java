@@ -14,11 +14,15 @@ import android.widget.TextView;
 
 public class ProfileActivity extends AppCompatActivity {
 
+    private ImageButton profile;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        profile = (ImageButton) findViewById(R.id.profile);
+        profile.setImageResource(R.drawable.profile_selected);
     }
 
     public void onPause(){
