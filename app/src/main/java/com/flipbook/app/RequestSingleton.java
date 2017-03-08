@@ -14,16 +14,16 @@ import com.android.volley.toolbox.Volley;
  */
 
 public class RequestSingleton {
-        private static RequestSingleton mInstance;
-        private RequestQueue mRequestQueue;
-        private ImageLoader mImageLoader;
+        private static RequestSingleton instance;
+        private RequestQueue requestQueue;
+        private ImageLoader imageLoader;
         private static Context mCtx;
 
         private RequestSingleton(Context context) {
             mCtx = context;
-            mRequestQueue = getRequestQueue();
+            requestQueue = getRequestQueue();
 
-            mImageLoader = new ImageLoader(mRequestQueue,
+            imageLoader = new ImageLoader(requestQueue,
                     new ImageLoader.ImageCache() {
                         private final LruCache<String, Bitmap>
                                 cache = new LruCache<String, Bitmap>(20);
@@ -41,19 +41,19 @@ public class RequestSingleton {
         }
 
         public static synchronized RequestSingleton getInstance(Context context) {
-            if (mInstance == null) {
-                mInstance = new RequestSingleton(context);
+            if (instance == null) {
+                instance = new RequestSingleton(context);
             }
-            return mInstance;
+            return instance;
         }
 
         public RequestQueue getRequestQueue() {
-            if (mRequestQueue == null) {
+            if (requestQueue == null) {
                 // getApplicationContext() is key, it keeps you from leaking the
                 // Activity or BroadcastReceiver if someone passes one in.
-                mRequestQueue = Volley.newRequestQueue(mCtx.getApplicationContext());
+                requestQueue = Volley.newRequestQueue(mCtx.getApplicationContext());
             }
-            return mRequestQueue;
+            return requestQueue;
         }
 
         public <T> void addToRequestQueue(Request<T> req) {
@@ -61,6 +61,6 @@ public class RequestSingleton {
         }
 
         public ImageLoader getImageLoader() {
-            return mImageLoader;
+            return imageLoader;
         }
 }
