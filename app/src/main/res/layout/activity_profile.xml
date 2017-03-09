@@ -4,16 +4,10 @@
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:background="@android:color/white">
 
-    <fragment android:name="com.flipbook.app.TitleBarFragment"
-        android:id="@id/title"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        tools:layout="@layout/titlebar"
-        android:layout_alignParentTop="true" />
+    <include layout="@layout/profile"/>
 
     <fragment android:name="com.flipbook.app.AppBarFragment"
         android:id="@+id/appbar"
-        android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

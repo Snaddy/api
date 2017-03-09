@@ -42,6 +42,14 @@ public class AppBarFragment extends Fragment {
             }
         });
 
+        newPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), CameraActivity.class));
+                getActivity().overridePendingTransition(0, 0);
+            }
+        });
+
         return view;
     }
 }

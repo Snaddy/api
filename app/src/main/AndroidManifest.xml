@@ -3,6 +3,9 @@
     package="com.flipbook.app">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus"/>
 
     <application
         android:allowBackup="true"
@@ -39,11 +42,14 @@
             android:screenOrientation="portrait">
         </activity>
 
-
         <activity android:name=".ProfileActivity"
             android:launchMode = "singleTask"
             android:screenOrientation="portrait">
+        </activity>
 
+        <activity android:name=".CameraActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" >
         </activity>
 
     </application>

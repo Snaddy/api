@@ -12,7 +12,7 @@
         android:layout_marginLeft="10dp" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_toRightOf="@+id/profilePic"
         android:id="@+id/username"
@@ -20,7 +20,8 @@
         android:layout_alignBottom="@+id/profilePic"
         android:gravity="center_vertical"
         android:paddingLeft="10dp"
-        android:textColor="@android:color/black" />
+        android:textColor="@android:color/black"
+        android:clickable="true" />
 
     <com.android.volley.toolbox.NetworkImageView
         app:srcCompat="@android:color/transparent"

@@ -18,12 +18,12 @@
         android:textColor="@android:color/black"
         android:gravity="center_vertical"
         android:paddingLeft="20dp"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:layout_height="40dp"
-        android:text="snad"
         android:layout_toEndOf="@+id/profilepic"
         android:layout_toRightOf="@+id/profilepic"
-        android:id="@+id/name" />
+        android:id="@+id/name"
+        android:text="Hayden" />
 
     <Button
         android:text="+ Follow"
@@ -32,6 +32,63 @@
         android:layout_below="@+id/name"
         android:layout_toRightOf="@+id/profilepic"
         android:layout_toEndOf="@+id/profilepic"
-        android:background="@color/colorAccent" />
+        android:background="@color/colorAccent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:id="@+id/follow" />
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/bio"
+        android:layout_below="@+id/profilepic"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignBottom="@+id/profilepic"
+        android:layout_marginTop="10dp" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/bio"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/divider">
+
+        <TextView
+            android:text="Posts"
+            android:id="@+id/posts"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textColor="@color/colorPrimary"
+            android:gravity="center"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:text="Following"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/following"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:textColor="@color/colorPrimary"
+            android:gravity="center"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:text="followers"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/followers"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:textColor="@color/colorPrimary"
+            android:gravity="center"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
 
 </RelativeLayout>
