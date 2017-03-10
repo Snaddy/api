@@ -2,10 +2,13 @@ package com.flipbook.app;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.hardware.Camera;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Display;
+import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -14,13 +17,15 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * Created by Hayden on 2017-03-08.
  */
 
-public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback{
+public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
 
     private static final String TAG = "CameraPreview";
 
@@ -35,9 +40,12 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         mContext = context;
         mCamera = camera;
 
+        ArrayList<Camera.Area> focusAreas = new ArrayList<Camera.Area>(1);
+        focusAreas.add(new Camera.Area(new Rect(-1000, -1000, 1000, 0), 750));
+
         // supported preview sizes
         mSupportedPreviewSizes = mCamera.getParameters().getSupportedPreviewSizes();
-        for(Camera.Size str: mSupportedPreviewSizes)
+        for (Camera.Size str : mSupportedPreviewSizes)
             Log.e(TAG, str.width + "/" + str.height);
 
         // Install a SurfaceHolder.Callback so we get notified when the
@@ -60,7 +68,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         Log.e(TAG, "surfaceChanged => w=" + w + ", h=" + h);
         // If your preview can change or rotate, take care of those events here.
         // Make sure to stop the preview before resizing or reformatting it.
-        if (mHolder.getSurface() == null){
+        if (mHolder.getSurface() == null) {
             // preview surface does not exist
             return;
         }
@@ -68,7 +76,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         // stop preview before making changes
         try {
             mCamera.stopPreview();
-        } catch (Exception e){
+        } catch (Exception e) {
             // ignore: tried to stop a non-existent preview
         }
 
@@ -76,13 +84,13 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         // start preview with new settings
         try {
             Camera.Parameters parameters = mCamera.getParameters();
-            parameters.setPreviewSize(1440, 1080);
+            parameters.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
             mCamera.setParameters(parameters);
             mCamera.setDisplayOrientation(90);
             mCamera.setPreviewDisplay(mHolder);
             mCamera.startPreview();
 
-        } catch (Exception e){
+        } catch (Exception e) {
             Log.d(TAG, "Error starting camera preview: " + e.getMessage());
         }
     }
@@ -102,34 +110,28 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         else
             ratio = (float) mPreviewSize.width / (float) mPreviewSize.height;
 
-        // One of these methods should be used, second method squishes preview slightly
         setMeasuredDimension(width, (int) (width * ratio));
-//        setMeasuredDimension((int) (width * ratio), height);
     }
 
     private Camera.Size getOptimalPreviewSize(List<Camera.Size> sizes, int w, int h) {
-        final double ASPECT_TOLERANCE = 0.1;
-        double targetRatio = (double) h / w;
+        double targetRatio = 0.75;
 
         if (sizes == null)
             return null;
 
         Camera.Size optimalSize = null;
         double minDiff = Double.MAX_VALUE;
+        double newDiff;
 
         int targetHeight = h;
 
         for (Camera.Size size : sizes) {
-            double ratio = (double) size.height / size.width;
-            if (Math.abs(ratio - targetRatio) > ASPECT_TOLERANCE)
-                continue;
-
-            if (Math.abs(size.height - targetHeight) < minDiff) {
+            newDiff = Math.abs((double)size.width/size.height - targetRatio);
+            if (newDiff < minDiff) {
                 optimalSize = size;
-                minDiff = Math.abs(size.height - targetHeight);
+                minDiff = newDiff;
             }
         }
-
         if (optimalSize == null) {
             minDiff = Double.MAX_VALUE;
             for (Camera.Size size : sizes) {
@@ -139,7 +141,6 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
                 }
             }
         }
-
         return optimalSize;
     }
 
