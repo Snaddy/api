@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_checked="false">
         <bitmap android:src="@drawable/ic_action_name"
             android:gravity="center"/>
     </item>
-</layer-list>
+    <item android:state_checked="true">
+        <bitmap android:src="@drawable/flash_on"
+            android:gravity="center"/>
+    </item>
+</selector>

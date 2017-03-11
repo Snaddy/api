@@ -4,26 +4,53 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent" android:layout_height="match_parent">
 
-    <FrameLayout
-        android:id="@+id/camera_preview"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:layout_weight="1" />
-
     <LinearLayout
         android:orientation="vertical"
        android:layout_width="match_parent"
        android:layout_height="match_parent"
-       android:elevation="2dp"
+       android:elevation="0dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        tools:ignore="UnusedAttribute,UselessParent">
 
         <com.flipbook.app.SquareLayout
            android:layout_width="match_parent"
            android:layout_height="match_parent"
            android:id="@+id/imagePreview"
            android:clickable="true" >
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:srcCompat="@android:color/transparent"
+                android:id="@+id/imageView" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:id="@+id/buttons">
+
+                <ToggleButton
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:id="@+id/flash"
+                    android:background="@drawable/flash"
+                    android:layout_alignParentLeft="true"
+                    android:textOn=""
+                    android:textOff=""
+                    tools:ignore="RtlHardcoded" />
+
+                <ToggleButton
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:id="@+id/switch_cameras"
+                    android:background="@drawable/switch_cameras"
+                    android:layout_alignParentRight="true"
+                    android:textOn=""
+                    android:textOff=""
+                    tools:ignore="RtlHardcoded" />
+            </RelativeLayout>
 
         </com.flipbook.app.SquareLayout>
 
@@ -37,13 +64,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 app:srcCompat="@drawable/camerabutton"
-                android:id="@+id/imageButton"
+                android:id="@+id/snap"
                 android:layout_weight="1"
                 android:layout_gravity="center_horizontal"
                 android:scaleType="fitXY"
                 android:adjustViewBounds="true"
                 android:background="@android:color/transparent"
-                android:layout_margin="40dp" />
+                android:layout_margin="40dp"
+                android:contentDescription=""
+                tools:ignore="ContentDescription" />
 
             <HorizontalScrollView
                 android:layout_width="match_parent"
@@ -53,7 +82,7 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal" />
+                    android:orientation="vertical" />
             </HorizontalScrollView>
 
         </LinearLayout>

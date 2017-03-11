@@ -68,8 +68,8 @@ public class PostAdapter extends ArrayAdapter{
         postHolder.username.setText(posts.getUsername());
         postHolder.caption.setText(posts.getCaption());
         postHolder.likes.setText(posts.getLikes());
-        //imageLoader.get(posts.getImages(), imageLoader.getImageListener(postHolder.images, R.color.colorWhite, R.color.colorWhite));
-        //postHolder.images.setImageUrl(posts.getImages(), imageLoader);
+        imageLoader.get(posts.getImages(), imageLoader.getImageListener(postHolder.images, R.color.colorWhite, R.color.colorWhite));
+        postHolder.images.setImageUrl(posts.getImages(), imageLoader);
         return row;
     }
 
