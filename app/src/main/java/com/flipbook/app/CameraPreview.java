@@ -2,8 +2,6 @@ package com.flipbook.app;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.hardware.Camera;
@@ -15,22 +13,8 @@ import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
-
-import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE;
-import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
 
 /**
  * Created by Hayden on 2017-03-08.
@@ -43,8 +27,8 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     private Context mContext;
     private SurfaceHolder mHolder;
     private Camera mCamera;
-    private List<Camera.Size> mSupportedPreviewSizes;
-    private Camera.Size mPreviewSize;
+    private List<Camera.Size> mSupportedPreviewSizes, mSupportedPictureSizes;
+    private Camera.Size mPreviewSize, mPictureSize;
     private float mDist;
 
     public CameraPreview(Context context, Camera camera) {
@@ -57,7 +41,11 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
         // supported preview sizes
         mSupportedPreviewSizes = mCamera.getParameters().getSupportedPreviewSizes();
+        mSupportedPictureSizes = mCamera.getParameters().getSupportedPictureSizes();
         for (Camera.Size str : mSupportedPreviewSizes)
+            Log.e(TAG, str.width + "/" + str.height);
+
+        for (Camera.Size str : mSupportedPictureSizes)
             Log.e(TAG, str.width + "/" + str.height);
 
         // Install a SurfaceHolder.Callback so we get notified when the
@@ -94,7 +82,14 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         // start preview with new settings
         try {
             Camera.Parameters parameters = mCamera.getParameters();
+            List<Camera.Size> picSizes = mCamera.getParameters().getSupportedPictureSizes();
+            //parameters.setPreviewSize(1440, 1080);
             parameters.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
+            mPictureSize = getOptimalPictureSize(picSizes, mPreviewSize.width, mPreviewSize.height);
+            //parameters.setPictureSize(1440, 1080);
+            parameters.setPictureSize(mPictureSize.width, mPictureSize.height);
+            System.out.println("Best picture size: " + mPictureSize.width + ", " + mPictureSize.height);
+            System.out.println("Best preview size: " + mPreviewSize.width + ", " + mPreviewSize.height);
             parameters.setRotation(90);
             mCamera.setParameters(parameters);
             mCamera.setDisplayOrientation(90);
@@ -144,12 +139,37 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
                 minDiff = newDiff;
             }
         }
+
         if (optimalSize == null) {
             minDiff = Double.MAX_VALUE;
             for (Camera.Size size : sizes) {
                 if (Math.abs(size.height - targetHeight) < minDiff) {
                     optimalSize = size;
                     minDiff = Math.abs(size.height - targetHeight);
+                }
+            }
+        }
+        return optimalSize;
+    }
+
+    private Camera.Size getOptimalPictureSize(List<Camera.Size> sizes, int w,int h) {
+        double targetRatio = (double)w/h;
+
+        double minDiff = Double.MAX_VALUE;
+        double newDiff;
+
+        Camera.Size optimalSize = null;
+
+        for (Camera.Size size : sizes) {
+            double ratio = (double) size.width / size.height;
+            if(ratio == 1){
+                optimalSize = size;
+                break;
+            } else {
+                newDiff = Math.abs(ratio - targetRatio);
+                if (newDiff < minDiff) {
+                    optimalSize = size;
+                    minDiff = newDiff;
                 }
             }
         }
@@ -212,40 +232,6 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
                     // currently set to auto-focus on single touch
                 }
             });
-        }
-    }
-
-    public void onPictureTaken(byte[] data, Camera camera) {
-        if (data != null) {
-            Bitmap bitmap = BitmapFactory.decodeByteArray(data , 0, data .length);
-
-            if(bitmap!=null){
-
-                File file=new File(Environment.getExternalStorageDirectory()+"/dirr");
-                if(!file.isDirectory()){
-                    file.mkdir();
-                }
-
-                file=new File(Environment.getExternalStorageDirectory()+"/dirr",System.currentTimeMillis()+".jpg");
-
-
-                try
-                {
-                    FileOutputStream fileOutputStream=new FileOutputStream(file);
-                    bitmap.compress(Bitmap.CompressFormat.JPEG,100, fileOutputStream);
-
-                    fileOutputStream.flush();
-                    fileOutputStream.close();
-                }
-                catch(IOException e){
-                    e.printStackTrace();
-                }
-                catch(Exception exception)
-                {
-                    exception.printStackTrace();
-                }
-
-            }
         }
     }
 

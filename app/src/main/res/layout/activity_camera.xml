@@ -22,9 +22,9 @@
 
             <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 app:srcCompat="@android:color/transparent"
-                android:id="@+id/imageView" />
+                android:id="@+id/imageView"
+                android:layout_height="wrap_content" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
