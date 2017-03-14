@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_checked="false">
-        <bitmap android:src="@drawable/ic_action_name"
+        <bitmap android:src="@drawable/flash_off"
             android:gravity="center"/>
     </item>
     <item android:state_checked="true">

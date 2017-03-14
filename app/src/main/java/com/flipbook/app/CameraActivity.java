@@ -4,24 +4,19 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
 import android.hardware.Camera;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ToggleButton;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,10 +30,13 @@ public class CameraActivity extends AppCompatActivity {
     private CameraPreview cameraPreview;
     private ImageView imageView;
     private ToggleButton flash, switchCameras;
-    private ImageButton snap;
+    private ImageButton snap, close;
     private Context context = this;
     private boolean inPreview;
     private int currentCameraId;
+    private LinearLayout imageArrayLayout;
+    private HorizontalScrollView scrollView;
+    private ArrayList<Bitmap> imageList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +46,12 @@ public class CameraActivity extends AppCompatActivity {
         flash = (ToggleButton) findViewById(R.id.flash);
         switchCameras = (ToggleButton) findViewById(R.id.switch_cameras);
         snap = (ImageButton) findViewById(R.id.snap);
+        close = (ImageButton) findViewById(R.id.close);
         imageView = (ImageView) findViewById(R.id.imageView);
+        imageArrayLayout = (LinearLayout) findViewById(R.id.imageArray);
+        scrollView = (HorizontalScrollView) findViewById(R.id.scrollView);
+
+        imageList = new ArrayList<>();
         //camera preview
         currentCameraId = Camera.CameraInfo.CAMERA_FACING_FRONT;
         camera = cameraPreview.getCameraInstance(currentCameraId);
@@ -61,8 +64,10 @@ public class CameraActivity extends AppCompatActivity {
             flash.setVisibility(View.GONE);
         }
         final FrameLayout preview = (FrameLayout) findViewById(R.id.imagePreview);
+
+
         // Create our Preview view and set it as the content of our activity.
-        cameraPreview = new CameraPreview(context, camera);
+        cameraPreview = new CameraPreview(context, camera, currentCameraId);
         preview.addView(cameraPreview, 0);
         inPreview = true;
 
@@ -71,7 +76,11 @@ public class CameraActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 System.out.println("take photo!");
-                camera.takePicture(null, null, mPicture);
+                try {
+                    camera.takePicture(null, null, mPicture);
+                } catch (RuntimeException re){
+                    re.getMessage();
+                }
             }
         });
 
@@ -91,7 +100,7 @@ public class CameraActivity extends AppCompatActivity {
                     currentCameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
                 }
                 camera = cameraPreview.getCameraInstance(currentCameraId);
-                cameraPreview = new CameraPreview(context, camera);
+                cameraPreview = new CameraPreview(context, camera, currentCameraId);
                 preview.addView(cameraPreview, 0);
                 if (hasFlash(camera)) {
                     System.out.println("this cam has flash");
@@ -102,6 +111,23 @@ public class CameraActivity extends AppCompatActivity {
                 }
             }
         });
+
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                close.setEnabled(false);
+                close.setVisibility(View.GONE);
+                imageView.setImageDrawable(null);
+                snap.setEnabled(true);
+                snap.setVisibility(View.VISIBLE);
+                if(hasFlash(camera)){
+                    flash.setEnabled(true);
+                    flash.setVisibility(View.VISIBLE);
+                }
+                switchCameras.setEnabled(true);
+                switchCameras.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     private Camera.PictureCallback mPicture = new Camera.PictureCallback() {
@@ -109,18 +135,52 @@ public class CameraActivity extends AppCompatActivity {
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
 
-            Matrix matrix = new Matrix();
-            Matrix m = new Matrix();
+            Bitmap picture = BitmapFactory.decodeByteArray(data, 0, data.length);
 
-            matrix.postRotate(270);
-            m.preScale(-1,1);
+                Matrix matrix = new Matrix();
+                matrix.postRotate(90);
+                Matrix m2 = new Matrix();
+                m2.postRotate(270);
+                Matrix m = new Matrix();
+                m.preScale(-1, 1);
 
-            Bitmap pictureFile = BitmapFactory.decodeByteArray(data, 0, data.length);
-            Bitmap image = Bitmap.createBitmap(pictureFile, 0, 0, pictureFile.getHeight(), pictureFile.getHeight(), matrix, true);
-            Bitmap image2 = Bitmap.createBitmap(image, 0, 0, image.getHeight(), image.getHeight(), m, true);
-            Bitmap resizedFile = Bitmap.createScaledBitmap(image2, 1600, 1600,true);
+                if(currentCameraId == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                    Bitmap image = Bitmap.createBitmap(picture, 0, 0, picture.getWidth(), picture.getHeight(), m2, true);
+                    Bitmap flip = Bitmap.createBitmap(image, 0, 0, image.getWidth(), image.getWidth(), m, true);
+                    picture = Bitmap.createScaledBitmap(flip, 1600, 1600, true);
+                }
+                if(currentCameraId == Camera.CameraInfo.CAMERA_FACING_BACK) {
+                    Bitmap image = Bitmap.createBitmap(picture, 0, 0, picture.getWidth(), picture.getHeight(), matrix, true);
+                    Bitmap croppedImage = Bitmap.createBitmap(image, 0, 0, image.getWidth(), image.getWidth());
+                    picture = Bitmap.createScaledBitmap(croppedImage, 1200, 1200, true);
+                }
+            imageList.add(picture);
+            final ImageView view = new ImageView(getApplicationContext());
+            view.setScaleType(ImageView.ScaleType.FIT_START);
+            view.setImageBitmap(picture);
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    snap.setEnabled(false);
+                    snap.setVisibility(View.INVISIBLE);
+                    flash.setEnabled(false);
+                    flash.setVisibility(View.GONE);
+                    switchCameras.setEnabled(false);
+                    switchCameras.setVisibility(View.GONE);
+                    close.setVisibility(View.VISIBLE);
+                    close.setEnabled(true);
+                    BitmapDrawable drawable = (BitmapDrawable) view.getDrawable();
+                    Bitmap bitmap = drawable.getBitmap();
+                    imageView.setImageBitmap(bitmap);
+                }
+            });
+            imageArrayLayout.addView(view, imageArrayLayout.getHeight(), picture.getHeight());
 
-            imageView.setImageBitmap(resizedFile);
+            scrollView.postDelayed(new Runnable() {
+                public void run() {
+                    scrollView.fullScroll(HorizontalScrollView.FOCUS_RIGHT);
+                }
+            }, 100);
         }
     };
 

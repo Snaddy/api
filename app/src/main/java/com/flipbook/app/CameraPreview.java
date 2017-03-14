@@ -1,18 +1,17 @@
 package com.flipbook.app;
 
 import android.app.Activity;
+import android.app.Instrumentation;
 import android.content.Context;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.hardware.Camera;
-import android.os.Environment;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.view.Display;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.WindowManager;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +23,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
     private static final String TAG = "CameraPreview";
 
+    private int cameraId;
     private Context mContext;
     private SurfaceHolder mHolder;
     private Camera mCamera;
@@ -31,10 +31,11 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     private Camera.Size mPreviewSize, mPictureSize;
     private float mDist;
 
-    public CameraPreview(Context context, Camera camera) {
+    public CameraPreview(Context context, Camera camera, int camId) {
         super(context);
         mContext = context;
         mCamera = camera;
+        cameraId = camId;
 
         ArrayList<Camera.Area> focusAreas = new ArrayList<Camera.Area>(1);
         focusAreas.add(new Camera.Area(new Rect(-1000, -1000, 1000, 0), 750));
@@ -83,16 +84,12 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         try {
             Camera.Parameters parameters = mCamera.getParameters();
             List<Camera.Size> picSizes = mCamera.getParameters().getSupportedPictureSizes();
-            //parameters.setPreviewSize(1440, 1080);
             parameters.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
             mPictureSize = getOptimalPictureSize(picSizes, mPreviewSize.width, mPreviewSize.height);
-            //parameters.setPictureSize(1440, 1080);
             parameters.setPictureSize(mPictureSize.width, mPictureSize.height);
-            System.out.println("Best picture size: " + mPictureSize.width + ", " + mPictureSize.height);
-            System.out.println("Best preview size: " + mPreviewSize.width + ", " + mPreviewSize.height);
-            parameters.setRotation(90);
             mCamera.setParameters(parameters);
-            mCamera.setDisplayOrientation(90);
+
+            mCamera.setDisplayOrientation(getRotation(mContext ,cameraId));
             mCamera.setPreviewDisplay(mHolder);
             mCamera.startPreview();
 
@@ -121,7 +118,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     }
 
     private Camera.Size getOptimalPreviewSize(List<Camera.Size> sizes, int w, int h) {
-        double targetRatio = 0.75;
+        double targetRatio = 0.75; //4:3
 
         if (sizes == null)
             return null;
@@ -133,10 +130,16 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         int targetHeight = h;
 
         for (Camera.Size size : sizes) {
-            newDiff = Math.abs((double)size.width/size.height - targetRatio);
-            if (newDiff < minDiff) {
+            double ratio = (double) size.height / size.width;
+            if(ratio == targetRatio){
                 optimalSize = size;
-                minDiff = newDiff;
+                break;
+            } else {
+                newDiff = Math.abs(ratio - targetRatio);
+                if (newDiff < minDiff) {
+                    optimalSize = size;
+                    minDiff = newDiff;
+                }
             }
         }
 
@@ -153,7 +156,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     }
 
     private Camera.Size getOptimalPictureSize(List<Camera.Size> sizes, int w,int h) {
-        double targetRatio = (double)w/h;
+        double targetRatio = 0.75;
 
         double minDiff = Double.MAX_VALUE;
         double newDiff;
@@ -161,8 +164,8 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         Camera.Size optimalSize = null;
 
         for (Camera.Size size : sizes) {
-            double ratio = (double) size.width / size.height;
-            if(ratio == 1){
+            double ratio = (double) size.height / size.width;
+            if(ratio == targetRatio){
                 optimalSize = size;
                 break;
             } else {
@@ -241,6 +244,37 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         float x = event.getX(0) - event.getX(1);
         float y = event.getY(0) - event.getY(1);
         return (float)Math.sqrt(x * x + y * y);
+    }
+
+    private int getRotation(Context context, int cameraId) {
+        android.hardware.Camera.CameraInfo info = new android.hardware.Camera.CameraInfo();
+        android.hardware.Camera.getCameraInfo(cameraId, info);
+        int rotation = ((WindowManager)context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay()
+                .getRotation();
+        int degrees = 0;
+        switch (rotation) {
+            case Surface.ROTATION_0:
+                degrees = 0;
+                break;
+            case Surface.ROTATION_90:
+                degrees = 90;
+                break;
+            case Surface.ROTATION_180:
+                degrees = 180;
+                break;
+            case Surface.ROTATION_270:
+                degrees = 270;
+                break;
+        }
+
+        int result;
+        if (cameraId == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+            result = (info.orientation + degrees) % 360;
+            result = (360 - result) % 360; // compensate the mirror
+        } else { // back-facing
+            result = (info.orientation - degrees + 360) % 360;
+        }
+        return result;
     }
 
     public static Camera getCameraInstance(int camId){

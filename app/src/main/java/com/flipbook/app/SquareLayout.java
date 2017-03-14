@@ -25,6 +25,7 @@ public class SquareLayout extends FrameLayout {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int width = getMeasuredWidth();
+        int height = getMeasuredHeight();
         setMeasuredDimension(width, width);
     }
 }
