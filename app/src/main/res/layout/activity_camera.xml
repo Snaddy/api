@@ -20,28 +20,18 @@
            android:id="@+id/imagePreview"
            android:clickable="true" >
 
-            <ImageView
-                android:layout_width="wrap_content"
+            <com.flipbook.app.SquareImageView
+                android:layout_width="match_parent"
                 app:srcCompat="@android:color/transparent"
                 android:id="@+id/imageView"
-                android:layout_height="wrap_content"
-                android:scaleType="matrix"
-                tools:ignore="ContentDescription" />
+                android:layout_height="match_parent"
+                tools:ignore="ContentDescription"
+                android:scaleType="fitXY"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
                 android:id="@+id/buttons">
-
-                <ImageButton
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    app:srcCompat="@drawable/close"
-                    android:id="@+id/close"
-                    android:layout_alignParentRight="true"
-                    tools:ignore="ContentDescription,RtlHardcoded"
-                    android:background="@color/colorPrimary"
-                    android:visibility="gone" />
 
                 <ToggleButton
                     android:layout_width="80dp"
@@ -87,10 +77,12 @@
                 tools:ignore="ContentDescription" />
 
             <HorizontalScrollView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:id="@+id/scrollView">
+                android:id="@+id/scrollView"
+                android:background="@android:drawable/screen_background_dark_transparent"
+                android:padding="10dp">
 
                 <LinearLayout
                     android:id="@+id/imageArray"
