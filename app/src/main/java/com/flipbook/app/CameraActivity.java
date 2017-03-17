@@ -1,6 +1,7 @@
 package com.flipbook.app;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,6 +15,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Layout;
 import android.text.method.MovementMethod;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -35,18 +37,17 @@ import java.util.List;
 
 public class CameraActivity extends AppCompatActivity {
 
-    private static final String TAG = "APP" ;
     private Camera camera;
     private CameraPreview cameraPreview;
     private ImageView imageView;
     private ToggleButton flash, switchCameras;
-    private ImageButton snap;
+    private ImageButton snap, exit, next;
     private Context context = this;
     private boolean inPreview;
     private int currentCameraId;
     private LinearLayout imageArrayLayout;
     private HorizontalScrollView scrollView;
-    private ArrayList<Bitmap> imageList;
+    public static ArrayList<Bitmap> imageList;
     private boolean flashOn;
 
     @Override
@@ -58,6 +59,8 @@ public class CameraActivity extends AppCompatActivity {
         flash = (ToggleButton) findViewById(R.id.flash);
         switchCameras = (ToggleButton) findViewById(R.id.switch_cameras);
         snap = (ImageButton) findViewById(R.id.snap);
+        exit = (ImageButton) findViewById(R.id.exit);
+        next = (ImageButton) findViewById(R.id.next);
         imageView = (ImageView) findViewById(R.id.imageView);
         imageView.bringToFront();
         imageArrayLayout = (LinearLayout) findViewById(R.id.imageArray);
@@ -82,7 +85,24 @@ public class CameraActivity extends AppCompatActivity {
         preview.addView(cameraPreview, 0);
         inPreview = true;
 
+
         //click listeners
+        exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ProcessingActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
         snap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -249,8 +269,7 @@ public class CameraActivity extends AppCompatActivity {
     }
 
     public int dpToPixels(int dp){
-        float scale = getResources().getDisplayMetrics().density;
-        int dpAsPixels = (int) (dp * scale + 0.5f);
-        return dpAsPixels;
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 }

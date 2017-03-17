@@ -58,6 +58,11 @@
             android:screenOrientation="portrait" >
         </activity>
 
+        <activity android:name=".ProcessingActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" >
+        </activity>
+
     </application>
 
 </manifest>

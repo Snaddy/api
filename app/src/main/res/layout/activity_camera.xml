@@ -9,10 +9,37 @@
        android:layout_width="match_parent"
        android:layout_height="match_parent"
        android:elevation="0dp"
+        tools:ignore="UnusedAttribute,UselessParent"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        tools:ignore="UnusedAttribute,UselessParent">
+        android:layout_alignParentStart="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_weight="0"
+            android:background="@color/colorWhite">
+
+            <ImageButton
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                app:srcCompat="@drawable/close"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:id="@+id/exit"
+                android:background="@color/colorPrimary" />
+
+            <ImageButton
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                app:srcCompat="@drawable/arrow"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:id="@+id/next"
+                android:background="@color/colorPrimary" />
+        </RelativeLayout>
 
         <com.flipbook.app.SquareLayout
            android:layout_width="match_parent"
@@ -34,8 +61,8 @@
                 android:id="@+id/buttons">
 
                 <ToggleButton
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:id="@+id/flash"
                     android:background="@drawable/flash"
                     android:layout_alignParentLeft="true"
@@ -44,8 +71,8 @@
                     tools:ignore="RtlHardcoded" />
 
                 <ToggleButton
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:id="@+id/switch_cameras"
                     android:background="@drawable/switch_cameras"
                     android:layout_alignParentRight="true"
@@ -62,19 +89,25 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <ImageButton
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:srcCompat="@drawable/camerabutton"
-                android:id="@+id/snap"
                 android:layout_weight="1"
-                android:layout_gravity="center_horizontal"
-                android:scaleType="fitXY"
-                android:adjustViewBounds="true"
-                android:background="@android:color/transparent"
-                android:layout_margin="40dp"
-                android:contentDescription=""
-                tools:ignore="ContentDescription" />
+                android:gravity="center"
+                android:id="@+id/buttonLayout"
+                android:padding="40dp">
+
+                <ImageButton
+                    android:layout_height="match_parent"
+                    app:srcCompat="@drawable/camerabutton"
+                    android:id="@+id/snap"
+                    android:background="@android:color/transparent"
+                    android:contentDescription=""
+                    tools:ignore="ContentDescription"
+                    android:layout_width="wrap_content"
+                    android:cropToPadding="false"
+                    android:adjustViewBounds="true" />
+            </LinearLayout>
 
             <HorizontalScrollView
                 android:layout_width="match_parent"
