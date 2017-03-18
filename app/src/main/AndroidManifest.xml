@@ -24,13 +24,6 @@
         <activity android:name=".LaunchActivity"
             android:screenOrientation="portrait"
             android:launchMode = "singleTask">
-
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <activity android:name=".LoginActivity"
@@ -46,6 +39,11 @@
         <activity android:name=".WelcomeActivity"
             android:launchMode = "singleTask"
             android:screenOrientation="portrait">
+                <intent-filter>
+                    <action android:name="android.intent.action.MAIN" />
+
+                    <category android:name="android.intent.category.LAUNCHER" />
+                </intent-filter>
         </activity>
 
         <activity android:name=".ProfileActivity"
@@ -60,6 +58,7 @@
 
         <activity android:name=".ProcessingActivity"
             android:launchMode="singleTask"
+            android:hardwareAccelerated="true"
             android:screenOrientation="portrait" >
         </activity>
 

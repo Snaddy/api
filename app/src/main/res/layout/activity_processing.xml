@@ -15,11 +15,11 @@
         <ImageButton
             android:layout_width="50dp"
             android:layout_height="match_parent"
-            app:srcCompat="@drawable/close"
+            app:srcCompat="@drawable/backarrow"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:id="@+id/exit"
+            android:id="@+id/back"
             android:background="@color/colorPrimary" />
 
         <ImageButton
@@ -38,7 +38,8 @@
         app:srcCompat="@android:color/transparent"
         android:id="@+id/imageView"
         android:layout_height="match_parent"
-        android:scaleType="fitXY"/>
+        android:scaleType="fitXY"
+        android:backgroundTint="@android:color/transparent" />
 
     <LinearLayout
         android:orientation="vertical"
@@ -57,25 +58,41 @@
                 android:layout_height="match_parent"
                 app:srcCompat="@android:color/transparent"
                 android:id="@+id/normal"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="true"
+                android:padding="10dp" />
 
             <ImageButton
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/blackWhite"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="true"
+                android:padding="10dp" />
 
             <ImageButton
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/sepia"
-                android:layout_weight="1" />
+                android:id="@+id/special1"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="true"
+                android:padding="10dp" />
 
             <ImageButton
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/special"
-                android:layout_weight="1" />
+                android:id="@+id/special2"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="true"
+                android:padding="10dp" />
 
         </LinearLayout>
 

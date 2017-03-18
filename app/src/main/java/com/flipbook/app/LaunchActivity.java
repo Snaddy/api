@@ -21,17 +21,8 @@ public class LaunchActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch);
 
-        final SharedPreferences prefs = getSharedPreferences("prefs", Context.MODE_PRIVATE);
-
         signUp = (Button) findViewById(R.id.signup);
         login = (Button) findViewById(R.id.login);
-
-
-        if(prefs.getString("auth_token", "") != "" &&
-                prefs.getString("email", "") != ""){
-            startActivity(new Intent(getApplicationContext(), WelcomeActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
-            finish();
-        }
 
         signUp.setOnClickListener(new View.OnClickListener() {
             @Override

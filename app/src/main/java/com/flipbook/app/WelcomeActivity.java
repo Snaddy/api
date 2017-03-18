@@ -1,19 +1,24 @@
 package com.flipbook.app;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -26,6 +31,8 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.net.ssl.HttpsURLConnection;
 
 /**
  * Created by Hayden on 2017-02-25.
@@ -48,6 +55,12 @@ public class WelcomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_welcome);
 
         final SharedPreferences prefs = getSharedPreferences("prefs", Context.MODE_PRIVATE);
+
+        if(prefs.getString("auth_token", "") == "" &&
+                prefs.getString("email", "") == ""){
+            startActivity(new Intent(getApplicationContext(), LaunchActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
+            finish();
+        }
 
         getEmail = prefs.getString("email", "");
         getToken = prefs.getString("auth_token", "");
@@ -92,7 +105,7 @@ public class WelcomeActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                loader.animate().translationY(-loader.getHeight()/2).scaleY(0).setDuration(150).setListener(new AnimatorListenerAdapter() {
+                loader.animate().translationY(-loader.getHeight()/2).scaleY(0).setDuration(150).scaleX(0).setDuration(150).setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         super.onAnimationEnd(animation);
@@ -104,6 +117,25 @@ public class WelcomeActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(WelcomeActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+                NetworkResponse networkResponse = error.networkResponse;
+                if (networkResponse != null && networkResponse.statusCode == HttpsURLConnection.HTTP_UNAUTHORIZED) {
+                    final Dialog dialog = new Dialog(getApplicationContext());
+                    dialog.setContentView(R.layout.dialog);
+                    dialog.setTitle("Uh oh! Error...");
+                    TextView message = (TextView) dialog.findViewById(R.id.message);
+                    message.setText("Session ended. Please login again.");
+                    //dialog button
+                    Button okButton = (Button) dialog.findViewById(R.id.okButton);
+                    okButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                            finish();
+                            dialog.dismiss();
+                        }
+                    });
+                    dialog.show();
+                }
             }
         }){
              @Override

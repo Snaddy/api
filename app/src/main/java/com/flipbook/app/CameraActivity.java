@@ -1,24 +1,20 @@
 package com.flipbook.app;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Layout;
-import android.text.method.MovementMethod;
 import android.util.DisplayMetrics;
-import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
@@ -26,7 +22,10 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.ToggleButton;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,6 +66,7 @@ public class CameraActivity extends AppCompatActivity {
         scrollView = (HorizontalScrollView) findViewById(R.id.scrollView);
 
         imageList = new ArrayList<>();
+
         //camera preview
         currentCameraId = Camera.CameraInfo.CAMERA_FACING_FRONT;
         camera = cameraPreview.getCameraInstance(currentCameraId);
@@ -97,33 +97,70 @@ public class CameraActivity extends AppCompatActivity {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), ProcessingActivity.class);
-                startActivity(intent);
-                finish();
+                if(imageList.size() <= 1){
+                    final Dialog dialog = new Dialog(context);
+                    dialog.setContentView(R.layout.dialog);
+                    dialog.setTitle("Uh oh! Error...");
+                    TextView message = (TextView) dialog.findViewById(R.id.message);
+                    message.setText("Please make sure you have 2 or more pictures before posting.");
+                    //dialog button
+                    Button okButton = (Button) dialog.findViewById(R.id.okButton);
+
+                    okButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                        }
+                    });
+                    dialog.show();
+                } else {
+                    Intent intent = new Intent(getApplicationContext(), ProcessingActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
             }
         });
 
         snap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("take photo!");
-                Camera.Parameters p = camera.getParameters();
-                if(hasFlash(camera)) {
-                    if (flashOn) {
-                        p.setFlashMode(Camera.Parameters.FLASH_MODE_ON);
-                        camera.setParameters(p);
+
+                if (imageList.size() > 100) {
+                    final Dialog dialog = new Dialog(context);
+                    dialog.setContentView(R.layout.dialog);
+                    dialog.setTitle("Uh oh! Error...");
+                    TextView message = (TextView) dialog.findViewById(R.id.message);
+                    message.setText("Sorry, you're not allowed more than 100 pictures in a post.");
+                    //dialog button
+                    Button okButton = (Button) dialog.findViewById(R.id.okButton);
+
+                    okButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                        }
+                    });
+                    dialog.show();
+                } else {
+                    System.out.println("take photo!");
+                    Camera.Parameters p = camera.getParameters();
+                    if (hasFlash(camera)) {
+                        if (flashOn) {
+                            p.setFlashMode(Camera.Parameters.FLASH_MODE_ON);
+                            camera.setParameters(p);
+                        } else {
+                            p.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+                            camera.setParameters(p);
+                        }
                     } else {
                         p.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
                         camera.setParameters(p);
                     }
-                } else {
-                    p.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
-                    camera.setParameters(p);
-                }
-                try {
-                    camera.takePicture(null, null, mPicture);
-                } catch (RuntimeException re){
-                    re.getMessage();
+                    try {
+                        camera.takePicture(null, null, mPicture);
+                    } catch (RuntimeException re) {
+                        re.getMessage();
+                    }
                 }
             }
         });
@@ -170,6 +207,27 @@ public class CameraActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (camera != null) {
+            camera.release();
+            camera = null;
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(camera == null) {
+            camera = cameraPreview.getCameraInstance(currentCameraId);
+            final FrameLayout preview = (FrameLayout) findViewById(R.id.imagePreview);
+            cameraPreview = new CameraPreview(context, camera, currentCameraId);
+            preview.addView(cameraPreview, 0);
+        }
+    }
+
     private Camera.PictureCallback mPicture = new Camera.PictureCallback() {
         @Override
         public void onPictureTaken(byte[] data, final Camera camera) {
@@ -184,12 +242,12 @@ public class CameraActivity extends AppCompatActivity {
                     m.preScale(-1, 1);
                     Bitmap image = Bitmap.createBitmap(picture, 0, 0, picture.getWidth(), picture.getHeight(), m2, true);
                     Bitmap flip = Bitmap.createBitmap(image, 0, 0, image.getWidth(), image.getWidth(), m, true);
-                    picture = Bitmap.createScaledBitmap(flip, 1200, 1200, true);
+                    picture = Bitmap.createScaledBitmap(flip, 1024, 1024, true);
                 }
                 if(currentCameraId == Camera.CameraInfo.CAMERA_FACING_BACK) {
                     Bitmap image = Bitmap.createBitmap(picture, 0, 0, picture.getWidth(), picture.getHeight(), matrix, true);
                     Bitmap croppedImage = Bitmap.createBitmap(image, 0, 0, image.getWidth(), image.getWidth());
-                    picture = Bitmap.createScaledBitmap(croppedImage, 1200, 1200, true);
+                    picture = Bitmap.createScaledBitmap(croppedImage, 1024, 1024, true);
                 }
             imageList.add(picture);
             final ImageView view = new ImageView(getApplicationContext());
