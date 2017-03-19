@@ -6,14 +6,14 @@
     android:clipToPadding="true">
 
     <TextView
-        android:text="Placeholder"
+        android:text="Flip"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/titlebar"
         tools:text="Placeholder"
         android:elevation="3dp"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/colorWhite"
         android:gravity="center"
         android:textSize="24sp"
-        android:background="@drawable/bottomborder" />
+        android:background="@color/colorPrimary" />
 </RelativeLayout>

@@ -17,7 +17,7 @@ import android.widget.TextView;
 public class TitleBarFragment extends Fragment {
 
     private TextView title;
-    private Typeface futura;
+    private Typeface rounded;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -25,8 +25,8 @@ public class TitleBarFragment extends Fragment {
 
         title = (TextView) view.findViewById(R.id.titlebar);
 
-        futura = Typeface.createFromAsset(getActivity().getAssets(), "fonts/futura.ttf");
-        title.setTypeface(futura);
+        rounded = Typeface.createFromAsset(getActivity().getAssets(), "fonts/rounded.TTF");
+        title.setTypeface(rounded);
 
         return view;
     }

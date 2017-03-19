@@ -56,102 +56,110 @@ public class WelcomeActivity extends AppCompatActivity {
 
         final SharedPreferences prefs = getSharedPreferences("prefs", Context.MODE_PRIVATE);
 
-        if(prefs.getString("auth_token", "") == "" &&
-                prefs.getString("email", "") == ""){
+        if (prefs.getString("auth_token", "") == "" && prefs.getString("email", "") == "") {
             startActivity(new Intent(getApplicationContext(), LaunchActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
             finish();
-        }
+        } else {
 
-        getEmail = prefs.getString("email", "");
-        getToken = prefs.getString("auth_token", "");
+            getEmail = prefs.getString("email", "");
+            getToken = prefs.getString("auth_token", "");
 
-        postAdapter = new PostAdapter(this, R.layout.postitem);
+            postAdapter = new PostAdapter(this, R.layout.postitem);
 
-        home = (ImageButton) findViewById(R.id.home);
-        home.setImageResource(R.drawable.home_selected);
+            home = (ImageButton) findViewById(R.id.home);
+            home.setImageResource(R.drawable.home_selected);
 
-        feed = (ListView) findViewById(R.id.feed);
-        feed.setAdapter(postAdapter);
+            feed = (ListView) findViewById(R.id.feed);
+            feed.setAdapter(postAdapter);
 
-        loader = (ProgressBar) findViewById(R.id.loader);
+            loader = (ProgressBar) findViewById(R.id.loader);
 
-        final Animation slide_up = AnimationUtils.loadAnimation(getApplicationContext(),
-                R.anim.slide_up);
-
-         final JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, GET_POSTS_URL, null,new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                try {
-                    //loop through json Array
-                    String username = "";
-                    String caption = "";
-                    String likes = "";
-                    String imageUrl = "";
-                    for (int i = 0; i < response.length(); i++){
-                        JSONObject post = (JSONObject) response.get(i);
-                        JSONObject user = (JSONObject) post.get("user");
-                        JSONArray images = (JSONArray) post.get("images");
-                        username = user.getString("username");
-                        caption = post.getString("caption");
-                        likes = post.getString("get_likes_count");
-                        imageUrl = "";
-                        for(int j = 0; j < images.length(); j++) {
-                            JSONObject image = (JSONObject) images.get(j);
-                            imageUrl = BASE_URL + image.getString("url");
+            final JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, GET_POSTS_URL, null, new Response.Listener<JSONArray>() {
+                @Override
+                public void onResponse(JSONArray response) {
+                    try {
+                        //loop through json Array
+                        String username = "";
+                        String caption = "";
+                        String likes = "";
+                        String imageUrl = "";
+                        for (int i = 0; i < response.length(); i++) {
+                            JSONObject post = (JSONObject) response.get(i);
+                            JSONObject user = (JSONObject) post.get("user");
+                            JSONArray images = (JSONArray) post.get("images");
+                            username = user.getString("username");
+                            caption = post.getString("caption");
+                            likes = post.getString("get_likes_count");
+                            imageUrl = "";
+                            for (int j = 0; j < images.length(); j++) {
+                                JSONObject image = (JSONObject) images.get(j);
+                                imageUrl = BASE_URL + image.getString("url");
+                            }
+                            Posts posts = new Posts(username, caption, likes, imageUrl);
+                            postAdapter.add(posts);
                         }
-                        Posts posts = new Posts(username, caption, likes, imageUrl);
-                        postAdapter.add(posts);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                loader.animate().translationY(-loader.getHeight()/2).scaleY(0).setDuration(150).scaleX(0).setDuration(150).setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        super.onAnimationEnd(animation);
-                        loader.setVisibility(View.GONE);
-                    }
-                });
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(WelcomeActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
-                NetworkResponse networkResponse = error.networkResponse;
-                if (networkResponse != null && networkResponse.statusCode == HttpsURLConnection.HTTP_UNAUTHORIZED) {
-                    final Dialog dialog = new Dialog(getApplicationContext());
-                    dialog.setContentView(R.layout.dialog);
-                    dialog.setTitle("Uh oh! Error...");
-                    TextView message = (TextView) dialog.findViewById(R.id.message);
-                    message.setText("Session ended. Please login again.");
-                    //dialog button
-                    Button okButton = (Button) dialog.findViewById(R.id.okButton);
-                    okButton.setOnClickListener(new View.OnClickListener() {
+                    loader.animate().translationY(-loader.getHeight() / 2).scaleY(0).setDuration(150).scaleX(0).setDuration(150).setListener(new AnimatorListenerAdapter() {
                         @Override
-                        public void onClick(View v) {
-                            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-                            finish();
-                            dialog.dismiss();
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            loader.setVisibility(View.GONE);
                         }
                     });
-                    dialog.show();
                 }
-            }
-        }){
-             @Override
-             public String getBodyContentType() {
-                 return "application/json; charset=utf-8";
-             }
-             @Override
-             public Map<String, String> getHeaders() throws AuthFailureError {
-                 HashMap<String, String> headers = new HashMap<>();
-                 headers.put("X-User-Token", getToken);
-                 headers.put("X-User-Email", getEmail);
-                 System.out.println(headers.toString());
-                 return headers;
-             }
-         };
-        RequestQueue requestQueue = RequestSingleton.getInstance(WelcomeActivity.this.getApplicationContext()).getRequestQueue();
-        RequestSingleton.getInstance(WelcomeActivity.this).addToRequestQueue(jsonArrayRequest);
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(WelcomeActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+                    NetworkResponse networkResponse = error.networkResponse;
+                    if(networkResponse == null){
+                        loader.animate().translationY(-loader.getHeight() / 2).scaleY(0).setDuration(150).scaleX(0).setDuration(150).setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                super.onAnimationEnd(animation);
+                                loader.setVisibility(View.GONE);
+                            }
+                        });
+                        Toast.makeText(WelcomeActivity.this, "Unable to update feed.", Toast.LENGTH_SHORT).show();
+                    }
+                    if (networkResponse != null && networkResponse.statusCode == HttpsURLConnection.HTTP_UNAUTHORIZED) {
+                        final Dialog dialog = new Dialog(WelcomeActivity.this);
+                        dialog.setContentView(R.layout.dialog);
+                        dialog.setTitle("Uh oh! Error...");
+                        TextView message = (TextView) dialog.findViewById(R.id.message);
+                        message.setText("Session ended. Please login again.");
+                        //dialog button
+                        Button okButton = (Button) dialog.findViewById(R.id.okButton);
+                        okButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                                finish();
+                                dialog.dismiss();
+                            }
+                        });
+                        dialog.show();
+                    }
+                }
+            }) {
+                @Override
+                public String getBodyContentType() {
+                    return "application/json; charset=utf-8";
+                }
+
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<>();
+                    headers.put("X-User-Token", getToken);
+                    headers.put("X-User-Email", getEmail);
+                    System.out.println(headers.toString());
+                    return headers;
+                }
+            };
+            RequestQueue requestQueue = RequestSingleton.getInstance(WelcomeActivity.this.getApplicationContext()).getRequestQueue();
+            RequestSingleton.getInstance(WelcomeActivity.this).addToRequestQueue(jsonArrayRequest);
+        }
     }
 }

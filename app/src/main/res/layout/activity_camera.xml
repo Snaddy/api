@@ -58,7 +58,8 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
-                android:id="@+id/buttons">
+                android:id="@+id/buttons"
+                android:layout_gravity="bottom">
 
                 <ToggleButton
                     android:layout_width="50dp"
@@ -68,7 +69,8 @@
                     android:layout_alignParentLeft="true"
                     android:textOn=""
                     android:textOff=""
-                    tools:ignore="RtlHardcoded" />
+                    tools:ignore="RtlHardcoded"
+                    android:layout_alignParentBottom="true" />
 
                 <ToggleButton
                     android:layout_width="50dp"
@@ -78,7 +80,8 @@
                     android:layout_alignParentRight="true"
                     android:textOn=""
                     android:textOff=""
-                    tools:ignore="RtlHardcoded" />
+                    tools:ignore="RtlHardcoded"
+                    android:layout_alignParentBottom="true" />
             </RelativeLayout>
 
         </com.flipbook.app.SquareLayout>
