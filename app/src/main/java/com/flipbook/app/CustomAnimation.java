@@ -14,7 +14,7 @@ public class CustomAnimation extends AnimationDrawable {
 
     public CustomAnimation() {
         currentFrame = 0;
-        duration = 1000;
+        duration = 33;
     }
 
     @Override

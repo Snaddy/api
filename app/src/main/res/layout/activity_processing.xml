@@ -53,46 +53,91 @@
             android:layout_height="match_parent"
             android:layout_weight="1">
 
-            <ImageButton
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:srcCompat="@android:color/transparent"
-                android:id="@+id/normal"
-                android:layout_weight="1"
-                android:background="@android:color/transparent"
-                android:scaleType="fitXY"
-                android:adjustViewBounds="true"
-                android:padding="10dp" />
+                android:layout_weight="1">
 
-            <ImageButton
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/blackWhite"
-                android:layout_weight="1"
-                android:background="@android:color/transparent"
-                android:scaleType="fitXY"
-                android:adjustViewBounds="true"
-                android:padding="10dp" />
+                <SeekBar
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/saturation"
+                    android:layout_weight="1"
+                    android:max="200"
+                    android:progress="100"
+                    android:layout_gravity="center"
+                    android:paddingEnd="30dp"
+                    android:paddingStart="30dp"
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true" />
 
-            <ImageButton
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/special1"
-                android:layout_weight="1"
-                android:background="@android:color/transparent"
-                android:scaleType="fitXY"
-                android:adjustViewBounds="true"
-                android:padding="10dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/saturationText"
+                    android:layout_below="@+id/saturation"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="5dp"
+                    android:textColor="@color/darkestGray" />
+            </RelativeLayout>
 
-            <ImageButton
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/special2"
-                android:layout_weight="1"
-                android:background="@android:color/transparent"
-                android:scaleType="fitXY"
-                android:adjustViewBounds="true"
-                android:padding="10dp" />
+                android:layout_weight="1">
+
+                <SeekBar
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/contrast"
+                    android:layout_weight="1"
+                    android:max="200"
+                    android:progress="100"
+                    android:layout_gravity="center"
+                    android:paddingEnd="30dp"
+                    android:paddingStart="30dp"
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/contrastText"
+                    android:layout_below="@+id/contrast"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="5dp"
+                    android:textColorLink="@color/darkestGray"
+                    android:textColor="@color/darkestGray" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <SeekBar
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/brightness"
+                    android:layout_weight="1"
+                    android:max="200"
+                    android:progress="100"
+                    android:layout_gravity="center"
+                    android:paddingEnd="30dp"
+                    android:paddingStart="30dp"
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/brightnessText"
+                    android:layout_below="@+id/brightness"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="5dp"
+                    android:textColorLink="@color/darkGrey"
+                    android:textColor="@color/darkestGray" />
+            </RelativeLayout>
 
         </LinearLayout>
 
@@ -107,6 +152,7 @@
                 android:id="@+id/speedBar"
                 android:layout_weight="1"
                 android:max="59"
+                android:progress="30"
                 android:progressBackgroundTint="@android:color/transparent"
                 android:paddingEnd="50dp"
                 android:paddingStart="50dp"
@@ -118,10 +164,11 @@
                 android:id="@+id/speedText"
                 android:layout_below="@+id/speedBar"
                 android:layout_centerHorizontal="true"
-                android:textColor="@color/colorAccent"
+                android:textColor="@color/darkestGray"
                 android:textSize="20dp"
                 android:layout_weight="1"
                 android:gravity="center"/>
+
         </RelativeLayout>
 
     </LinearLayout>

@@ -34,7 +34,8 @@
 
         <activity android:name=".RegisterActivity"
             android:launchMode = "singleTask"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
         </activity>
 
         <activity android:name=".WelcomeActivity"
@@ -61,6 +62,13 @@
             android:launchMode="singleTask"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait" >
+        </activity>
+
+        <activity android:name=".PostActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="stateHidden">
         </activity>
 
     </application>
