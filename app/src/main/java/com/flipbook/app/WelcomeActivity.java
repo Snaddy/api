@@ -5,6 +5,10 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -24,11 +28,13 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.NetworkImageView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,6 +54,7 @@ public class WelcomeActivity extends AppCompatActivity {
     private ListView feed;
     private PostAdapter postAdapter;
     private ProgressBar loader;
+    private NetworkImageView view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +90,7 @@ public class WelcomeActivity extends AppCompatActivity {
                         String caption = "";
                         String likes = "";
                         String imageUrl = "";
+                        int speed = 0;
                         for (int i = 0; i < response.length(); i++) {
                             JSONObject post = (JSONObject) response.get(i);
                             JSONObject user = (JSONObject) post.get("user");
@@ -90,12 +98,14 @@ public class WelcomeActivity extends AppCompatActivity {
                             username = user.getString("username");
                             caption = post.getString("caption");
                             likes = post.getString("get_likes_count");
-                            imageUrl = "";
+                            //speed = post.getInt("speed");
+                            ArrayList<String> imageUrlArray = new ArrayList<>();
                             for (int j = 0; j < images.length(); j++) {
                                 JSONObject image = (JSONObject) images.get(j);
                                 imageUrl = BASE_URL + image.getString("url");
+                                imageUrlArray.add(imageUrl);
                             }
-                            Posts posts = new Posts(username, caption, likes, imageUrl);
+                            Posts posts = new Posts(username, caption, likes, speed, imageUrlArray);
                             postAdapter.add(posts);
                         }
                     } catch (JSONException e) {

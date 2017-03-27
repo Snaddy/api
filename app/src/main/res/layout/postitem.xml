@@ -5,11 +5,11 @@
     android:background="@android:color/transparent"
     android:paddingBottom="15dp">
 
-    <com.android.volley.toolbox.NetworkImageView
+    <ImageView
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:id="@+id/profilePic"
-        android:layout_marginLeft="10dp" />
+        android:padding="10dp" />
 
     <TextView
         android:layout_width="match_parent"
@@ -23,7 +23,7 @@
         android:textColor="@android:color/black"
         android:clickable="true" />
 
-    <com.android.volley.toolbox.NetworkImageView
+    <ImageView
         app:srcCompat="@android:color/transparent"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"

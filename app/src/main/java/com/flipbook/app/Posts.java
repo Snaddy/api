@@ -1,6 +1,6 @@
 package com.flipbook.app;
 
-import android.media.Image;
+import java.util.ArrayList;
 
 /**
  * Created by Hayden on 2017-03-06.
@@ -8,13 +8,17 @@ import android.media.Image;
 
 public class Posts {
 
-    private String username, caption, likes, imageUrl;
+    private String username, caption, likes;
 
-    public Posts(String username, String caption, String likes, String imageUrl){
+    private int speed;
+    private ArrayList<String> imageUrlArray;
+
+    public Posts(String username, String caption, String likes, int speed, ArrayList<String> imageUrlArray){
         this.setUsername(username);
         this.setCaption(caption);
         this.setLikes(likes);
-        this.setImages(imageUrl);
+        this.setImages(imageUrlArray);
+        this.setSpeed(speed);
     }
 
     public String getCaption() {
@@ -41,11 +45,19 @@ public class Posts {
         this.username = username;
     }
 
-    public String getImages() {
-        return imageUrl;
+    public ArrayList<String> getImages() {
+        return imageUrlArray;
     }
 
-    public void setImages(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setImages(ArrayList<String> imageUrlArray) {
+        this.imageUrlArray = imageUrlArray;
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
     }
 }

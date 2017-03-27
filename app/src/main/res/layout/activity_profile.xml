@@ -4,7 +4,104 @@
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:background="@android:color/white">
 
-    <include layout="@layout/profile"/>
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:id="@+id/profile_info"
+        android:layout_below="@+id/username">
+
+        <ImageView
+            android:layout_width="80dp"
+            app:srcCompat="@android:color/transparent"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:id="@+id/profilepic"
+            android:layout_height="80dp"
+            android:layout_margin="5dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:textColor="@color/darkestGray"
+            android:gravity="center_vertical"
+            android:textSize="18sp"
+            android:layout_height="40dp"
+            android:layout_toEndOf="@+id/profilepic"
+            android:layout_toRightOf="@+id/profilepic"
+            android:id="@+id/name"
+            android:text="Hayden"
+            android:layout_marginTop="5dp" />
+
+        <Button
+            android:text="Edit Profile"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_below="@+id/name"
+            android:layout_toRightOf="@+id/profilepic"
+            android:layout_toEndOf="@+id/profilepic"
+            android:background="@color/colorAccent"
+            android:id="@+id/edit" />
+
+        <TextView
+            android:text="TextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/bio"
+            android:layout_below="@+id/profilepic"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignBottom="@+id/profilepic"
+            android:layout_marginTop="10dp" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@+id/bio"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/divider">
+
+            <TextView
+                android:text="Posts"
+                android:id="@+id/posts"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:textColor="@color/darkestGray"
+                android:gravity="center" />
+
+            <TextView
+                android:text="Following"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/following"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:textColor="@color/darkestGray"
+                android:gravity="center" />
+
+            <TextView
+                android:text="Followers"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/followers"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:textColor="@color/darkestGray"
+                android:gravity="center" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <GridView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/profile_info"
+        android:layout_above="@+id/appbar"
+        android:id="@+id/show_posts"
+        android:numColumns="2" />
 
     <fragment android:name="com.flipbook.app.AppBarFragment"
         android:id="@+id/appbar"
