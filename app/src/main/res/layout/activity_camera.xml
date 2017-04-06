@@ -101,15 +101,16 @@
                 android:padding="40dp">
 
                 <ImageButton
-                    android:layout_height="match_parent"
+                    android:layout_height="70dp"
                     app:srcCompat="@drawable/camerabutton"
                     android:id="@+id/snap"
-                    android:background="@android:color/transparent"
                     android:contentDescription=""
                     tools:ignore="ContentDescription"
-                    android:layout_width="wrap_content"
+                    android:layout_width="70dp"
                     android:cropToPadding="false"
-                    android:adjustViewBounds="true" />
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY"
+                    android:background="@android:color/transparent" />
             </LinearLayout>
 
             <HorizontalScrollView

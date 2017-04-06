@@ -30,11 +30,7 @@ public class ProcessingActivity extends AppCompatActivity{
     private ImageView imageView;
     private SeekBar speedBar, saturation, contrast, brightness;
     private CustomAnimation animation;
-    private float speed;
-
-    private float saturationFilter;
-    private float contrastFilter;
-    private float brightnessFilter;
+    private float speed, saturationFilter, contrastFilter, brightnessFilter;
     private int speedBarProg;
     public static int speedInt;
     private TextView speedText, saturationText, contrastText, brightnessText;
@@ -66,16 +62,21 @@ public class ProcessingActivity extends AppCompatActivity{
         speedText.setText("Speed:  " + (speedBarProg - 1));
 
         saturationFilter = saturation.getProgress() / 100;
-        contrastFilter = contrast.getProgress() / 400 - 0.25f;
+        contrastFilter = contrast.getProgress() / 400;
         brightnessFilter = brightness.getProgress()/4 - 25;
 
         saturationText.setText("Saturation:  " + (saturation.getProgress() - 100) + "");
         contrastText.setText("Contrast:  " + (contrast.getProgress() - 100) + "");
         brightnessText.setText("Brightness:  " + (brightness.getProgress() - 100) + "");
 
+        System.out.println(getBrightnessFilter());
+        System.out.println(getContrastFilter());
+        System.out.println(getBrightnessFilter());
+
         animation = new CustomAnimation();
         for(int i = 0; i < imageArray.size(); i ++){
             Drawable d = new BitmapDrawable(getResources(), imageArray.get(i));
+            //30fps
             animation.addFrame(d, 33);
         }
         animation.setOneShot(false);
@@ -85,11 +86,14 @@ public class ProcessingActivity extends AppCompatActivity{
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                System.out.println(getBrightnessFilter());
+                System.out.println(getContrastFilter());
+                System.out.println(getBrightnessFilter());
                 ColorMatrix matrix = new ColorMatrix();
                 matrix.setSaturation(getSaturationFilter());
                 setContrast(matrix, getContrastFilter());
-                ColorMatrixColorFilter m = new ColorMatrixColorFilter(matrix);
                 adjustBrightness(matrix, getBrightnessFilter());
+                ColorMatrixColorFilter m = new ColorMatrixColorFilter(matrix);
                 for(int i = 0; i < imageArray.size(); i ++){
                     Drawable d = new BitmapDrawable(getResources(), imageArray.get(i));
                     d.setColorFilter(m);
@@ -118,6 +122,9 @@ public class ProcessingActivity extends AppCompatActivity{
                 imageView.setColorFilter(m);
                 setSaturationFilter((float)saturation.getProgress() / 100);
                 saturationText.setText("Saturation:  " + (saturation.getProgress() - 100));
+                System.out.println(getBrightnessFilter());
+                System.out.println(getContrastFilter());
+                System.out.println(getBrightnessFilter());
             }
 
             @Override
@@ -136,12 +143,15 @@ public class ProcessingActivity extends AppCompatActivity{
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 ColorMatrix matrix = new ColorMatrix();
                 matrix.setSaturation(getSaturationFilter());
-                setContrast(matrix, (float) contrast.getProgress() / 400 - 0.25f);
+                setContrast(matrix, (float) contrast.getProgress() / 400 - .25f);
                 adjustBrightness(matrix, getBrightnessFilter());
                 ColorMatrixColorFilter m = new ColorMatrixColorFilter(matrix);
                 imageView.setColorFilter(m);
-                setContrastFilter((float) contrast.getProgress() / 400 - 0.25f);
+                setContrastFilter((float) contrast.getProgress() / 400 - .25f);
                 contrastText.setText("Contrast:  " + (contrast.getProgress() - 100));
+                System.out.println(getBrightnessFilter());
+                System.out.println(getContrastFilter());
+                System.out.println(getBrightnessFilter());
             }
 
             @Override
@@ -166,6 +176,9 @@ public class ProcessingActivity extends AppCompatActivity{
                 imageView.setColorFilter(m);
                 setBrightnessFilter(brightness.getProgress() / 4 - 25);
                 brightnessText.setText("Brightness: " + (brightness.getProgress() - 100));
+                System.out.println(getBrightnessFilter());
+                System.out.println(getContrastFilter());
+                System.out.println(getBrightnessFilter());
             }
 
             @Override
@@ -217,7 +230,6 @@ public class ProcessingActivity extends AppCompatActivity{
                 0, 0, scale, 0, translate,
                 0, 0, 0, 1, 0 };
         cm.postConcat(new ColorMatrix(mat));
-        System.out.println("contrast: " + scale + "\n" + "translate: " + translate);
     }
 
     public static void adjustBrightness(ColorMatrix cm, float value) {
@@ -233,7 +245,6 @@ public class ProcessingActivity extends AppCompatActivity{
                         0,0,0,0,1
                 };
         cm.postConcat(new ColorMatrix(mat));
-        System.out.println("brightness: " + value);
     }
 
     protected static float cleanValue(float p_val, float p_limit) {

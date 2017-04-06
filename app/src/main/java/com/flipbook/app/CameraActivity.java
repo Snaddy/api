@@ -1,14 +1,17 @@
 package com.flipbook.app;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.hardware.Camera;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
@@ -36,9 +39,12 @@ import java.util.List;
 
 public class CameraActivity extends AppCompatActivity {
 
+    public static final int MY_PERMISSIONS_REQUEST_CAMERA = 100;
+
     private Camera camera;
     private CameraPreview cameraPreview;
     private ImageView imageView;
+    private FrameLayout preview;
     private ToggleButton flash, switchCameras;
     private ImageButton snap, exit, next;
     private Context context = this;
@@ -60,6 +66,7 @@ public class CameraActivity extends AppCompatActivity {
         snap = (ImageButton) findViewById(R.id.snap);
         exit = (ImageButton) findViewById(R.id.exit);
         next = (ImageButton) findViewById(R.id.next);
+        preview = (FrameLayout) findViewById(R.id.imagePreview);
         imageView = (ImageView) findViewById(R.id.imageView);
         imageView.bringToFront();
         imageArrayLayout = (LinearLayout) findViewById(R.id.imageArray);
@@ -67,9 +74,21 @@ public class CameraActivity extends AppCompatActivity {
 
         imageList = new ArrayList<>();
 
-        //camera preview
-        currentCameraId = Camera.CameraInfo.CAMERA_FACING_FRONT;
-        camera = cameraPreview.getCameraInstance(currentCameraId);
+        //marshmallow camera permission
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_GRANTED) {
+            //camera preview
+            currentCameraId = Camera.CameraInfo.CAMERA_FACING_FRONT;
+            camera = cameraPreview.getCameraInstance(currentCameraId);
+            cameraPreview = new CameraPreview(context, camera, currentCameraId);
+            preview.addView(cameraPreview, 0);
+            inPreview = true;
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA},
+                    MY_PERMISSIONS_REQUEST_CAMERA);
+        }
+
         if (hasFlash(camera)) {
             System.out.println("this cam has flash");
             flash.setVisibility(View.VISIBLE);
@@ -77,14 +96,6 @@ public class CameraActivity extends AppCompatActivity {
             System.out.println("this cam doesnt have flash");
             flash.setVisibility(View.GONE);
         }
-        final FrameLayout preview = (FrameLayout) findViewById(R.id.imagePreview);
-
-
-        // Create our Preview view and set it as the content of our activity.
-        cameraPreview = new CameraPreview(context, camera, currentCameraId);
-        preview.addView(cameraPreview, 0);
-        inPreview = true;
-
 
         //click listeners
         exit.setOnClickListener(new View.OnClickListener() {
@@ -125,12 +136,12 @@ public class CameraActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (imageList.size() > 100) {
+                if (imageList.size() > 60) {
                     final Dialog dialog = new Dialog(context);
                     dialog.setContentView(R.layout.dialog);
                     dialog.setTitle("Uh oh! Error...");
                     TextView message = (TextView) dialog.findViewById(R.id.message);
-                    message.setText("Sorry, you're not allowed more than 100 pictures in a post.");
+                    message.setText("Sorry, you're not allowed more than 60 pictures in a post.");
                     //dialog button
                     Button okButton = (Button) dialog.findViewById(R.id.okButton);
 
@@ -208,6 +219,36 @@ public class CameraActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_CAMERA: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    //camera preview
+                    currentCameraId = Camera.CameraInfo.CAMERA_FACING_FRONT;
+                    camera = cameraPreview.getCameraInstance(currentCameraId);
+                    cameraPreview = new CameraPreview(context, camera, currentCameraId);
+                    preview.addView(cameraPreview, 0);
+                    inPreview = true;
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    System.out.println("Permissions --> " + "Permission Denied: ");
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
 
@@ -221,10 +262,19 @@ public class CameraActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if(camera == null) {
-            camera = cameraPreview.getCameraInstance(currentCameraId);
-            final FrameLayout preview = (FrameLayout) findViewById(R.id.imagePreview);
-            cameraPreview = new CameraPreview(context, camera, currentCameraId);
-            preview.addView(cameraPreview, 0);
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                    == PackageManager.PERMISSION_GRANTED) {
+                //camera preview
+                currentCameraId = Camera.CameraInfo.CAMERA_FACING_FRONT;
+                camera = cameraPreview.getCameraInstance(currentCameraId);
+                cameraPreview = new CameraPreview(context, camera, currentCameraId);
+                preview.addView(cameraPreview, 0);
+                inPreview = true;
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.CAMERA},
+                        MY_PERMISSIONS_REQUEST_CAMERA);
+            }
         }
     }
 
@@ -306,6 +356,7 @@ public class CameraActivity extends AppCompatActivity {
                     scrollView.fullScroll(HorizontalScrollView.FOCUS_RIGHT);
                 }
             }, 100);
+            //camera.startPreview();
         }
     };
 

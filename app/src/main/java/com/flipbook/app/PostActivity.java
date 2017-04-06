@@ -4,20 +4,18 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-
-import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
@@ -25,11 +23,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +35,7 @@ import java.util.Map;
 
 public class PostActivity extends AppCompatActivity{
 
-    private final static String CREATE_POSTS_URL = "https://aqueous-river-91475.herokuapp.com/api/v1/posts.json";
+    private final static String CREATE_POSTS_URL = "https://railsphotoapp.herokuapp.com//api/v1/posts.json";
     private ArrayList<Drawable> processedArray;
     private ImageView imageView;
     private ImageButton back;
@@ -48,7 +43,6 @@ public class PostActivity extends AppCompatActivity{
     private Button post;
     private AnimationDrawable animation;
     private String getEmail, getToken;
-    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,9 +83,9 @@ public class PostActivity extends AppCompatActivity{
         post.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                InputMethodManager inputManager = (InputMethodManager) getBaseContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
                 upload();
-                startActivity(new Intent(getApplicationContext(), WelcomeActivity.class));
-                finish();
             }
         });
     }
@@ -103,63 +97,85 @@ public class PostActivity extends AppCompatActivity{
     }
 
     private void upload(){
-        progressDialog = new ProgressDialog(PostActivity.this);
-        progressDialog.setMessage("Uploading...");
-        progressDialog.show();
-
-        VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST, CREATE_POSTS_URL, new Response.Listener<NetworkResponse>() {
+        final ProgressDialog pd = new ProgressDialog(this, R.style.dialogStyle);
+        pd.setMessage("Uploading, please wait...");
+        pd.show();
+        CustomMultipartRequest multipartRequest = new CustomMultipartRequest(Request.Method.POST, CREATE_POSTS_URL, new Response.Listener<NetworkResponse>() {
             @Override
             public void onResponse(NetworkResponse response) {
-                String resultResponse = new String(response.data);
-                try {
-                    JSONObject result = new JSONObject(resultResponse);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                pd.dismiss();
+                startActivity(new Intent(getApplicationContext(), WelcomeActivity.class));
+                finish();
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 NetworkResponse networkResponse = error.networkResponse;
+                String errorMessage = "Unknown error";
+                if (networkResponse == null) {
+                    if (error.getClass().equals(TimeoutError.class)) {
+                        errorMessage = "Request timeout";
+                    } else if (error.getClass().equals(NoConnectionError.class)) {
+                        errorMessage = "Failed to connect server";
+                    }
+                } else {
+                    String result = new String(networkResponse.data);
+                    try {
+                        JSONObject response = new JSONObject(result);
+                        String status = response.getString("status");
+                        String message = response.getString("message");
+
+                        Log.e("Error Status", status);
+                        Log.e("Error Message", message);
+
+                        if (networkResponse.statusCode == 404) {
+                            errorMessage = "Resource not found";
+                        } else if (networkResponse.statusCode == 401) {
+                            errorMessage = message+" Please login again";
+                        } else if (networkResponse.statusCode == 400) {
+                            errorMessage = message+ " Check your inputs";
+                        } else if (networkResponse.statusCode == 500) {
+                            errorMessage = message+" Something is getting wrong";
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                Log.i("Error", errorMessage);
+                error.printStackTrace();
+                pd.dismiss();
+                //AlertDialog ad = new AlertDialog.Builder();
             }
         }) {
             @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
+            protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
+                params.put("speed", String.valueOf(ProcessingActivity.speedInt - 1));
                 params.put("caption", caption.getText().toString());
-                params.put("speed", ProcessingActivity.speedInt + "");
                 return params;
             }
 
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<>();
+            public Map<String, String> getHeaders(){
+                Map<String, String> headers = new HashMap<>();
                 headers.put("X-User-Token", getToken);
                 headers.put("X-User-Email", getEmail);
-                System.out.println(headers.toString());
                 return headers;
             }
 
             @Override
-            protected Map<String, DataPart> getByteData() {
-                Map<String, DataPart> params = new HashMap<>();
-                // file name could found file base or direct access from real path
-                // for now just get bitmap data from ImageView
-                for(int i = 0; i < processedArray.size(); i++) {
-                    params.put("images", new DataPart("file_" + processedArray.get(i) + ".jpg", getFileDataFromDrawable(getBaseContext(), processedArray.get(i)), "image/jpeg"));
+            protected Map<String, ArrayList<DataPart>> getByteData() {
+                Map<String, ArrayList<DataPart>> dataParams = new HashMap<>();
+                ArrayList<DataPart> arrayList = new ArrayList<>();
+                for (int i = 0; i < processedArray.size(); i++) {
+                    arrayList.add(new DataPart("image" + i + ".jpg", DrawableConverter.getFileDataFromDrawable(getBaseContext(), processedArray.get(i)), "image/jpeg"));
                 }
-                return params;
+                dataParams.put("images[]", arrayList);
+                return dataParams;
             }
         };
+        multipartRequest.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         RequestQueue requestQueue = RequestSingleton.getInstance(PostActivity.this.getApplicationContext()).getRequestQueue();
-        RequestSingleton.getInstance(PostActivity.this).addToRequestQueue(multipartRequest);
+        RequestSingleton.getInstance(getBaseContext()).addToRequestQueue(multipartRequest);
     }
-
-    public static byte[] getFileDataFromDrawable(Context context, Drawable drawable) {
-        Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 85, byteArrayOutputStream);
-        return byteArrayOutputStream.toByteArray();
-    }
-
 }

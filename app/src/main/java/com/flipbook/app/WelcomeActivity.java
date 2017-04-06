@@ -46,8 +46,8 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class WelcomeActivity extends AppCompatActivity {
 
-    private final static String GET_POSTS_URL = "https://aqueous-river-91475.herokuapp.com/api/v1/posts.json";
-    private final static String BASE_URL = "https://aqueous-river-91475.herokuapp.com";
+    private final static String GET_POSTS_URL = "https://railsphotoapp.herokuapp.com//api/v1/posts.json";
+    private final static String BASE_URL = "https://railsphotoapp.herokuapp.com/";
 
     private String getEmail, getToken;
     private ImageButton home;
@@ -86,9 +86,9 @@ public class WelcomeActivity extends AppCompatActivity {
                 public void onResponse(JSONArray response) {
                     try {
                         //loop through json Array
-                        String username = "";
-                        String caption = "";
-                        String likes = "";
+                        String username;
+                        String caption ;
+                        String likes;
                         String imageUrl = "";
                         int speed = 0;
                         for (int i = 0; i < response.length(); i++) {
@@ -98,14 +98,11 @@ public class WelcomeActivity extends AppCompatActivity {
                             username = user.getString("username");
                             caption = post.getString("caption");
                             likes = post.getString("get_likes_count");
-                            //speed = post.getInt("speed");
-                            ArrayList<String> imageUrlArray = new ArrayList<>();
                             for (int j = 0; j < images.length(); j++) {
                                 JSONObject image = (JSONObject) images.get(j);
                                 imageUrl = BASE_URL + image.getString("url");
-                                imageUrlArray.add(imageUrl);
                             }
-                            Posts posts = new Posts(username, caption, likes, speed, imageUrlArray);
+                            Posts posts = new Posts(username, caption, likes, speed ,imageUrl);
                             postAdapter.add(posts);
                         }
                     } catch (JSONException e) {
@@ -164,7 +161,6 @@ public class WelcomeActivity extends AppCompatActivity {
                     HashMap<String, String> headers = new HashMap<>();
                     headers.put("X-User-Token", getToken);
                     headers.put("X-User-Email", getEmail);
-                    System.out.println(headers.toString());
                     return headers;
                 }
             };

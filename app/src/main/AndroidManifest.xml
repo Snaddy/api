@@ -9,7 +9,6 @@
     <uses-feature android:name="android.hardware.camera.autofocus"/>
     <uses-feature android:name="android.hardware.camera.zoom"/>
     <uses-feature android:name = "android.hardware.camera.flash"/>
-    <uses-feature android:name = "android.hardware.camera.front"/>
 
     <application
         android:allowBackup="true"
@@ -55,7 +54,7 @@
 
         <activity android:name=".CameraActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
         </activity>
 
         <activity android:name=".ProcessingActivity"

@@ -26,7 +26,7 @@ import org.json.JSONObject;
 
 public class RegisterActivity extends Activity {
 
-    private final static String URL = "https://aqueous-river-91475.herokuapp.com/api/v1/registrations.json";
+    private final static String URL = "https://railsphotoapp.herokuapp.com//api/v1/registrations.json";
 
     private EditText email, username, name, password, confirmPassword;
     private Button registerButton;

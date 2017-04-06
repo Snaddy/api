@@ -23,7 +23,7 @@
         android:textColor="@android:color/black"
         android:clickable="true" />
 
-    <ImageView
+    <com.android.volley.toolbox.NetworkImageView
         app:srcCompat="@android:color/transparent"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"

@@ -13,4 +13,10 @@
         <item name="android:windowAnimationStyle">@null</item>
     </style>
 
+    <style name="dialogStyle" parent="@style/Theme.AppCompat.DayNight.Dialog">
+        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="android:textColorPrimary">@color/textColor</item>
+        <item name="android:background">@color/colorWhite</item>
+    </style>
+
 </resources>

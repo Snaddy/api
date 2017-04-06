@@ -8,16 +8,14 @@ import java.util.ArrayList;
 
 public class Posts {
 
-    private String username, caption, likes;
-
+    private String username, caption, likes, images;
     private int speed;
-    private ArrayList<String> imageUrlArray;
 
-    public Posts(String username, String caption, String likes, int speed, ArrayList<String> imageUrlArray){
+    public Posts(String username, String caption, String likes, int speed, String images){
         this.setUsername(username);
         this.setCaption(caption);
         this.setLikes(likes);
-        this.setImages(imageUrlArray);
+        this.setImages(images);
         this.setSpeed(speed);
     }
 
@@ -45,16 +43,12 @@ public class Posts {
         this.username = username;
     }
 
-    public ArrayList<String> getImages() {
-        return imageUrlArray;
+    public String getImages() {
+        return images;
     }
 
-    public void setImages(ArrayList<String> imageUrlArray) {
-        this.imageUrlArray = imageUrlArray;
-    }
-
-    public int getSpeed() {
-        return speed;
+    public void setImages(String images) {
+        this.images= images;
     }
 
     public void setSpeed(int speed) {

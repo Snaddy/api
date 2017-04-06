@@ -21,7 +21,7 @@ import org.json.JSONObject;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private final static String URL = "https://aqueous-river-91475.herokuapp.com/api/v1/sessions.json";
+    private final static String URL = "https://railsphotoapp.herokuapp.com//api/v1/sessions.json";
     private Button loginButton;
     private EditText email;
     private EditText password;
@@ -64,8 +64,6 @@ public class LoginActivity extends AppCompatActivity {
                                 Intent intent = new Intent(getApplicationContext(), WelcomeActivity.class);
                                 intent.addFlags(intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
-                                System.out.println("token: " + prefs.getString("auth_token", ""));
-                                System.out.println("Email: " + prefs.getString("email", ""));
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
