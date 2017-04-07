@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -25,8 +26,7 @@ import static java.lang.Math.round;
 
 public class ProcessingActivity extends AppCompatActivity{
 
-    public static ArrayList<Bitmap> imageArray;
-    public static ArrayList<Drawable> processedImages;
+    public static ArrayList<Bitmap> imageArray, processedImages;
     private ImageView imageView;
     private SeekBar speedBar, saturation, contrast, brightness;
     private CustomAnimation animation;
@@ -86,18 +86,8 @@ public class ProcessingActivity extends AppCompatActivity{
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println(getBrightnessFilter());
-                System.out.println(getContrastFilter());
-                System.out.println(getBrightnessFilter());
-                ColorMatrix matrix = new ColorMatrix();
-                matrix.setSaturation(getSaturationFilter());
-                setContrast(matrix, getContrastFilter());
-                adjustBrightness(matrix, getBrightnessFilter());
-                ColorMatrixColorFilter m = new ColorMatrixColorFilter(matrix);
                 for(int i = 0; i < imageArray.size(); i ++){
-                    Drawable d = new BitmapDrawable(getResources(), imageArray.get(i));
-                    d.setColorFilter(m);
-                    processedImages.add(d);
+                    processedImages.add(processBitmap(imageArray.get(i)));
                 }
                 startActivity(new Intent(getApplicationContext(), PostActivity.class));
             }
@@ -122,9 +112,6 @@ public class ProcessingActivity extends AppCompatActivity{
                 imageView.setColorFilter(m);
                 setSaturationFilter((float)saturation.getProgress() / 100);
                 saturationText.setText("Saturation:  " + (saturation.getProgress() - 100));
-                System.out.println(getBrightnessFilter());
-                System.out.println(getContrastFilter());
-                System.out.println(getBrightnessFilter());
             }
 
             @Override
@@ -149,9 +136,6 @@ public class ProcessingActivity extends AppCompatActivity{
                 imageView.setColorFilter(m);
                 setContrastFilter((float) contrast.getProgress() / 400 - .25f);
                 contrastText.setText("Contrast:  " + (contrast.getProgress() - 100));
-                System.out.println(getBrightnessFilter());
-                System.out.println(getContrastFilter());
-                System.out.println(getBrightnessFilter());
             }
 
             @Override
@@ -176,9 +160,6 @@ public class ProcessingActivity extends AppCompatActivity{
                 imageView.setColorFilter(m);
                 setBrightnessFilter(brightness.getProgress() / 4 - 25);
                 brightnessText.setText("Brightness: " + (brightness.getProgress() - 100));
-                System.out.println(getBrightnessFilter());
-                System.out.println(getContrastFilter());
-                System.out.println(getBrightnessFilter());
             }
 
             @Override
@@ -273,5 +254,20 @@ public class ProcessingActivity extends AppCompatActivity{
 
     public void setBrightnessFilter(float brightnessFilter) {
         this.brightnessFilter = brightnessFilter;
+    }
+
+    public Bitmap processBitmap(Bitmap bmpOriginal) {
+        Bitmap bmp = Bitmap.createBitmap(bmpOriginal.getWidth(),
+                bmpOriginal.getWidth(), Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(bmp);
+        Paint paint = new Paint();
+        ColorMatrix matrix = new ColorMatrix();
+        matrix.setSaturation(getSaturationFilter());
+        setContrast(matrix, getContrastFilter());
+        adjustBrightness(matrix, getBrightnessFilter());
+        ColorMatrixColorFilter m = new ColorMatrixColorFilter(matrix);
+        paint.setColorFilter(m);
+        c.drawBitmap(bmpOriginal, 0, 0, paint);
+        return bmp;
     }
 }

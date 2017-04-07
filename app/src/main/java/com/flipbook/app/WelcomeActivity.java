@@ -100,7 +100,7 @@ public class WelcomeActivity extends AppCompatActivity {
                             likes = post.getString("get_likes_count");
                             for (int j = 0; j < images.length(); j++) {
                                 JSONObject image = (JSONObject) images.get(j);
-                                imageUrl = BASE_URL + image.getString("url");
+                                imageUrl = image.getString("url");
                             }
                             Posts posts = new Posts(username, caption, likes, speed ,imageUrl);
                             postAdapter.add(posts);

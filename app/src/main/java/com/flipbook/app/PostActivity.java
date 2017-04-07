@@ -4,7 +4,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -36,7 +38,7 @@ import java.util.Map;
 public class PostActivity extends AppCompatActivity{
 
     private final static String CREATE_POSTS_URL = "https://railsphotoapp.herokuapp.com//api/v1/posts.json";
-    private ArrayList<Drawable> processedArray;
+    private ArrayList<Bitmap> processedArray;
     private ImageView imageView;
     private ImageButton back;
     private EditText caption;
@@ -64,7 +66,7 @@ public class PostActivity extends AppCompatActivity{
 
         animation = new AnimationDrawable();
         for(int i = 0; i < processedArray.size(); i ++){
-            Drawable d = processedArray.get(i);
+            Drawable d = new BitmapDrawable(getResources(), processedArray.get(i));
             animation.addFrame(d, ProcessingActivity.speedInt);
         }
         imageView.setImageDrawable(animation);
@@ -144,7 +146,6 @@ public class PostActivity extends AppCompatActivity{
                 Log.i("Error", errorMessage);
                 error.printStackTrace();
                 pd.dismiss();
-                //AlertDialog ad = new AlertDialog.Builder();
             }
         }) {
             @Override
