@@ -8,10 +8,11 @@ import java.util.ArrayList;
 
 public class Posts {
 
-    private String username, caption, likes, images;
+    private String username, caption, likes;
+    private ArrayList<String> images;
     private int speed;
 
-    public Posts(String username, String caption, String likes, int speed, String images){
+    public Posts(String username, String caption, String likes, int speed, ArrayList<String> images){
         this.setUsername(username);
         this.setCaption(caption);
         this.setLikes(likes);
@@ -43,15 +44,19 @@ public class Posts {
         this.username = username;
     }
 
-    public String getImages() {
+    public ArrayList<String> getImages() {
         return images;
     }
 
-    public void setImages(String images) {
-        this.images= images;
+    public void setImages(ArrayList<String> images) {
+        this.images = images;
     }
 
     public void setSpeed(int speed) {
         this.speed = speed;
+    }
+
+    public int getSpeed(){
+        return speed;
     }
 }

@@ -31,8 +31,7 @@ public class ProcessingActivity extends AppCompatActivity{
     private SeekBar speedBar, saturation, contrast, brightness;
     private CustomAnimation animation;
     private float speed, saturationFilter, contrastFilter, brightnessFilter;
-    private int speedBarProg;
-    public static int speedInt;
+    public static int speedInt, speedBarProg;
     private TextView speedText, saturationText, contrastText, brightnessText;
     private ImageButton back, next;
 

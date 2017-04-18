@@ -16,6 +16,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -29,6 +30,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.NetworkImageView;
+import com.bumptech.glide.Glide;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,14 +49,13 @@ import javax.net.ssl.HttpsURLConnection;
 public class WelcomeActivity extends AppCompatActivity {
 
     private final static String GET_POSTS_URL = "https://railsphotoapp.herokuapp.com//api/v1/posts.json";
-    private final static String BASE_URL = "https://railsphotoapp.herokuapp.com/";
 
     private String getEmail, getToken;
     private ImageButton home;
     private ListView feed;
+    private ImageView iv;
     private PostAdapter postAdapter;
     private ProgressBar loader;
-    private NetworkImageView view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,8 +69,14 @@ public class WelcomeActivity extends AppCompatActivity {
             finish();
         } else {
 
+            //iv = (ImageView) findViewById(R.id.imageView2);
+
+            //Glide.with(getApplicationContext()).load("https://dytun7vbm6t2g.cloudfront.net/uploads/post/images/134/image0.jpg").into(iv);
+
             getEmail = prefs.getString("email", "");
             getToken = prefs.getString("auth_token", "");
+
+            //System.out.println(getToken);
 
             postAdapter = new PostAdapter(this, R.layout.postitem);
 
@@ -89,8 +96,10 @@ public class WelcomeActivity extends AppCompatActivity {
                         String username;
                         String caption ;
                         String likes;
-                        String imageUrl = "";
-                        int speed = 0;
+                        String url;
+                        int speed;
+                        int id;
+                        System.out.println(response.length());
                         for (int i = 0; i < response.length(); i++) {
                             JSONObject post = (JSONObject) response.get(i);
                             JSONObject user = (JSONObject) post.get("user");
@@ -98,11 +107,14 @@ public class WelcomeActivity extends AppCompatActivity {
                             username = user.getString("username");
                             caption = post.getString("caption");
                             likes = post.getString("get_likes_count");
+                            speed = post.getInt("speed");
+                            id = post.getInt("id");
+                            ArrayList<String> imageUrls = new ArrayList<>();
                             for (int j = 0; j < images.length(); j++) {
-                                JSONObject image = (JSONObject) images.get(j);
-                                imageUrl = image.getString("url");
+                                url = "https://dytun7vbm6t2g.cloudfront.net/uploads/post/images/" + id + "/image" + j + ".jpg";
+                                imageUrls.add(url);
                             }
-                            Posts posts = new Posts(username, caption, likes, speed ,imageUrl);
+                            Posts posts = new Posts(username, caption, likes, speed ,imageUrls);
                             postAdapter.add(posts);
                         }
                     } catch (JSONException e) {
@@ -148,6 +160,7 @@ public class WelcomeActivity extends AppCompatActivity {
                             }
                         });
                         dialog.show();
+                        dialog.setCanceledOnTouchOutside(false);
                     }
                 }
             }) {

@@ -27,6 +27,8 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -85,9 +87,9 @@ public class PostActivity extends AppCompatActivity{
         post.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                InputMethodManager inputManager = (InputMethodManager) getBaseContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
                 upload();
+                InputMethodManager inputManager = (InputMethodManager) getBaseContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
             }
         });
     }
@@ -100,6 +102,7 @@ public class PostActivity extends AppCompatActivity{
 
     private void upload(){
         final ProgressDialog pd = new ProgressDialog(this, R.style.dialogStyle);
+        pd.setCanceledOnTouchOutside(false);
         pd.setMessage("Uploading, please wait...");
         pd.show();
         CustomMultipartRequest multipartRequest = new CustomMultipartRequest(Request.Method.POST, CREATE_POSTS_URL, new Response.Listener<NetworkResponse>() {
@@ -151,7 +154,7 @@ public class PostActivity extends AppCompatActivity{
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("speed", String.valueOf(ProcessingActivity.speedInt - 1));
+                params.put("speed", String.valueOf(ProcessingActivity.speedBarProg));
                 params.put("caption", caption.getText().toString());
                 return params;
             }
@@ -169,7 +172,7 @@ public class PostActivity extends AppCompatActivity{
                 Map<String, ArrayList<DataPart>> dataParams = new HashMap<>();
                 ArrayList<DataPart> arrayList = new ArrayList<>();
                 for (int i = 0; i < processedArray.size(); i++) {
-                    arrayList.add(new DataPart("image" + i + ".jpg", DrawableConverter.getFileDataFromDrawable(getBaseContext(), processedArray.get(i)), "image/jpeg"));
+                    arrayList.add(new DataPart("image" + i + ".jpg", getFileDataFromDrawable(getBaseContext(), processedArray.get(i)), "image/jpeg"));
                 }
                 dataParams.put("images[]", arrayList);
                 return dataParams;
@@ -178,5 +181,11 @@ public class PostActivity extends AppCompatActivity{
         multipartRequest.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         RequestQueue requestQueue = RequestSingleton.getInstance(PostActivity.this.getApplicationContext()).getRequestQueue();
         RequestSingleton.getInstance(getBaseContext()).addToRequestQueue(multipartRequest);
+    }
+
+    public byte[] getFileDataFromDrawable(Context context, Bitmap bitmap) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, byteArrayOutputStream);
+        return byteArrayOutputStream.toByteArray();
     }
 }

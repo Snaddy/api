@@ -25,7 +25,7 @@ public class TitleBarFragment extends Fragment {
 
         title = (TextView) view.findViewById(R.id.titlebar);
 
-        rounded = Typeface.createFromAsset(getActivity().getAssets(), "fonts/rounded.TTF");
+        rounded = Typeface.createFromAsset(getActivity().getAssets(), "fonts/ARIALN.TTF");
         title.setTypeface(rounded);
 
         return view;

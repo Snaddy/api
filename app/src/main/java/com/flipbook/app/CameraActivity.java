@@ -116,7 +116,6 @@ public class CameraActivity extends AppCompatActivity {
                     message.setText("Please make sure you have 2 or more pictures before posting.");
                     //dialog button
                     Button okButton = (Button) dialog.findViewById(R.id.okButton);
-
                     okButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -124,6 +123,7 @@ public class CameraActivity extends AppCompatActivity {
                         }
                     });
                     dialog.show();
+                    dialog.setCanceledOnTouchOutside(false);
                 } else {
                     Intent intent = new Intent(getApplicationContext(), ProcessingActivity.class);
                     startActivity(intent);
@@ -281,6 +281,7 @@ public class CameraActivity extends AppCompatActivity {
     private Camera.PictureCallback mPicture = new Camera.PictureCallback() {
         @Override
         public void onPictureTaken(byte[] data, final Camera camera) {
+            camera.startPreview();
             Bitmap picture = BitmapFactory.decodeByteArray(data, 0, data.length);
                 Matrix matrix = new Matrix();
                 matrix.postRotate(90);
@@ -337,7 +338,7 @@ public class CameraActivity extends AppCompatActivity {
             //add button and image to relative layout
             close.setLayoutParams(params);
             layout.addView(view);
-            layout.addView(close, 80, 80);
+            layout.addView(close, dpToPixels(30), dpToPixels(30));
             layout.setPadding(imagePadding, imagePadding, imagePadding, imagePadding);
             imageArrayLayout.addView(layout, imageArrayLayout.getHeight(), picture.getHeight());
 
@@ -356,7 +357,6 @@ public class CameraActivity extends AppCompatActivity {
                     scrollView.fullScroll(HorizontalScrollView.FOCUS_RIGHT);
                 }
             }, 100);
-            //camera.startPreview();
         }
     };
 
