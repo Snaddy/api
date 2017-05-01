@@ -5,11 +5,16 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
+import android.graphics.LightingColorFilter;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.animation.Animation;
@@ -68,15 +73,8 @@ public class WelcomeActivity extends AppCompatActivity {
             startActivity(new Intent(getApplicationContext(), LaunchActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
             finish();
         } else {
-
-            //iv = (ImageView) findViewById(R.id.imageView2);
-
-            //Glide.with(getApplicationContext()).load("https://dytun7vbm6t2g.cloudfront.net/uploads/post/images/134/image0.jpg").into(iv);
-
             getEmail = prefs.getString("email", "");
             getToken = prefs.getString("auth_token", "");
-
-            //System.out.println(getToken);
 
             postAdapter = new PostAdapter(this, R.layout.postitem);
 
@@ -88,30 +86,29 @@ public class WelcomeActivity extends AppCompatActivity {
 
             loader = (ProgressBar) findViewById(R.id.loader);
 
+            //if api 19 change progress bar to fit color scheme
+            if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                loader.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorAccent), PorterDuff.Mode.SRC_IN);
+            }
+
+
             final JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, GET_POSTS_URL, null, new Response.Listener<JSONArray>() {
                 @Override
                 public void onResponse(JSONArray response) {
                     try {
                         //loop through json Array
-                        String username;
-                        String caption ;
-                        String likes;
-                        String url;
-                        int speed;
-                        int id;
-                        System.out.println(response.length());
                         for (int i = 0; i < response.length(); i++) {
                             JSONObject post = (JSONObject) response.get(i);
                             JSONObject user = (JSONObject) post.get("user");
                             JSONArray images = (JSONArray) post.get("images");
-                            username = user.getString("username");
-                            caption = post.getString("caption");
-                            likes = post.getString("get_likes_count");
-                            speed = post.getInt("speed");
-                            id = post.getInt("id");
+                             String username = user.getString("username");
+                            String caption = post.getString("caption");
+                            String likes = post.getString("get_likes_count");
+                            int speed = post.getInt("speed");
+                            int id = post.getInt("id");
                             ArrayList<String> imageUrls = new ArrayList<>();
                             for (int j = 0; j < images.length(); j++) {
-                                url = "https://dytun7vbm6t2g.cloudfront.net/uploads/post/images/" + id + "/image" + j + ".jpg";
+                                String url = "https://dytun7vbm6t2g.cloudfront.net/uploads/post/images/" + id + "/image" + j + ".jpg";
                                 imageUrls.add(url);
                             }
                             Posts posts = new Posts(username, caption, likes, speed ,imageUrls);
@@ -120,13 +117,7 @@ public class WelcomeActivity extends AppCompatActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    loader.animate().translationY(-loader.getHeight() / 2).scaleY(0).setDuration(150).scaleX(0).setDuration(150).setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            super.onAnimationEnd(animation);
-                            loader.setVisibility(View.GONE);
-                        }
-                    });
+                   loader.setVisibility(View.GONE);
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -134,13 +125,7 @@ public class WelcomeActivity extends AppCompatActivity {
                     Toast.makeText(WelcomeActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
                     NetworkResponse networkResponse = error.networkResponse;
                     if(networkResponse == null){
-                        loader.animate().translationY(-loader.getHeight() / 2).scaleY(0).setDuration(150).scaleX(0).setDuration(150).setListener(new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                super.onAnimationEnd(animation);
-                                loader.setVisibility(View.GONE);
-                            }
-                        });
+                        loader.setVisibility(View.GONE);
                         Toast.makeText(WelcomeActivity.this, "Unable to update feed.", Toast.LENGTH_SHORT).show();
                     }
                     if (networkResponse != null && networkResponse.statusCode == HttpsURLConnection.HTTP_UNAUTHORIZED) {
