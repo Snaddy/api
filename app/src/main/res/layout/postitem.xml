@@ -22,7 +22,92 @@
         android:gravity="center_vertical"
         android:paddingLeft="10dp"
         android:textColor="@android:color/black"
-        android:clickable="true" />
+        android:clickable="true"
+        android:textSize="18sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:textColor="@android:color/black"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp"
+        android:id="@+id/caption"
+        android:layout_below="@+id/buttons"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:textSize="16sp"
+        android:background="@drawable/top_divider" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/buttons"
+        android:layout_below="@+id/view"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="5dp">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true">
+
+            <TextView
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/likes"
+                android:layout_toStartOf="@+id/commentButton"
+                android:id="@+id/comments"
+                android:textSize="14sp"
+                android:textColor="@color/textColor"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:textAlignment="center" />
+
+            <ImageButton
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                app:srcCompat="@drawable/comment"
+                android:id="@+id/commentButton"
+                android:scaleType="centerInside"
+                android:background="@android:color/transparent"
+                android:layout_alignParentTop="true"
+                android:layout_toStartOf="@+id/imageButton"
+                android:layout_weight="1"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp" />
+
+            <ImageButton
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                app:srcCompat="@drawable/unliked"
+                android:id="@+id/imageButton"
+                android:background="@android:color/transparent"
+                android:scaleType="centerCrop"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_weight="1"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp" />
+
+            <TextView
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/likes"
+                android:textColor="@color/textColor"
+                android:textSize="14sp"
+                android:layout_toEndOf="@+id/imageButton"
+                android:layout_weight="1"
+                android:layout_gravity="center"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -44,27 +129,5 @@
 
 
     </RelativeLayout>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/likes"
-        android:layout_below="@+id/view"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:paddingLeft="10dp"
-        android:textColor="@android:color/black" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="10dp"
-        android:textColor="@android:color/black"
-        android:paddingBottom="5dp"
-        android:paddingTop="5dp"
-        android:id="@+id/caption"
-        android:layout_below="@+id/likes"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
 
 </RelativeLayout>

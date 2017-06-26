@@ -1,8 +1,8 @@
 package com.flipbook.app;
 
 import android.Manifest;
-import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -13,12 +13,15 @@ import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
@@ -27,8 +30,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,6 +75,8 @@ public class CameraActivity extends AppCompatActivity {
 
         imageList = new ArrayList<>();
 
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
         //marshmallow camera permission
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -109,21 +112,22 @@ public class CameraActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(imageList.size() <= 1){
-                    final Dialog dialog = new Dialog(context);
-                    dialog.setContentView(R.layout.dialog);
-                    dialog.setTitle("Uh oh! Error...");
-                    TextView message = (TextView) dialog.findViewById(R.id.message);
-                    message.setText("Please make sure you have 2 or more pictures before posting.");
-                    //dialog button
-                    Button okButton = (Button) dialog.findViewById(R.id.okButton);
-                    okButton.setOnClickListener(new View.OnClickListener() {
+                    LayoutInflater inflater = CameraActivity.this.getLayoutInflater();
+                    View dialogView = inflater.inflate(R.layout.dialog, null);
+                    builder.setView(dialogView);
+                    TextView title = (TextView) dialogView.findViewById(R.id.title);
+                    TextView message = (TextView) dialogView.findViewById(R.id.message);
+                    Button ok = (Button) dialogView.findViewById(R.id.okButton);
+                    title.setText("Uh oh! Error...");
+                    message.setText("Please make sure your post contains 2 or more photos");
+                    final AlertDialog alertDialog = builder.create();
+                    ok.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            dialog.dismiss();
+                            alertDialog.cancel();
                         }
                     });
-                    dialog.show();
-                    dialog.setCanceledOnTouchOutside(false);
+                    alertDialog.show();
                 } else {
                     Intent intent = new Intent(getApplicationContext(), ProcessingActivity.class);
                     startActivity(intent);
@@ -137,23 +141,23 @@ public class CameraActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 if (imageList.size() > 60) {
-                    final Dialog dialog = new Dialog(context);
-                    dialog.setContentView(R.layout.dialog);
-                    dialog.setTitle("Uh oh! Error...");
-                    TextView message = (TextView) dialog.findViewById(R.id.message);
-                    message.setText("Sorry, you're not allowed more than 60 pictures in a post.");
-                    //dialog button
-                    Button okButton = (Button) dialog.findViewById(R.id.okButton);
-
-                    okButton.setOnClickListener(new View.OnClickListener() {
+                    LayoutInflater inflater = CameraActivity.this.getLayoutInflater();
+                    View dialogView = inflater.inflate(R.layout.dialog, null);
+                    builder.setView(dialogView);
+                    TextView title = (TextView) dialogView.findViewById(R.id.title);
+                    TextView message = (TextView) dialogView.findViewById(R.id.message);
+                    Button ok = (Button) dialogView.findViewById(R.id.okButton);
+                    title.setText("Uh oh! Error...");
+                    message.setText("Please make sure your post does not contain more than 60 photos");
+                    final AlertDialog alertDialog = builder.create();
+                    ok.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            dialog.dismiss();
+                            alertDialog.cancel();
                         }
                     });
-                    dialog.show();
+                    alertDialog.show();
                 } else {
-                    System.out.println("take photo!");
                     Camera.Parameters p = camera.getParameters();
                     if (hasFlash(camera)) {
                         if (flashOn) {
@@ -181,10 +185,8 @@ public class CameraActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (flash.isChecked()) {
                     flashOn = true;
-                    System.out.println("Flash turned on");
                 } else {
                     flashOn = false;
-                    System.out.println("Flash turned off");
                 }
             }
         });
@@ -206,10 +208,8 @@ public class CameraActivity extends AppCompatActivity {
                 }
                 camera = cameraPreview.getCameraInstance(currentCameraId);
                 if (hasFlash(camera)) {
-                    System.out.println("this cam has flash");
                     flash.setVisibility(View.VISIBLE);
                 } else {
-                    System.out.println("this cam doesnt have flash");
                     flash.setVisibility(View.GONE);
                 }
                 cameraPreview = new CameraPreview(context, camera, currentCameraId);
@@ -235,9 +235,6 @@ public class CameraActivity extends AppCompatActivity {
                     inPreview = true;
 
                 } else {
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
                     System.out.println("Permissions --> " + "Permission Denied: ");
                 }
                 return;

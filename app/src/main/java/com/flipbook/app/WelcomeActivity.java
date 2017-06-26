@@ -3,6 +3,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
@@ -15,7 +16,9 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -34,12 +37,14 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.NetworkImageView;
 import com.bumptech.glide.Glide;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONStringer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,10 +60,9 @@ public class WelcomeActivity extends AppCompatActivity {
 
     private final static String GET_POSTS_URL = "https://railsphotoapp.herokuapp.com//api/v1/posts.json";
 
-    private String getEmail, getToken;
+    public static String getEmail, getToken;
     private ImageButton home;
     private ListView feed;
-    private ImageView iv;
     private PostAdapter postAdapter;
     private ProgressBar loader;
 
@@ -86,32 +90,37 @@ public class WelcomeActivity extends AppCompatActivity {
 
             loader = (ProgressBar) findViewById(R.id.loader);
 
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
             //if api 19 change progress bar to fit color scheme
             if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                 loader.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorAccent), PorterDuff.Mode.SRC_IN);
             }
 
 
-            final JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, GET_POSTS_URL, null, new Response.Listener<JSONArray>() {
+            final JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(Request.Method.GET, GET_POSTS_URL, null, new Response.Listener<JSONArray>() {
                 @Override
                 public void onResponse(JSONArray response) {
+                    System.out.println(response);
                     try {
                         //loop through json Array
                         for (int i = 0; i < response.length(); i++) {
-                            JSONObject post = (JSONObject) response.get(i);
+                            JSONObject postObj = (JSONObject)response.get(i);
+                            JSONObject post = (JSONObject)postObj.get("post");
                             JSONObject user = (JSONObject) post.get("user");
                             JSONArray images = (JSONArray) post.get("images");
-                             String username = user.getString("username");
+                            String id = post.getString("id");
+                            String username = user.getString("username");
                             String caption = post.getString("caption");
-                            String likes = post.getString("get_likes_count");
+                            int likes_count = post.getInt("get_likes_count");
                             int speed = post.getInt("speed");
-                            int id = post.getInt("id");
+                            boolean isLiked = post.getBoolean("liked");
                             ArrayList<String> imageUrls = new ArrayList<>();
                             for (int j = 0; j < images.length(); j++) {
                                 String url = "https://dytun7vbm6t2g.cloudfront.net/uploads/post/images/" + id + "/image" + j + ".jpg";
                                 imageUrls.add(url);
                             }
-                            Posts posts = new Posts(username, caption, likes, speed ,imageUrls);
+                            Posts posts = new Posts(username, caption, id, likes_count, speed ,imageUrls, isLiked);
                             postAdapter.add(posts);
                         }
                     } catch (JSONException e) {
@@ -126,26 +135,29 @@ public class WelcomeActivity extends AppCompatActivity {
                     NetworkResponse networkResponse = error.networkResponse;
                     if(networkResponse == null){
                         loader.setVisibility(View.GONE);
-                        Toast.makeText(WelcomeActivity.this, "Unable to update feed.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(WelcomeActivity.this, "Unable to update feed. Check internet connection", Toast.LENGTH_SHORT).show();
                     }
-                    if (networkResponse != null && networkResponse.statusCode == HttpsURLConnection.HTTP_UNAUTHORIZED) {
-                        final Dialog dialog = new Dialog(WelcomeActivity.this);
-                        dialog.setContentView(R.layout.dialog);
-                        dialog.setTitle("Uh oh! Error...");
-                        TextView message = (TextView) dialog.findViewById(R.id.message);
-                        message.setText("Session ended. Please login again.");
-                        //dialog button
-                        Button okButton = (Button) dialog.findViewById(R.id.okButton);
-                        okButton.setOnClickListener(new View.OnClickListener() {
+                    if (networkResponse != null && (networkResponse.statusCode == HttpsURLConnection.HTTP_UNAUTHORIZED ||
+                            networkResponse.statusCode == HttpsURLConnection.HTTP_CLIENT_TIMEOUT)) {
+                        LayoutInflater inflater = WelcomeActivity.this.getLayoutInflater();
+                        View dialogView = inflater.inflate(R.layout.dialog, null);
+                        builder.setView(dialogView);
+
+                        TextView title = (TextView) dialogView.findViewById(R.id.title);
+                        TextView message = (TextView) dialogView.findViewById(R.id.message);
+                        Button ok = (Button) dialogView.findViewById(R.id.okButton);
+                        title.setText("Connection timeout...");
+                        message.setText("Please sign in again");
+                        final AlertDialog alertDialog = builder.create();
+                        ok.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                                alertDialog.cancel();
+                                startActivity(new Intent(getApplicationContext(), LaunchActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
                                 finish();
-                                dialog.dismiss();
                             }
                         });
-                        dialog.show();
-                        dialog.setCanceledOnTouchOutside(false);
+                        alertDialog.show();
                     }
                 }
             }) {
@@ -163,7 +175,7 @@ public class WelcomeActivity extends AppCompatActivity {
                 }
             };
             RequestQueue requestQueue = RequestSingleton.getInstance(WelcomeActivity.this.getApplicationContext()).getRequestQueue();
-            RequestSingleton.getInstance(WelcomeActivity.this).addToRequestQueue(jsonArrayRequest);
+            RequestSingleton.getInstance(WelcomeActivity.this).addToRequestQueue(jsonObjectRequest);
         }
     }
 }

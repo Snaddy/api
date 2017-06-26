@@ -97,7 +97,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:id="@+id/buttonLayout">
+                android:id="@+id/buttonLayout"
+                android:padding="15dp">
 
                 <ImageButton
                     android:layout_height="match_parent"
@@ -108,8 +109,7 @@
                     android:layout_width="wrap_content"
                     android:background="@android:color/transparent"
                     android:adjustViewBounds="true"
-                    android:scaleType="fitXY"
-                    android:padding="10dp" />
+                    android:scaleType="fitXY" />
             </LinearLayout>
 
             <HorizontalScrollView

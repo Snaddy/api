@@ -10,12 +10,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import org.json.JSONException;
+import org.json.JSONObject;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -23,6 +35,9 @@ import java.util.concurrent.ExecutionException;
  */
 
 public class PostAdapter extends ArrayAdapter {
+
+    private final String likeURL = "https://railsphotoapp.herokuapp.com//api/v1/like/";
+    private final String unlikeURL = "https://railsphotoapp.herokuapp.com//api/v1/unlike/";
 
     List list = new ArrayList();
 
@@ -46,7 +61,7 @@ public class PostAdapter extends ArrayAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, final ViewGroup parent) {
+    public View getView(final int position, View convertView, final ViewGroup parent) {
         View row;
         row = convertView;
         final PostHolder postHolder;
@@ -58,6 +73,7 @@ public class PostAdapter extends ArrayAdapter {
             postHolder.caption = (TextView) row.findViewById(R.id.caption);
             postHolder.likes = (TextView) row.findViewById(R.id.likes);
             postHolder.images = (ImageView) row.findViewById(R.id.images);
+            postHolder.likeButton = (ImageButton) row.findViewById(R.id.imageButton);
             row.setTag(postHolder);
         } else {
             postHolder = (PostHolder) row.getTag();
@@ -66,17 +82,122 @@ public class PostAdapter extends ArrayAdapter {
         final Posts posts = (Posts) this.getItem(position);
         postHolder.username.setText(posts.getUsername());
         postHolder.caption.setText(posts.getCaption());
-        postHolder.likes.setText(posts.getLikes());
+        if (posts.getLikesCount() == 0) {
+            postHolder.likes.setText("");
+        } else {
+            postHolder.likes.setText(posts.getLikesCount() + "");
+        }
+
+        //if post is liked
+        if( posts.getLiked() == true){
+            postHolder.likeButton.setImageDrawable(getContext().getResources().getDrawable(R.drawable.liked));
+        } else {
+            postHolder.likeButton.setImageDrawable(getContext().getResources().getDrawable(R.drawable.unliked));
+        }
 
         //download first display image :)
-        postHolder.images.setBackgroundColor(getContext().getResources().getColor(R.color.colorPrimary));
-        Glide.with(getContext()).load(posts.getImages().get(0)).downloadOnly(1024, 1024);
-        Glide.with(getContext()).load(posts.getImages().get(0)).diskCacheStrategy(DiskCacheStrategy.SOURCE).placeholder(R.color.hintColor).dontAnimate().into(postHolder.images);
-        //set click listener for imageview
+        if(posts.getImages().size() > 0) {
+            Glide.with(getContext()).load(posts.getImages().get(0)).downloadOnly(1024, 1024);
+            Glide.with(getContext()).load(posts.getImages().get(0)).diskCacheStrategy(DiskCacheStrategy.SOURCE).placeholder(R.color.colorWhite).dontAnimate().into(postHolder.images);
+        }
+            //set click listener for imageview
         postHolder.images.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 createPhotoAnimation(posts, postHolder.images);
+            }
+        });
+
+        postHolder.likeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //initially unliked
+                if(posts.getLiked() == false) {
+                    postHolder.likeButton.setEnabled(false);
+                    postHolder.likeButton.setSelected(!postHolder.likeButton.isSelected());
+                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, likeURL + posts.getId(), null, new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            try {
+                                if (response.getString("info").equals("liked")) {
+                                    postHolder.likeButton.setImageDrawable(getContext().getResources().getDrawable(R.drawable.liked));
+                                    posts.setLikesCount(posts.getLikesCount() + 1);
+                                    postHolder.likes.setText(posts.getLikesCount() + "");
+                                    posts.setLiked(true);
+                                    postHolder.likeButton.setEnabled(true);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(getContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    }) {
+
+                        @Override
+                        public String getBodyContentType() {
+                            return "application/json; charset=utf-8";
+                        }
+
+                        @Override
+                        public Map<String, String> getHeaders() throws AuthFailureError {
+                            HashMap<String, String> headers = new HashMap<>();
+                            headers.put("X-User-Token", WelcomeActivity.getToken);
+                            headers.put("X-User-Email", WelcomeActivity.getEmail);
+                            return headers;
+                        }
+                    };
+                    RequestQueue requestQueue = RequestSingleton.getInstance(getContext().getApplicationContext()).getRequestQueue();
+                    RequestSingleton.getInstance(getContext()).addToRequestQueue(jsonObjectRequest);
+                    System.out.println(jsonObjectRequest);
+                } else {
+                    postHolder.likeButton.setEnabled(false);
+                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, unlikeURL + posts.getId(), null, new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            try {
+                                if (response.getString("info").equals("unliked")) {
+                                    postHolder.likeButton.setImageDrawable(getContext().getResources().getDrawable(R.drawable.unliked));
+                                    posts.setLikesCount(posts.getLikesCount() - 1);
+                                    if(posts.getLikesCount() == 0) {
+                                        postHolder.likes.setText("");
+                                    } else {
+                                        postHolder.likes.setText(posts.getLikesCount() + "");
+                                    }
+                                    posts.setLikedByUser(false);
+                                    postHolder.likeButton.setEnabled(true);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(getContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    }) {
+
+                        @Override
+                        public String getBodyContentType() {
+                            return "application/json; charset=utf-8";
+                        }
+
+                        @Override
+                        public Map<String, String> getHeaders() throws AuthFailureError {
+                            HashMap<String, String> headers = new HashMap<>();
+                            headers.put("X-User-Token", WelcomeActivity.getToken);
+                            headers.put("X-User-Email", WelcomeActivity.getEmail);
+                            return headers;
+                        }
+                    };
+                    RequestQueue requestQueue = RequestSingleton.getInstance(getContext().getApplicationContext()).getRequestQueue();
+                    RequestSingleton.getInstance(getContext()).addToRequestQueue(jsonObjectRequest);
+                    System.out.println(jsonObjectRequest);
+                }
             }
         });
 
@@ -85,6 +206,7 @@ public class PostAdapter extends ArrayAdapter {
 
     static class PostHolder {
         TextView username, caption, likes;
+        ImageButton likeButton;
         ImageView images;
     }
 
@@ -97,11 +219,9 @@ public class PostAdapter extends ArrayAdapter {
         new AsyncTask<String, String, AnimationDrawable>() {
             @Override
             protected AnimationDrawable doInBackground(String... params) {
-                System.out.println("started loading images");
                 Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
                 //iterate through all images and convert into bitmaps
                 for (int i = 0; i < posts.getImages().size(); i++) {
-
                     Bitmap b = null;
                     try {
                         b = Glide.with(getContext()).load(posts.getImages().get(i)).asBitmap().into(1024, 1024).get();
@@ -124,7 +244,6 @@ public class PostAdapter extends ArrayAdapter {
                 animation.start();
                 animation.setOneShot(false);
                 imageView.setImageDrawable(animation);
-                System.out.println("finished loading images");
             }
         }.execute();
     }

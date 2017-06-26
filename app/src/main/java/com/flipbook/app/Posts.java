@@ -8,16 +8,21 @@ import java.util.ArrayList;
 
 public class Posts {
 
-    private String username, caption, likes;
+
+    private String username, caption, id;
+    private boolean isLiked;
     private ArrayList<String> images;
     private int speed;
+    private int likes_count;
 
-    public Posts(String username, String caption, String likes, int speed, ArrayList<String> images){
+    public Posts(String username, String caption, String id ,int likes_count, int speed, ArrayList<String> images, boolean isLiked){
         this.setUsername(username);
         this.setCaption(caption);
-        this.setLikes(likes);
+        this.id = id;
+        this.setLikesCount(likes_count);
         this.setImages(images);
         this.setSpeed(speed);
+        this.isLiked = isLiked;
     }
 
     public String getCaption() {
@@ -28,12 +33,12 @@ public class Posts {
         this.caption = caption;
     }
 
-    public String getLikes() {
-        return likes;
+    public int getLikesCount() {
+        return likes_count;
     }
 
-    public void setLikes(String likes) {
-        this.likes = likes;
+    public void setLikesCount(int likes_count) {
+        this.likes_count = likes_count;
     }
 
     public String getUsername() {
@@ -58,5 +63,20 @@ public class Posts {
 
     public int getSpeed(){
         return speed;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public Boolean getLiked(){
+        return isLiked;
+    }
+    public void setLiked(Boolean isLiked){
+        this.isLiked = isLiked;
+    }
+
+    public void setLikedByUser(boolean isLiked){
+        this.isLiked = isLiked;
     }
 }

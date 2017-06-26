@@ -9,7 +9,7 @@ import android.os.SystemClock;
 
 public class CustomAnimation extends AnimationDrawable {
 
-    private volatile int duration;//its volatile because another thread will update its value
+    private volatile int duration;
     private int currentFrame;
 
     public CustomAnimation() {

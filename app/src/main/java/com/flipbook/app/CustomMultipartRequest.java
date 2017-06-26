@@ -31,31 +31,6 @@ public class CustomMultipartRequest extends Request<NetworkResponse>{
         private Response.ErrorListener mErrorListener;
         private Map<String, String> mHeaders;
 
-        /**
-         * Default constructor with predefined header and post method.
-         *
-         * @param url           request destination
-         * @param headers       predefined custom header
-         * @param listener      on success achieved 200 code from request
-         * @param errorListener on error http or library timeout
-         */
-        public CustomMultipartRequest(String url, Map<String, String> headers,
-                                      Response.Listener<NetworkResponse> listener,
-                                      Response.ErrorListener errorListener) {
-            super(Method.POST, url, errorListener);
-            this.mListener = listener;
-            this.mErrorListener = errorListener;
-            this.mHeaders = headers;
-        }
-
-        /**
-         * Constructor with option method and default header configuration.
-         *
-         * @param method        method for now accept POST and GET only
-         * @param url           request destination
-         * @param listener      on success event handler
-         * @param errorListener on error event handler
-         */
         public CustomMultipartRequest(int method, String url,
                                       Response.Listener<NetworkResponse> listener,
                                       Response.ErrorListener errorListener) {
@@ -102,12 +77,6 @@ public class CustomMultipartRequest extends Request<NetworkResponse>{
             return null;
         }
 
-        /**
-         * Custom method handle data payload.
-         *
-         * @return Map data part label with data byte
-         * @throws AuthFailureError
-         */
         protected Map<String, ArrayList<DataPart>> getByteData() throws AuthFailureError {
             return null;
         }
@@ -133,14 +102,6 @@ public class CustomMultipartRequest extends Request<NetworkResponse>{
             mErrorListener.onErrorResponse(error);
         }
 
-        /**
-         * Parse string map into data output stream by key and value.
-         *
-         * @param dataOutputStream data output stream handle string parsing
-         * @param params           string inputs collection
-         * @param encoding         encode the inputs, default UTF-8
-         * @throws IOException
-         */
         private void textParse(DataOutputStream dataOutputStream, Map<String, String> params, String encoding) throws IOException {
             try {
                 for (Map.Entry<String, String> entry : params.entrySet()) {
@@ -151,13 +112,6 @@ public class CustomMultipartRequest extends Request<NetworkResponse>{
             }
         }
 
-        /**
-         * Parse data into data output stream.
-         *
-         * @param dataOutputStream data output stream handle file attachment
-         * @param data             loop through data
-         * @throws IOException
-         */
         private void dataParse(DataOutputStream dataOutputStream, Map<String, ArrayList<DataPart>> data) throws IOException {
             for (Map.Entry<String, ArrayList<DataPart>> entry : data.entrySet()) {
                 for(DataPart dataPart : entry.getValue())
@@ -165,14 +119,7 @@ public class CustomMultipartRequest extends Request<NetworkResponse>{
             }
         }
 
-        /**
-         * Write string data into header and data output stream.
-         *
-         * @param dataOutputStream data output stream handle string parsing
-         * @param parameterName    name of input
-         * @param parameterValue   value of input
-         * @throws IOException
-         */
+
         private void buildTextPart(DataOutputStream dataOutputStream, String parameterName, String parameterValue) throws IOException {
             dataOutputStream.writeBytes(twoHyphens + boundary + lineEnd);
             dataOutputStream.writeBytes("Content-Disposition: form-data; name=\"" + parameterName + "\"" + lineEnd);
@@ -181,14 +128,6 @@ public class CustomMultipartRequest extends Request<NetworkResponse>{
             dataOutputStream.writeBytes(parameterValue + lineEnd);
         }
 
-        /**
-         * Write data file into header and data output stream.
-         *
-         * @param dataOutputStream data output stream handle data parsing
-         * @param dataFile         data byte as DataPart from collection
-         * @param inputName        name of data input
-         * @throws IOException
-         */
         private void buildDataPart(DataOutputStream dataOutputStream, DataPart dataFile, String inputName) throws IOException {
             dataOutputStream.writeBytes(twoHyphens + boundary + lineEnd);
             dataOutputStream.writeBytes("Content-Disposition: form-data; name=\"" +
@@ -217,96 +156,33 @@ public class CustomMultipartRequest extends Request<NetworkResponse>{
             dataOutputStream.writeBytes(lineEnd);
         }
 
-        /**
-         * Simple data container use for passing byte file
-         */
+
         public class DataPart {
             private String fileName;
             private byte[] content;
             private String type;
 
-            /**
-             * Default data part
-             */
-            public DataPart() {
-            }
 
-            /**
-             * Constructor with data.
-             *
-             * @param name label of data
-             * @param data byte data
-             */
-            public DataPart(String name, byte[] data) {
-                fileName = name;
-                content = data;
-            }
-
-            /**
-             * Constructor with mime data type.
-             *
-             * @param name     label of data
-             * @param data     byte data
-             * @param mimeType mime data like "image/jpeg"
-             */
             public DataPart(String name, byte[] data, String mimeType) {
                 fileName = name;
                 content = data;
                 type = mimeType;
             }
 
-            /**
-             * Getter file name.
-             *
-             * @return file name
-             */
             public String getFileName() {
                 return fileName;
             }
 
-            /**
-             * Setter file name.
-             *
-             * @param fileName string file name
-             */
-            public void setFileName(String fileName) {
-                this.fileName = fileName;
-            }
-
-            /**
-             * Getter content.
-             *
-             * @return byte file data
-             */
             public byte[] getContent() {
                 return content;
             }
 
-            /**
-             * Setter content.
-             *
-             * @param content byte file data
-             */
             public void setContent(byte[] content) {
                 this.content = content;
             }
 
-            /**
-             * Getter mime type.
-             *
-             * @return mime type
-             */
             public String getType() {
                 return type;
-            }
-
-            /**
-             * Setter mime type.
-             *
-             * @param type mime type
-             */
-            public void setType(String type) {
-                this.type = type;
             }
         }
 
