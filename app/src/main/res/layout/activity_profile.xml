@@ -22,7 +22,7 @@
 
         <TextView
             android:layout_width="match_parent"
-            android:textColor="@color/darkestGray"
+            android:textColor="@color/textColor"
             android:gravity="center_vertical"
             android:textSize="18sp"
             android:layout_height="40dp"
@@ -68,7 +68,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:textColor="@color/darkestGray"
+                android:textColor="@color/textColor"
                 android:gravity="center" />
 
             <TextView
@@ -78,7 +78,7 @@
                 android:id="@+id/following"
                 android:layout_weight="1"
                 android:clickable="true"
-                android:textColor="@color/darkestGray"
+                android:textColor="@color/textColor"
                 android:gravity="center" />
 
             <TextView
@@ -88,7 +88,7 @@
                 android:id="@+id/followers"
                 android:layout_weight="1"
                 android:clickable="true"
-                android:textColor="@color/darkestGray"
+                android:textColor="@color/textColor"
                 android:gravity="center" />
 
         </LinearLayout>

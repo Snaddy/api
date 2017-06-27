@@ -1,13 +1,12 @@
 package com.flipbook.app;
 
-import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.view.Window;
 import android.widget.TextView;
 
 /**
@@ -17,16 +16,16 @@ import android.widget.TextView;
 public class TitleBarFragment extends Fragment {
 
     private TextView title;
-    private Typeface rounded;
+    private Typeface font;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.titlebar, container, false);
 
-        title = (TextView) view.findViewById(R.id.titlebar);
+        title = (TextView) view.findViewById(R.id.title);
 
-        rounded = Typeface.createFromAsset(getActivity().getAssets(), "fonts/ARIALN.TTF");
-        title.setTypeface(rounded);
+        font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/futuraBold.ttf");
+        title.setTypeface(font);
 
         return view;
     }

@@ -78,7 +78,7 @@
                     android:layout_below="@+id/saturation"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="5dp"
-                    android:textColor="@color/darkestGray" />
+                    android:textColor="@color/textColor" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -106,8 +106,8 @@
                     android:layout_below="@+id/contrast"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="5dp"
-                    android:textColorLink="@color/darkestGray"
-                    android:textColor="@color/darkestGray" />
+                    android:textColorLink="@color/textColor"
+                    android:textColor="@color/textColor" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -135,8 +135,8 @@
                     android:layout_below="@+id/brightness"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="5dp"
-                    android:textColorLink="@color/darkGrey"
-                    android:textColor="@color/darkestGray" />
+                    android:textColorLink="@color/textColor"
+                    android:textColor="@color/textColor" />
             </RelativeLayout>
 
         </LinearLayout>
@@ -164,7 +164,7 @@
                 android:id="@+id/speedText"
                 android:layout_below="@+id/speedBar"
                 android:layout_centerHorizontal="true"
-                android:textColor="@color/darkestGray"
+                android:textColor="@color/textColor"
                 android:textSize="20dp"
                 android:layout_weight="1"
                 android:gravity="center"/>

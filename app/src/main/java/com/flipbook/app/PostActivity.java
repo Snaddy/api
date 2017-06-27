@@ -29,6 +29,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,7 +48,7 @@ public class PostActivity extends AppCompatActivity{
     private EditText caption;
     private Button post;
     private AnimationDrawable animation;
-    private String getEmail, getToken;
+    private String getEmail, getToken, encodedCaption;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +107,11 @@ public class PostActivity extends AppCompatActivity{
         pd.setCanceledOnTouchOutside(false);
         pd.setMessage("Uploading, please wait...");
         pd.show();
+        try {
+            encodedCaption = URLEncoder.encode(caption.getText().toString(), "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         CustomMultipartRequest multipartRequest = new CustomMultipartRequest(Request.Method.POST, CREATE_POSTS_URL, new Response.Listener<NetworkResponse>() {
             @Override
             public void onResponse(NetworkResponse response) {
@@ -155,7 +162,7 @@ public class PostActivity extends AppCompatActivity{
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
                 params.put("speed", String.valueOf(ProcessingActivity.speedBarProg));
-                params.put("caption", caption.getText().toString());
+                params.put("caption", encodedCaption);
                 return params;
             }
 

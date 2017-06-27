@@ -46,6 +46,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -112,6 +114,7 @@ public class WelcomeActivity extends AppCompatActivity {
                             String id = post.getString("id");
                             String username = user.getString("username");
                             String caption = post.getString("caption");
+                            String decodedCaption = URLDecoder.decode(caption, "utf-8");
                             int likes_count = post.getInt("get_likes_count");
                             int speed = post.getInt("speed");
                             boolean isLiked = post.getBoolean("liked");
@@ -120,13 +123,15 @@ public class WelcomeActivity extends AppCompatActivity {
                                 String url = "https://dytun7vbm6t2g.cloudfront.net/uploads/post/images/" + id + "/image" + j + ".jpg";
                                 imageUrls.add(url);
                             }
-                            Posts posts = new Posts(username, caption, id, likes_count, speed ,imageUrls, isLiked);
+                            Posts posts = new Posts(username, decodedCaption, id, likes_count, speed ,imageUrls, isLiked);
                             postAdapter.add(posts);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
                     }
-                   loader.setVisibility(View.GONE);
+                    loader.setVisibility(View.GONE);
                 }
             }, new Response.ErrorListener() {
                 @Override
