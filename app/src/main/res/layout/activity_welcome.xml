@@ -8,10 +8,9 @@
 
  <fragment android:name="com.flipbook.app.TitleBarFragment"
    android:id="@id/title"
-    android:layout_width="match_parent"
-    android:layout_height="50dp"
-    tools:layout="@layout/titlebar"
-    android:layout_alignParentTop="true" />
+     android:layout_width="match_parent"
+     android:layout_height="35dp"
+    tools:layout="@layout/titlebar" />
 
  <fragment android:name="com.flipbook.app.AppBarFragment"
      android:id="@+id/appbar"
@@ -22,23 +21,37 @@
 
  <RelativeLayout
      android:layout_width="match_parent"
-     android:layout_height="match_parent">
+     android:layout_height="wrap_content"
+     android:layout_below="@+id/title">
 
   <ProgressBar
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      android:layout_height="60dp"
       android:id="@+id/loader"
       android:padding="5dp"
       android:layout_centerHorizontal="true"
-      android:layout_centerVertical="true" />
+      android:layout_centerVertical="true"
+      android:layout_marginBottom="5dp"
+      android:layout_marginTop="5dp" />
  </RelativeLayout>
+
+ <android.support.v4.widget.SwipeRefreshLayout
+     xmlns:android="http://schemas.android.com/apk/res/android"
+     android:id="@+id/swiperefresh"
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+     android:layout_above="@+id/appbar"
+     android:layout_below="@+id/title">
 
  <ListView
      android:layout_width="match_parent"
      android:layout_height="match_parent"
      android:id="@+id/feed"
      android:layout_above="@+id/appbar"
-     android:layout_below="@+id/title" />
+     android:layout_below="@+id/title"
+     android:scrollbars="none" />
+
+ </android.support.v4.widget.SwipeRefreshLayout>
 
 
 </RelativeLayout>

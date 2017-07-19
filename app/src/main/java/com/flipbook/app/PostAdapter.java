@@ -1,6 +1,7 @@
 package com.flipbook.app;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.BitmapDrawable;
@@ -24,6 +25,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -74,6 +77,7 @@ public class PostAdapter extends ArrayAdapter {
             postHolder.likes = (TextView) row.findViewById(R.id.likes);
             postHolder.images = (ImageView) row.findViewById(R.id.images);
             postHolder.likeButton = (ImageButton) row.findViewById(R.id.imageButton);
+            postHolder.postDate = (TextView) row.findViewById(R.id.postDate);
             row.setTag(postHolder);
         } else {
             postHolder = (PostHolder) row.getTag();
@@ -81,7 +85,16 @@ public class PostAdapter extends ArrayAdapter {
 
         final Posts posts = (Posts) this.getItem(position);
         postHolder.username.setText(posts.getUsername());
-        postHolder.caption.setText(posts.getCaption());
+        postHolder.postDate.setText(posts.getPostDate());
+        //if no caption
+        if(posts.getCaption().length() == 0){
+            postHolder.caption.setVisibility(View.GONE);
+        } else {
+            postHolder.caption.setVisibility(View.VISIBLE);
+            postHolder.caption.setText(posts.getCaption());
+        }
+
+        //showing 0 likes
         if (posts.getLikesCount() == 0) {
             postHolder.likes.setText("");
         } else {
@@ -105,6 +118,15 @@ public class PostAdapter extends ArrayAdapter {
             @Override
             public void onClick(View v) {
                 createPhotoAnimation(posts, postHolder.images);
+            }
+        });
+
+        postHolder.username.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), UserActivity.class);
+                intent.putExtra("userId", posts.getUserId());
+                getContext().startActivity(intent);
             }
         });
 
@@ -205,7 +227,7 @@ public class PostAdapter extends ArrayAdapter {
     }
 
     static class PostHolder {
-        TextView username, caption, likes;
+        TextView username, caption, likes, postDate;
         ImageButton likeButton;
         ImageView images;
     }

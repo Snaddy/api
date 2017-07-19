@@ -48,6 +48,7 @@ import org.json.JSONStringer;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -60,7 +61,12 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class WelcomeActivity extends AppCompatActivity {
 
-    private final static String GET_POSTS_URL = "https://railsphotoapp.herokuapp.com//api/v1/posts.json";
+    private static final String GET_POSTS_URL = "https://railsphotoapp.herokuapp.com//api/v1/posts.json";
+    private static final int SECOND_MILLIS = 1000;
+    private static final int MINUTE_MILLIS = 60 * SECOND_MILLIS;
+    private static final int HOUR_MILLIS = 60 * MINUTE_MILLIS;
+    private static final int DAY_MILLIS = 24 * HOUR_MILLIS;
+    private static final int WEEK_MILLIS = 7 * DAY_MILLIS;
 
     public static String getEmail, getToken;
     private ImageButton home;
@@ -99,7 +105,11 @@ public class WelcomeActivity extends AppCompatActivity {
                 loader.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorAccent), PorterDuff.Mode.SRC_IN);
             }
 
+            update(builder);
+        }
+    }
 
+    private void update(final AlertDialog.Builder builder){
             final JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(Request.Method.GET, GET_POSTS_URL, null, new Response.Listener<JSONArray>() {
                 @Override
                 public void onResponse(JSONArray response) {
@@ -115,6 +125,8 @@ public class WelcomeActivity extends AppCompatActivity {
                             String username = user.getString("username");
                             String caption = post.getString("caption");
                             String decodedCaption = URLDecoder.decode(caption, "utf-8");
+                            String userId = user.getString("id");
+                            int postDate = Integer.parseInt(post.getString("posted"));
                             int likes_count = post.getInt("get_likes_count");
                             int speed = post.getInt("speed");
                             boolean isLiked = post.getBoolean("liked");
@@ -123,7 +135,7 @@ public class WelcomeActivity extends AppCompatActivity {
                                 String url = "https://dytun7vbm6t2g.cloudfront.net/uploads/post/images/" + id + "/image" + j + ".jpg";
                                 imageUrls.add(url);
                             }
-                            Posts posts = new Posts(username, decodedCaption, id, likes_count, speed ,imageUrls, isLiked);
+                            Posts posts = new Posts(username, decodedCaption, id, likes_count, speed ,imageUrls, isLiked, userId, getTimeAgo(postDate));
                             postAdapter.add(posts);
                         }
                     } catch (JSONException e) {
@@ -182,5 +194,31 @@ public class WelcomeActivity extends AppCompatActivity {
             RequestQueue requestQueue = RequestSingleton.getInstance(WelcomeActivity.this.getApplicationContext()).getRequestQueue();
             RequestSingleton.getInstance(WelcomeActivity.this).addToRequestQueue(jsonObjectRequest);
         }
+
+    public static String getTimeAgo(long time) {
+        if (time < 1000000000000L) {
+            // if timestamp given in seconds, convert to millis
+            time *= 1000;
+        }
+
+        long now = System.currentTimeMillis();
+        if (time > now || time <= 0) {
+            return null;
+        }
+
+        // TODO: localize
+        final long diff = now - time;
+        if (diff < MINUTE_MILLIS) {
+            return diff/SECOND_MILLIS + "s";
+        } else if (diff < 60 * MINUTE_MILLIS) {
+            return diff / MINUTE_MILLIS + "m";
+        } else if (diff < 24 * HOUR_MILLIS) {
+            return diff / HOUR_MILLIS + "h";
+        } else if (diff < 7 * DAY_MILLIS){
+            return diff / DAY_MILLIS + "d";
+        } else{
+            return diff / WEEK_MILLIS + "w";
+        }
+
     }
 }

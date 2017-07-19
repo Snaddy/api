@@ -9,7 +9,7 @@
     <Button
         android:text="Post"
         android:layout_width="wrap_content"
-        android:layout_height="50dp"
+        android:layout_height="35dp"
         android:id="@+id/post"
         android:background="@color/colorPrimary"
         android:textSize="18sp"
@@ -20,7 +20,7 @@
 
     <ImageButton
         android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_height="35dp"
         app:srcCompat="@drawable/backarrow"
         android:id="@+id/back"
         android:background="@color/colorPrimary"

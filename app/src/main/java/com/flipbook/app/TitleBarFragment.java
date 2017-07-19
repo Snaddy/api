@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.TextView;
 
 /**
@@ -24,9 +23,9 @@ public class TitleBarFragment extends Fragment {
 
         title = (TextView) view.findViewById(R.id.title);
 
-        font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/futuraBold.ttf");
-        title.setTypeface(font);
+        font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/default.otf");
+      title.setTypeface(font);
 
-        return view;
+      return view;
     }
 }

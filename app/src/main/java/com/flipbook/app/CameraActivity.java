@@ -290,12 +290,12 @@ public class CameraActivity extends AppCompatActivity {
                     m.preScale(-1, 1);
                     Bitmap image = Bitmap.createBitmap(picture, 0, 0, picture.getWidth(), picture.getHeight(), m2, true);
                     Bitmap flip = Bitmap.createBitmap(image, 0, 0, image.getWidth(), image.getWidth(), m, true);
-                    picture = Bitmap.createScaledBitmap(flip, 1024, 1024, true);
+                    picture = Bitmap.createScaledBitmap(flip, 1600, 1600, true);
                 }
                 if(currentCameraId == Camera.CameraInfo.CAMERA_FACING_BACK) {
                     Bitmap image = Bitmap.createBitmap(picture, 0, 0, picture.getWidth(), picture.getHeight(), matrix, true);
                     Bitmap croppedImage = Bitmap.createBitmap(image, 0, 0, image.getWidth(), image.getWidth());
-                    picture = Bitmap.createScaledBitmap(croppedImage, 1024, 1024, true);
+                    picture = Bitmap.createScaledBitmap(croppedImage, 1600, 1600, true);
                 }
             imageList.add(picture);
             final ImageView view = new ImageView(getApplicationContext());

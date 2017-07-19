@@ -4,15 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:background="@android:color/transparent"
-    android:paddingBottom="15dp">
+    android:paddingBottom="5dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="35dp"
         android:id="@+id/info">
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="25dp"
             android:layout_toRightOf="@+id/profilePic"
             android:id="@+id/username"
@@ -31,6 +31,18 @@
             android:layout_height="match_parent"
             android:id="@+id/profilePic"
             android:padding="3dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/postDate"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:textColor="@color/hintColor"
+            android:textSize="14sp"
+            android:gravity="center" />
     </RelativeLayout>
 
     <TextView
@@ -47,7 +59,8 @@
         android:textSize="14sp"
         android:paddingRight="10dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp" />
+        android:layout_marginRight="10dp"
+        android:visibility="visible" />
 
     <RelativeLayout
         android:layout_width="match_parent"

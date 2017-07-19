@@ -9,13 +9,18 @@ import java.util.ArrayList;
 public class Posts {
 
 
-    private String username, caption, id;
+    private String username;
+    private String caption;
+    private String id;
+    private String userId;
+
+    private String postDate;
     private boolean isLiked;
     private ArrayList<String> images;
     private int speed;
     private int likes_count;
 
-    public Posts(String username, String caption, String id ,int likes_count, int speed, ArrayList<String> images, boolean isLiked){
+    public Posts(String username, String caption, String id ,int likes_count, int speed, ArrayList<String> images, boolean isLiked, String userId, String postDate){
         this.setUsername(username);
         this.setCaption(caption);
         this.id = id;
@@ -23,6 +28,8 @@ public class Posts {
         this.setImages(images);
         this.setSpeed(speed);
         this.isLiked = isLiked;
+        this.userId = userId;
+        this.postDate = postDate;
     }
 
     public String getCaption() {
@@ -69,6 +76,10 @@ public class Posts {
         return id;
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
     public Boolean getLiked(){
         return isLiked;
     }
@@ -78,5 +89,9 @@ public class Posts {
 
     public void setLikedByUser(boolean isLiked){
         this.isLiked = isLiked;
+    }
+
+    public String getPostDate() {
+        return postDate;
     }
 }

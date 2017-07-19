@@ -41,80 +41,72 @@ import javax.net.ssl.HttpsURLConnection;
  * Created by Hayden on 2017-03-03.
  */
 
-public class ProfileActivity extends AppCompatActivity {
+public class UserActivity extends AppCompatActivity {
 
-    private final static String GET_POSTS_URL = "https://railsphotoapp.herokuapp.com//api/v1/profile.json";
+    private final static String GET_USER_URL = "https://railsphotoapp.herokuapp.com//api/v1/users/";
 
-    private ImageButton profile;
-    private Button editProfile;
-    private TextView textName, textUsername,textPosts, textFollowing, textFollowers, textBio;
+    private ImageButton profile, back;
+    private Button profileButton;
+    private TextView textUsername, textName, textPosts, textFollowing, textFollowers, textBio;
     private ImageView profilePic;
     private GridView showPosts;
-    private String getEmail, getToken, username, name, bio, followers, followings, posts, email;
+    private String getEmail, getToken, userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
-
-        profile = (ImageButton) findViewById(R.id.profile);
-        profile.setImageResource(R.drawable.profile_selected);
+        setContentView(R.layout.activity_user);
 
         final SharedPreferences prefs = getSharedPreferences("prefs", Context.MODE_PRIVATE);
 
         getEmail = prefs.getString("email", "");
         getToken = prefs.getString("auth_token", "");
 
-        profile = (ImageButton) findViewById(R.id.profile);
-        profile.setImageResource(R.drawable.profile_selected);
+        Bundle bundle = getIntent().getExtras();
+        userId = bundle.getString("userId");
 
-        editProfile = (Button) findViewById(R.id.editButton);
+        profileButton = (Button) findViewById(R.id.profileButton);
         textName = (TextView) findViewById(R.id.name);
         textPosts = (TextView) findViewById(R.id.posts);
         textFollowers = (TextView) findViewById(R.id.followers);
         textFollowing = (TextView) findViewById(R.id.following);
+        textUsername = (TextView) findViewById(R.id.username);
         textBio = (TextView) findViewById(R.id.bio);
         showPosts = (GridView) findViewById(R.id.showPosts);
+        back = (ImageButton) findViewById(R.id.back);
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         getProfile(builder);
 
-        editProfile.setOnClickListener(new View.OnClickListener() {
+        back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
-                intent.putExtra("name", name);
-                intent.putExtra("username", username);
-                intent.putExtra("email", email);
-                intent.putExtra("bio", bio);
-                startActivity(intent);
+                finish();
             }
         });
     }
 
     private void getProfile(final AlertDialog.Builder builder) {
-        final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, GET_POSTS_URL, null, new Response.Listener<JSONObject>() {
+        final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, GET_USER_URL + userId, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 System.out.println(response);
                 try {
                     JSONObject user = (JSONObject) response.get("user");
-                    name = user.getString("name");
-                    username = user.getString("username");
-                    email = user.getString("email");
-                    posts = user.getString("get_posts");
-                    followers = user.getString("get_followers");
-                    followings = user.getString("get_followings");
-                    bio = user.getString("bio");
+                    String username = user.getString("username");
+                    String name = user.getString("name");
+                    String posts = user.getString("get_posts");
+                    String followers = user.getString("get_followers");
+                    String followings = user.getString("get_followings");
+                    String bio = user.getString("bio");
 
                     textName.setText(name);
                     textPosts.setText(posts + "  Posts");
                     textFollowers.setText(followers + "  Followers");
                     textFollowing.setText(followings + "  Following");
-                    if(bio.length() != 0) {
-                        textBio.setText(bio);
-                    }
+                    textUsername.setText("@" + username);
+                    textBio.setText(bio);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -123,10 +115,10 @@ public class ProfileActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(ProfileActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(UserActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
                 NetworkResponse networkResponse = error.networkResponse;
                 if (networkResponse == null) {
-                    Toast.makeText(ProfileActivity.this, "Unable to load user profile. Check internet connection", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(UserActivity.this, "Unable to load user profile. Check internet connection", Toast.LENGTH_SHORT).show();
                 }
                 if (networkResponse != null && (networkResponse.statusCode == HttpsURLConnection.HTTP_UNAUTHORIZED ||
                         networkResponse.statusCode == HttpsURLConnection.HTTP_CLIENT_TIMEOUT)) {
@@ -146,8 +138,8 @@ public class ProfileActivity extends AppCompatActivity {
                 return headers;
             }
         };
-        RequestQueue requestQueue = RequestSingleton.getInstance(ProfileActivity.this.getApplicationContext()).getRequestQueue();
-        RequestSingleton.getInstance(ProfileActivity.this).addToRequestQueue(jsonObjectRequest);
+        RequestQueue requestQueue = RequestSingleton.getInstance(UserActivity.this.getApplicationContext()).getRequestQueue();
+        RequestSingleton.getInstance(UserActivity.this).addToRequestQueue(jsonObjectRequest);
     }
 
     public void onPause(){

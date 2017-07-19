@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        app:srcCompat="@color/dividerColor"
+        android:id="@+id/editAvatar"
+        android:layout_gravity="center"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="10dp"
+        android:contentDescription="Profile Picture" />
+
+    <TextView
+        android:text="Change Photo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/changePhoto"
+        android:textSize="14sp"
+        android:layout_gravity="center"
+        android:textColor="@color/colorPrimary"
+        android:layout_marginBottom="15dp"
+        android:clickable="true" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/editName"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:textColor="@color/textColor"
+        android:layout_marginBottom="10dp"
+        android:textSize="15sp"
+        android:background="@drawable/divider"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp"
+        android:hint="Name"
+        android:textColorHint="@color/hintColor"
+        android:maxLength="30" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/editUsername"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:textColor="@color/textColor"
+        android:layout_marginBottom="10dp"
+        android:textSize="15sp"
+        android:background="@drawable/divider"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp"
+        android:hint="Username"
+        android:textColorHint="@color/hintColor"
+        android:maxLength="20" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:ems="10"
+        android:id="@+id/editEmail"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:textColor="@color/textColor"
+        android:layout_marginBottom="10dp"
+        android:textSize="15sp"
+        android:background="@drawable/divider"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp"
+        android:hint="Email"
+        android:textColorHint="@color/hintColor"
+        android:maxLength="254" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        android:text=""
+        android:ems="10"
+        android:id="@+id/editBio"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:textColor="@color/textColor"
+        android:textSize="15sp"
+        android:background="@drawable/divider"
+        android:maxLength="250"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp"
+        android:hint="Bio"
+        android:textColorHint="@color/hintColor" />
+
+    <Button
+        android:text="Save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/saveButton"
+        android:background="@color/colorPrimary"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="15dp" />
+
+</LinearLayout>

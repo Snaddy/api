@@ -1,14 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:background="@android:color/white">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:id="@+id/header">
+
+        <ImageButton
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:id="@+id/back"
+            android:background="@color/colorPrimary"
+            app:srcCompat="@drawable/backarrow" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/username"
+            android:textColor="@color/textColor"
+            android:textSize="16sp" />
+
+    </RelativeLayout>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent" android:layout_height="wrap_content"
         android:id="@+id/profile_info"
-        android:layout_below="@+id/username">
+        android:layout_below="@+id/header">
 
         <ImageView
             android:layout_width="80dp"
@@ -40,10 +67,9 @@
             android:layout_toRightOf="@+id/profilepic"
             android:layout_toEndOf="@+id/profilepic"
             android:background="@color/colorAccent"
-            android:id="@+id/editButton"
+            android:id="@+id/profileButton"
             android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:text="Edit profile" />
+            android:layout_marginRight="5dp" />
 
         <TextView
             android:text="TextView"

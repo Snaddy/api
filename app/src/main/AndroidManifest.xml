@@ -54,6 +54,17 @@
             android:screenOrientation="portrait">
         </activity>
 
+        <activity android:name=".UserActivity"
+            android:launchMode = "singleTask"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity android:name=".EditProfileActivity"
+            android:launchMode = "singleTask"
+            android:screenOrientation="portrait">
+        </activity>
+
+
         <activity android:name=".CameraActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
