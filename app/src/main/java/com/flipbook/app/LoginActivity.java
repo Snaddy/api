@@ -54,7 +54,6 @@ public class LoginActivity extends AppCompatActivity {
                 JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, URL, user ,new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-
                         try {
                             if(response.getString("status").equals("success")){
                                 loginButton.setClickable(false);

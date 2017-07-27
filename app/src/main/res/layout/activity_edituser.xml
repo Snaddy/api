@@ -8,12 +8,13 @@
     <ImageView
         android:layout_width="80dp"
         android:layout_height="80dp"
-        app:srcCompat="@color/dividerColor"
         android:id="@+id/editAvatar"
         android:layout_gravity="center"
         android:layout_marginBottom="5dp"
         android:layout_marginTop="10dp"
-        android:contentDescription="Profile Picture" />
+        android:contentDescription="Profile Picture"
+        android:background="@color/dividerColor"
+        app:srcCompat="@drawable/profile_selected" />
 
     <TextView
         android:text="Change Photo"
@@ -47,7 +48,7 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
+        android:inputType="textFilter"
         android:ems="10"
         android:id="@+id/editUsername"
         android:layout_marginLeft="10dp"
@@ -98,14 +99,20 @@
         android:hint="Bio"
         android:textColorHint="@color/hintColor" />
 
-    <Button
-        android:text="Save"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/saveButton"
-        android:background="@color/colorPrimary"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="15dp" />
+        android:layout_marginTop="15dp">
+
+        <Button
+            android:text="Save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/saveButton"
+            android:background="@color/colorAccent"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp" />
+
+    </RelativeLayout>
 
 </LinearLayout>

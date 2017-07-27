@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:background="@android:color/white">
@@ -10,60 +11,69 @@
         android:id="@+id/profile_info"
         android:layout_below="@+id/username">
 
-        <ImageView
-            android:layout_width="80dp"
-            app:srcCompat="@android:color/transparent"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:id="@+id/profilepic"
-            android:layout_height="80dp"
-            android:layout_margin="5dp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:textColor="@color/textColor"
-            android:gravity="center_vertical"
-            android:textSize="18sp"
-            android:layout_height="40dp"
-            android:layout_toEndOf="@+id/profilepic"
-            android:layout_toRightOf="@+id/profilepic"
-            android:id="@+id/name"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp" />
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:layout_below="@+id/name"
-            android:layout_toRightOf="@+id/profilepic"
-            android:layout_toEndOf="@+id/profilepic"
-            android:background="@color/colorAccent"
-            android:id="@+id/editButton"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:text="Edit profile" />
-
-        <TextView
-            android:text="TextView"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/bio"
-            android:layout_below="@+id/profilepic"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignBottom="@+id/profilepic"
-            android:layout_marginTop="10dp" />
+            android:id="@+id/pic_button">
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@color/colorAccent"
+                android:id="@+id/editButton"
+                android:text="Edit profile"
+                android:layout_toEndOf="@+id/profilepic"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="5dp" />
+
+            <ImageView
+                android:layout_width="80dp"
+                app:srcCompat="@drawable/profile_selected"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:id="@+id/profilepic"
+                android:layout_height="80dp"
+                android:layout_margin="5dp"
+                android:background="@color/dividerColor" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/bio_name"
+            android:layout_below="@+id/pic_button">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:textColor="@color/textColor"
+                android:textSize="18sp"
+                android:layout_height="20dp"
+                android:id="@+id/name"
+                android:textStyle="normal|bold"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:layout_marginTop="5dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/bio"
+                android:textColor="@color/textColor"
+                android:layout_below="@+id/name"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp" />
+
+        </RelativeLayout>
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_below="@+id/bio"
+            android:layout_height="40dp"
+            android:layout_below="@+id/bio_name"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/divider">
+            android:background="@drawable/divider"
+            android:id="@+id/info">
 
             <TextView
                 android:text="Posts"
@@ -82,9 +92,7 @@
                 android:layout_weight="1"
                 android:clickable="true"
                 android:textColor="@color/textColor"
-                android:gravity="center"
-                android:drawableLeft="@android:drawable/dark_header"
-                android:drawableRight="@android:drawable/dark_header" />
+                android:gravity="center" />
 
             <TextView
                 android:text="Followers"

@@ -159,7 +159,6 @@ public class WelcomeActivity extends AppCompatActivity {
                         LayoutInflater inflater = WelcomeActivity.this.getLayoutInflater();
                         View dialogView = inflater.inflate(R.layout.dialog, null);
                         builder.setView(dialogView);
-
                         TextView title = (TextView) dialogView.findViewById(R.id.title);
                         TextView message = (TextView) dialogView.findViewById(R.id.message);
                         Button ok = (Button) dialogView.findViewById(R.id.okButton);
@@ -219,6 +218,5 @@ public class WelcomeActivity extends AppCompatActivity {
         } else{
             return diff / WEEK_MILLIS + "w";
         }
-
     }
 }

@@ -17,11 +17,10 @@ import java.util.Map;
 
 /**
  * Created by Hayden on 2017-04-05.
+ * FOR MULTIPLE IMAGE UPLOAD
  */
 
-public class CustomMultipartRequest extends Request<NetworkResponse>{
-
-
+public class PostMultipartRequest extends Request<NetworkResponse>{
 
         private final String twoHyphens = "--";
         private final String lineEnd = "\r\n";
@@ -31,9 +30,9 @@ public class CustomMultipartRequest extends Request<NetworkResponse>{
         private Response.ErrorListener mErrorListener;
         private Map<String, String> mHeaders;
 
-        public CustomMultipartRequest(int method, String url,
-                                      Response.Listener<NetworkResponse> listener,
-                                      Response.ErrorListener errorListener) {
+        public PostMultipartRequest(int method, String url,
+                                    Response.Listener<NetworkResponse> listener,
+                                    Response.ErrorListener errorListener) {
             super(method, url, errorListener);
             this.mListener = listener;
             this.mErrorListener = errorListener;
@@ -55,13 +54,13 @@ public class CustomMultipartRequest extends Request<NetworkResponse>{
             DataOutputStream dos = new DataOutputStream(bos);
 
             try {
-                // populate text payload
+                //text params
                 Map<String, String> params = getParams();
                 if (params != null && params.size() > 0) {
                     textParse(dos, params, getParamsEncoding());
                 }
 
-                // populate data byte payload
+                //add arraylist of dataparts
                 Map<String, ArrayList<DataPart>> data = getByteData();
                 if (data != null && data.size() > 0) {
                     dataParse(dos, data);

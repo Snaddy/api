@@ -112,7 +112,7 @@ public class PostActivity extends AppCompatActivity{
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        CustomMultipartRequest multipartRequest = new CustomMultipartRequest(Request.Method.POST, CREATE_POSTS_URL, new Response.Listener<NetworkResponse>() {
+        PostMultipartRequest multipartRequest = new PostMultipartRequest(Request.Method.POST, CREATE_POSTS_URL, new Response.Listener<NetworkResponse>() {
             @Override
             public void onResponse(NetworkResponse response) {
                 pd.dismiss();

@@ -1,5 +1,6 @@
 package com.flipbook.app;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -51,11 +52,14 @@ public class ProfileActivity extends AppCompatActivity {
     private ImageView profilePic;
     private GridView showPosts;
     private String getEmail, getToken, username, name, bio, followers, followings, posts, email;
+    public static Activity profileActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+       profileActivity = this;
 
         profile = (ImageButton) findViewById(R.id.profile);
         profile.setImageResource(R.drawable.profile_selected);
@@ -112,9 +116,7 @@ public class ProfileActivity extends AppCompatActivity {
                     textPosts.setText(posts + "  Posts");
                     textFollowers.setText(followers + "  Followers");
                     textFollowing.setText(followings + "  Following");
-                    if(bio.length() != 0) {
-                        textBio.setText(bio);
-                    }
+                    textBio.setText(bio);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -148,10 +150,5 @@ public class ProfileActivity extends AppCompatActivity {
         };
         RequestQueue requestQueue = RequestSingleton.getInstance(ProfileActivity.this.getApplicationContext()).getRequestQueue();
         RequestSingleton.getInstance(ProfileActivity.this).addToRequestQueue(jsonObjectRequest);
-    }
-
-    public void onPause(){
-        super.onPause();
-        overridePendingTransition(0,0);
     }
 }
