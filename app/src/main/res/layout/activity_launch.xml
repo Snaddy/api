@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    android:background="@drawable/bg">
+    android:background="@color/colorPrimary">
 
     <LinearLayout
         android:orientation="vertical"
@@ -12,6 +12,22 @@
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
+
+        <TextView
+            android:text="flip"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:id="@+id/title"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+            android:textAllCaps="false"
+            android:textStyle="normal|bold"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:fontFamily="sans-serif"
+            android:textSize="45sp"
+            android:textColor="@android:color/white"
+            android:gravity="center"
+            android:layout_marginBottom="20dp" />
 
         <Button
             android:text="Sign up"

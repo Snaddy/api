@@ -3,11 +3,13 @@ package com.flipbook.app;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -25,6 +27,8 @@ public class LoginActivity extends AppCompatActivity {
     private Button loginButton;
     private EditText email;
     private EditText password;
+    private TextView title;
+    private Typeface font;
 
     JSONObject data = new JSONObject();
     JSONObject user = new JSONObject();
@@ -40,6 +44,10 @@ public class LoginActivity extends AppCompatActivity {
         loginButton = (Button) findViewById(R.id.login);
         email = (EditText) findViewById(R.id.email);
         password = (EditText) findViewById(R.id.password);
+        title = (TextView) findViewById(R.id.title);
+
+        font = Typeface.createFromAsset(this.getAssets(), "fonts/default.otf");
+        title.setTypeface(font);
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -65,7 +65,7 @@ public class UserActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         userId = bundle.getString("userId");
 
-        profileButton = (Button) findViewById(R.id.profileButton);
+        profileButton = (Button) findViewById(R.id.followButton);
         textName = (TextView) findViewById(R.id.name);
         textPosts = (TextView) findViewById(R.id.posts);
         textFollowers = (TextView) findViewById(R.id.followers);

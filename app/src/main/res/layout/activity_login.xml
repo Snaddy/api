@@ -9,7 +9,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="@drawable/bg"
+    android:background="@color/colorPrimary"
     tools:context="com.flipbook.app.LoginActivity">
 
     <LinearLayout
@@ -21,10 +21,10 @@
         android:layout_alignParentStart="true">
 
         <TextView
-            android:text="Flip"
+            android:text="flip"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/textView3"
+            android:id="@+id/title"
             android:textAppearance="@style/TextAppearance.AppCompat.Display2"
             android:textAllCaps="false"
             android:textStyle="normal|bold"
@@ -49,7 +49,7 @@
             android:textColor="@android:color/white"
             android:textColorHint="@android:color/white"
             android:background="@android:drawable/screen_background_dark_transparent"
-            android:layout_below="@+id/textView3"
+            android:layout_below="@+id/title"
             android:layout_alignParentLeft="false"
             android:layout_alignParentStart="false"
             android:layout_marginTop="25dp"/>
@@ -76,7 +76,7 @@
             android:id="@+id/login"
             android:elevation="10dp"
             android:background="@color/colorPrimary"
-            android:textColor="@android:color/white"
+            android:textColor="@color/colorWhite"
             android:layout_below="@+id/password"
             android:layout_alignParentLeft="false"
             android:layout_alignParentStart="false"

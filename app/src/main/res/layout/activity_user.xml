@@ -42,15 +42,6 @@
             android:layout_height="wrap_content"
             android:id="@+id/pic_button">
 
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:background="@color/colorAccent"
-                android:id="@+id/editButton"
-                android:layout_toEndOf="@+id/profilepic"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="5dp" />
-
             <ImageView
                 android:layout_width="80dp"
                 app:srcCompat="@drawable/profile_selected"
@@ -61,6 +52,15 @@
                 android:layout_height="80dp"
                 android:layout_margin="5dp"
                 android:background="@color/dividerColor" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@color/colorAccent"
+                android:id="@+id/followButton"
+                android:layout_marginRight="5dp"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/profilepic" />
         </RelativeLayout>
 
         <RelativeLayout
