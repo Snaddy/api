@@ -24,10 +24,10 @@ import org.json.JSONObject;
 public class LoginActivity extends AppCompatActivity {
 
     private final static String URL = "https://railsphotoapp.herokuapp.com//api/v1/sessions.json";
-    private Button loginButton;
+    private Button loginButton, createAccount;
     private EditText email;
     private EditText password;
-    private TextView title;
+    private TextView title, forgotPassword;
     private Typeface font;
 
     JSONObject data = new JSONObject();
@@ -42,9 +42,11 @@ public class LoginActivity extends AppCompatActivity {
         final SharedPreferences.Editor editor = prefs.edit();
 
         loginButton = (Button) findViewById(R.id.login);
+        createAccount = (Button) findViewById(R.id.createAccount);
         email = (EditText) findViewById(R.id.email);
         password = (EditText) findViewById(R.id.password);
         title = (TextView) findViewById(R.id.title);
+        forgotPassword = (TextView) findViewById(R.id.forgotPassword);
 
         font = Typeface.createFromAsset(this.getAssets(), "fonts/default.otf");
         title.setTypeface(font);
@@ -71,6 +73,7 @@ public class LoginActivity extends AppCompatActivity {
                                 Intent intent = new Intent(getApplicationContext(), WelcomeActivity.class);
                                 intent.addFlags(intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
+                                finish();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -84,6 +87,23 @@ public class LoginActivity extends AppCompatActivity {
                 });
                 RequestQueue requestQueue = RequestSingleton.getInstance(LoginActivity.this.getApplicationContext()).getRequestQueue();
                 RequestSingleton.getInstance(LoginActivity.this).addToRequestQueue(jsonObjectRequest);
+            }
+        });
+
+        forgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), RecoverAccount.class);
+                startActivity(intent);
+            }
+        });
+
+        createAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
     }

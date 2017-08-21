@@ -31,6 +31,20 @@
             android:layout_height="wrap_content" />
 
         <Button
+            android:text="Login"
+            android:layout_width="match_parent"
+            android:id="@+id/login"
+            android:textColor="@android:color/background_light"
+            android:background="@color/colorDark"
+            android:layout_below="@+id/signup"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_height="50dp"
+            android:textStyle="normal|bold"
+            android:textSize="18sp"
+            android:layout_marginTop="10dp" />
+
+        <Button
             android:text="Sign up"
             android:layout_width="match_parent"
             android:id="@+id/signup"
@@ -43,20 +57,6 @@
             android:layout_height="50dp"
             android:textAlignment="center"
             android:elevation="1dp"
-            android:textStyle="normal|bold"
-            android:textSize="18sp"
-            android:layout_marginTop="10dp" />
-
-        <Button
-            android:text="Login"
-            android:layout_width="match_parent"
-            android:id="@+id/login"
-            android:textColor="@android:color/background_light"
-            android:background="@color/colorDark"
-            android:layout_below="@+id/signup"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_height="50dp"
             android:textStyle="normal|bold"
             android:textSize="18sp"
             android:layout_marginTop="10dp" />

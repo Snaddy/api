@@ -31,6 +31,11 @@
             android:windowSoftInputMode="adjustResize">
         </activity>
 
+        <activity android:name=".RecoverAccount"
+            android:screenOrientation="portrait"
+            android:launchMode = "singleTask">
+        </activity>
+
         <activity android:name=".RegisterActivity"
             android:launchMode = "singleTask"
             android:screenOrientation="portrait"
@@ -64,7 +69,6 @@
             android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait">
         </activity>
-
 
         <activity android:name=".CameraActivity"
             android:launchMode="singleTask"
