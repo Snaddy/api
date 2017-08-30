@@ -1,23 +1,24 @@
-package com.flipbook.app;
+package com.flipbook.app.Posting;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 /**
- * Created by Hayden on 2017-03-08.
+ * Created by Hayden on 2017-03-14.
  */
-public class SquareLayout extends FrameLayout {
 
-    public SquareLayout(Context context) {
+public class SquareImageView extends ImageView {
+
+    public SquareImageView(Context context) {
         super(context);
     }
 
-    public SquareLayout(Context context, AttributeSet attrs) {
+    public SquareImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SquareLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SquareImageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 

@@ -41,13 +41,13 @@
                 android:background="@color/colorPrimary" />
         </RelativeLayout>
 
-        <com.flipbook.app.SquareLayout
+        <com.flipbook.app.Posting.SquareLayout
            android:layout_width="match_parent"
            android:layout_height="match_parent"
            android:id="@+id/imagePreview"
            android:clickable="true" >
 
-            <com.flipbook.app.SquareImageView
+            <com.flipbook.app.Posting.SquareImageView
                 android:layout_width="match_parent"
                 app:srcCompat="@android:color/transparent"
                 android:id="@+id/imageView"
@@ -84,7 +84,7 @@
                     android:layout_alignParentBottom="true" />
             </RelativeLayout>
 
-        </com.flipbook.app.SquareLayout>
+        </com.flipbook.app.Posting.SquareLayout>
 
         <LinearLayout
             android:id="@+id/layout1"

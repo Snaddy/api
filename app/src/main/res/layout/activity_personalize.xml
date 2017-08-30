@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="20dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true">
+
+        <TextView
+            android:text="Personalize"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/linearLayout4"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/title"
+            android:layout_marginBottom="10dp"
+            android:textColor="@color/colorWhite"
+            android:textSize="30sp"
+            android:textStyle="normal|bold"
+            android:gravity="center"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border"
+            android:id="@+id/changePicture"
+            android:clickable="true">
+
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                app:srcCompat="@drawable/profile_selected"
+                android:id="@+id/imageView"
+                android:background="@color/dividerColor"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="1dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginTop="1dp" />
+
+            <TextView
+                android:text="Tap to change profile image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/info"
+                android:textColor="@color/textColor"
+                android:textSize="14sp"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/imageView" />
+
+        </RelativeLayout>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
+            android:text=""
+            android:id="@+id/bio"
+            android:textColor="@color/textColor"
+            android:textSize="15sp"
+            android:maxLength="250"
+            android:hint="Bio"
+            android:textColorHint="@color/hintColor"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:textAllCaps="false"
+            android:background="@drawable/border"
+            android:layout_marginTop="-2dp"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp" />
+
+        <Button
+            android:text="Sign up"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/button2"
+            android:background="@color/colorDark"
+            android:textStyle="normal|bold" />
+
+    </LinearLayout>
+
+</RelativeLayout>

@@ -6,13 +6,13 @@
     android:layout_height="match_parent"
     android:background="@android:color/background_light">
 
- <fragment android:name="com.flipbook.app.TitleBarFragment"
+ <fragment android:name="com.flipbook.app.Fragments.TitleBarFragment"
    android:id="@id/title"
      android:layout_width="match_parent"
      android:layout_height="35dp"
     tools:layout="@layout/titlebar" />
 
- <fragment android:name="com.flipbook.app.AppBarFragment"
+ <fragment android:name="com.flipbook.app.Fragments.AppBarFragment"
      android:id="@+id/appbar"
      android:layout_width="match_parent"
      android:layout_height="wrap_content"

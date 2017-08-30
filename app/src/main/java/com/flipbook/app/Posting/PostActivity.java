@@ -1,4 +1,4 @@
-package com.flipbook.app;
+package com.flipbook.app.Posting;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -25,6 +25,9 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
+import com.flipbook.app.R;
+import com.flipbook.app.Welcome.WelcomeActivity;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 

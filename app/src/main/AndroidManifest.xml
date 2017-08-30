@@ -20,29 +20,35 @@
         android:largeHeap="true">
 
 
-        <activity android:name=".LaunchActivity"
+        <activity android:name=".Welcome.LaunchActivity"
             android:screenOrientation="portrait"
             android:launchMode = "singleTask">
         </activity>
 
-        <activity android:name=".LoginActivity"
+        <activity android:name=".Users.LoginActivity"
             android:screenOrientation="portrait"
             android:launchMode = "singleTask"
             android:windowSoftInputMode="adjustResize">
         </activity>
 
-        <activity android:name=".RecoverAccount"
+        <activity android:name=".Users.RecoverAccount"
             android:screenOrientation="portrait"
             android:launchMode = "singleTask">
         </activity>
 
-        <activity android:name=".RegisterActivity"
+        <activity android:name=".Registration.RegisterActivity"
+            android:launchMode = "singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
+
+        <activity android:name=".Registration.PersonalizeActivity"
             android:launchMode = "singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden">
         </activity>
 
-        <activity android:name=".WelcomeActivity"
+        <activity android:name=".Welcome.WelcomeActivity"
             android:launchMode = "singleTask"
             android:hardwareAccelerated="true"
 
@@ -54,34 +60,34 @@
                 </intent-filter>
         </activity>
 
-        <activity android:name=".ProfileActivity"
+        <activity android:name=".Users.ProfileActivity"
             android:launchMode = "singleTask"
             android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".UserActivity"
+        <activity android:name=".Users.UserActivity"
             android:launchMode = "singleTask"
             android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".EditProfileActivity"
+        <activity android:name=".Users.EditProfileActivity"
             android:launchMode = "singleTask"
             android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".CameraActivity"
+        <activity android:name=".Camera.CameraActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".ProcessingActivity"
+        <activity android:name=".Posting.ProcessingActivity"
             android:launchMode="singleTask"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait" >
         </activity>
 
-        <activity android:name=".PostActivity"
+        <activity android:name=".Posting.PostActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:hardwareAccelerated="true"

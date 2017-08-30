@@ -78,7 +78,9 @@
                 android:textStyle="normal|bold"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
-                android:layout_marginTop="5dp" />
+                android:layout_marginTop="5dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -133,7 +135,7 @@
 
     </RelativeLayout>
 
-    <fragment android:name="com.flipbook.app.AppBarFragment"
+    <fragment android:name="com.flipbook.app.Fragments.AppBarFragment"
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

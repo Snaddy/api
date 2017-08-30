@@ -48,7 +48,7 @@
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp" />
 
-    <com.flipbook.app.SquareImageView
+    <com.flipbook.app.Posting.SquareImageView
         android:layout_width="match_parent"
         android:id="@+id/imageView"
         android:layout_height="wrap_content"

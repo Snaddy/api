@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
-    tools:context="com.flipbook.app.LoginActivity">
+    tools:context="com.flipbook.app.Users.LoginActivity">
 
     <LinearLayout
         android:orientation="vertical"
@@ -41,14 +41,14 @@
             android:ems="10"
             android:id="@+id/email"
             android:hint="email"
-            android:textStyle="normal|bold"
-            android:textColor="@android:color/white"
-            android:textColorHint="@android:color/white"
-            android:background="@android:drawable/screen_background_dark_transparent"
+            android:textColor="@color/textColor"
+            android:textColorHint="@color/hintColor"
+            android:background="@drawable/border"
             android:layout_below="@+id/title"
             android:layout_alignParentLeft="false"
             android:layout_alignParentStart="false"
-            android:layout_marginTop="10dp"/>
+            android:layout_marginTop="10dp"
+            android:paddingRight="10dp" />
 
         <EditText
             android:layout_width="match_parent"
@@ -58,12 +58,11 @@
             android:ems="10"
             android:id="@+id/password"
             android:hint="password"
-            android:textStyle="normal|bold"
-            android:textColor="@android:color/white"
-            android:textColorHint="@android:color/white"
-            android:background="@android:drawable/screen_background_dark_transparent"
-            android:layout_marginTop="10dp"
-            android:fontFamily="sans-serif" />
+            android:textColor="@color/textColor"
+            android:textColorHint="@color/hintColor"
+            android:background="@drawable/border"
+            android:fontFamily="sans-serif"
+            android:paddingRight="10dp" />
 
         <Button
             android:text="Login"
@@ -76,7 +75,6 @@
             android:layout_below="@+id/password"
             android:layout_alignParentLeft="false"
             android:layout_alignParentStart="false"
-            android:layout_marginTop="10dp"
             android:textSize="18sp"
             android:textStyle="normal|bold" />
 

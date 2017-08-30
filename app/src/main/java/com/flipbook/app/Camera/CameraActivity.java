@@ -1,8 +1,7 @@
-package com.flipbook.app;
+package com.flipbook.app.Camera;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -21,7 +20,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
@@ -30,6 +28,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+
+import com.flipbook.app.Posting.ProcessingActivity;
+import com.flipbook.app.R;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.flipbook.app;
+package com.flipbook.app.Posting;
 
 import java.util.ArrayList;
 

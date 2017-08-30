@@ -33,7 +33,7 @@
             android:background="@color/colorPrimary" />
     </RelativeLayout>
 
-    <com.flipbook.app.SquareImageView
+    <com.flipbook.app.Posting.SquareImageView
         android:layout_width="match_parent"
         app:srcCompat="@android:color/transparent"
         android:id="@+id/imageView"

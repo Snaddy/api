@@ -1,4 +1,4 @@
-package com.flipbook.app;
+package com.flipbook.app.Camera;
 
 import android.app.Activity;
 import android.app.Instrumentation;

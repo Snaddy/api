@@ -1,4 +1,4 @@
-package com.flipbook.app;
+package com.flipbook.app.Posting;
 
 import android.content.Context;
 import android.content.Intent;
@@ -23,9 +23,12 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.flipbook.app.R;
+import com.flipbook.app.Users.UserActivity;
+import com.flipbook.app.Welcome.WelcomeActivity;
+
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;

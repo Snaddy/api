@@ -1,9 +1,7 @@
-package com.flipbook.app;
+package com.flipbook.app.Registration;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
@@ -13,28 +11,23 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
-import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
+import com.flipbook.app.R;
+import com.flipbook.app.Posting.RequestSingleton;
+import com.flipbook.app.Users.LoginActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.net.ssl.HttpsURLConnection;
-
-import static com.flipbook.app.R.id.email;
-import static com.flipbook.app.R.id.username;
 
 /**
  * Created by Hayden on 2017-02-27.
@@ -46,10 +39,9 @@ public class RegisterActivity extends Activity {
     private static final String CHECK_USERNAME_AVAILABILITY = "https://railsphotoapp.herokuapp.com//api/v1/username/";
     private static final String CHECK_EMAIL_AVAILABILITY = "https://railsphotoapp.herokuapp.com//api/v1/email/";
 
-    private EditText email, username, password, confirmPassword;
-    private Button registerButton;
-    private boolean validEmail, validUsername, validPassword, validConfirmPassword;
-    private Drawable x, checkmark;
+    private EditText email, username, password, name;
+    private Button next, login;
+    private boolean validEmail, validUsername, validPassword, validName;
 
 //    JSONObject data = new JSONObject();
 //    JSONObject user = new JSONObject();
@@ -65,27 +57,28 @@ public class RegisterActivity extends Activity {
         email = (EditText) findViewById(R.id.email);
         username = (EditText) findViewById(R.id.username);
         password = (EditText) findViewById(R.id.password);
-        confirmPassword = (EditText) findViewById(R.id.confirmPassword);
-
-        registerButton = (Button) findViewById(R.id.register);
+        name = (EditText) findViewById(R.id.name);
+        next = (Button) findViewById(R.id.next);
+        login = (Button) findViewById(R.id.login);
 
         username.addTextChangedListener(new TextWatcher() {
             //setup timer to run api request 0.5 secs after user is done typing
             private Timer typeDelay = new Timer();
-            private final int DELAY = 500;
+            private final int DELAY = 1000;
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                validUsername = false;
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                validUsername = false;
             }
 
             @Override
             public void afterTextChanged(Editable s) {
+                validUsername = false;
                 if(username.getText().toString().length() > 0) {
                     final int cursorPosition = username.getSelectionStart();
                     username.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0);
@@ -115,12 +108,7 @@ public class RegisterActivity extends Activity {
                         new TimerTask() {
                             @Override
                             public void run() {
-                                //check if edited usernamw is not empty or not the same as current username
-                                if(!username.getText().toString().equals(username)) {
-                                    checkAvailability(email.getText().toString(), CHECK_USERNAME_AVAILABILITY);
-                                } else {
-                                    validUsername = true;
-                                }
+                                checkAvailability(username.getText().toString(), CHECK_USERNAME_AVAILABILITY);
                             }
                         }, DELAY
                 );
@@ -134,16 +122,17 @@ public class RegisterActivity extends Activity {
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                validEmail = false;
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                validEmail = false;
             }
 
             @Override
             public void afterTextChanged(Editable s) {
+                validEmail = false;
                 email.setCompoundDrawablesRelativeWithIntrinsicBounds(0,0,0, 0);
                 typeDelay.cancel();
                 typeDelay = new Timer();
@@ -151,12 +140,7 @@ public class RegisterActivity extends Activity {
                         new TimerTask() {
                             @Override
                             public void run() {
-                                //check if edited email is not empty or not the same as current email
-                                if(!email.getText().toString().equals(email)) {
-                                    checkAvailability(email.getText().toString(), CHECK_EMAIL_AVAILABILITY);
-                                } else {
-                                    validEmail = true;
-                                }
+                                checkAvailability(email.getText().toString(), CHECK_EMAIL_AVAILABILITY);
                             }
                         }, DELAY
                 );
@@ -171,16 +155,17 @@ public class RegisterActivity extends Activity {
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                validPassword = false;
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                validPassword = false;
             }
 
             @Override
             public void afterTextChanged(Editable s) {
+                validPassword = false;
                 password.setCompoundDrawablesRelativeWithIntrinsicBounds(0,0,0, 0);
                 typeDelay.cancel();
                 typeDelay = new Timer();
@@ -188,11 +173,10 @@ public class RegisterActivity extends Activity {
                         new TimerTask() {
                             @Override
                             public void run() {
-                                //check if edited email is not empty or not the same as current email
                                 if(password.getText().length() > 0) {
                                     validatePassword(password.getText().toString());
                                 } else {
-                                    validPassword = true;
+                                    validPassword = false;
                                 }
                             }
                         }, DELAY
@@ -200,39 +184,49 @@ public class RegisterActivity extends Activity {
             }
         });
 
-        confirmPassword.addTextChangedListener(new TextWatcher() {
+        name.addTextChangedListener(new TextWatcher() {
             //setup timer to run api request 0.5 secs after user is done typing
             private Timer typeDelay = new Timer();
             private final int DELAY = 1000;
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                validName = false;
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                validName = false;
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                confirmPassword.setCompoundDrawablesRelativeWithIntrinsicBounds(0,0,0, 0);
+                validName = false;
+                name.setCompoundDrawablesRelativeWithIntrinsicBounds(0,0,0,0);
                 typeDelay.cancel();
                 typeDelay = new Timer();
                 typeDelay.schedule(
                         new TimerTask() {
                             @Override
                             public void run() {
-                                //check if edited email is not empty or not the same as current email
-                                if(confirmPassword.getText().length() > 0) {
-                                    validateConfirmPassword(password.getText().toString(), confirmPassword.getText().toString());
+                                if(name.getText().length() > 0) {
+                                    validateName(name.getText().toString());
                                 } else {
-                                    validConfirmPassword = true;
+                                    validName = false;
                                 }
                             }
                         }, DELAY
                 );
+            }
+        });
+
+        next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(validName == true && validPassword == true &&
+                        validEmail == true && validEmail == true){
+                    startActivity(new Intent(getApplicationContext(), PersonalizeActivity.class));
+                }
             }
         });
 
@@ -243,7 +237,7 @@ public class RegisterActivity extends Activity {
 //                    data.put("email", email.getText().toString());
 //                    data.put("username", username.getText().toString());
 //                    data.put("password", password.getText().toString());
-//                    data.put("password_confirmation", confirmPassword.getText().toString());
+//                    data.put("password_confirmation", name.getText().toString());
 //                    user.put("user", data);
 //                } catch (JSONException e){
 //                    e.printStackTrace();
@@ -279,13 +273,12 @@ public class RegisterActivity extends Activity {
     }
 
     private void validatePassword(final String pass){
+        final Drawable x = getApplicationContext().getResources().getDrawable(R.drawable.x);
+        final Drawable checkmark = getApplicationContext().getResources().getDrawable(R.drawable.checkmark);
         //scale image to the height of the editText field
         //scale x drawable
-        final Drawable x = getApplicationContext().getResources().getDrawable(R.drawable.x);
         x.setBounds(0, 0, x.getIntrinsicWidth() * username.getMeasuredHeight() / x.getIntrinsicHeight() / 2, username.getMeasuredHeight() / 2);
         //scale checkmark drawable
-        final Drawable checkmark = getApplicationContext().getResources().getDrawable(R.drawable.checkmark);
-        //username and email are the same dimensions
         checkmark.setBounds(0, 0, checkmark.getIntrinsicWidth() * username.getMeasuredHeight() / checkmark.getIntrinsicHeight() / 2, username.getMeasuredHeight() / 2);
         if (pass.length() < 6) {
             runOnUiThread(new Runnable() {
@@ -309,38 +302,44 @@ public class RegisterActivity extends Activity {
         }
     }
 
-    private void validateConfirmPassword(final String pass, final String confirmPass){
+    private void validateName(final String nameText){
+        final Drawable x = getApplicationContext().getResources().getDrawable(R.drawable.x);
+        final Drawable checkmark = getApplicationContext().getResources().getDrawable(R.drawable.checkmark);
         //scale image to the height of the editText field
         //scale x drawable
-        final Drawable x = getApplicationContext().getResources().getDrawable(R.drawable.x);
         x.setBounds(0, 0, x.getIntrinsicWidth() * username.getMeasuredHeight() / x.getIntrinsicHeight() / 2, username.getMeasuredHeight() / 2);
         //scale checkmark drawable
-        final Drawable checkmark = getApplicationContext().getResources().getDrawable(R.drawable.checkmark);
-        //username and email are the same dimensions
         checkmark.setBounds(0, 0, checkmark.getIntrinsicWidth() * username.getMeasuredHeight() / checkmark.getIntrinsicHeight() / 2, username.getMeasuredHeight() / 2);
-        if(!confirmPass.equals(pass) && confirmPass.length() > 0){
+        if(nameText.length() > 0){
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    confirmPassword.setCompoundDrawablesRelative(null, null, x, null);
-                    Toast toast = Toast.makeText(RegisterActivity.this, "Passwords do not match", Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.TOP, 0, 10);
-                    toast.show();
-                    validConfirmPassword = false;
+                    name.setCompoundDrawablesRelative(null, null, checkmark, null);
+                    validName = true;
                 }
             });
         } else {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    password.setCompoundDrawablesRelative(null, null, checkmark, null);
-                    validConfirmPassword = true;
+                    name.setCompoundDrawablesRelative(null, null, x, null);
+                    Toast toast = Toast.makeText(RegisterActivity.this, "Name must be at least 1 character", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.TOP, 0, 10);
+                    toast.show();
+                    validName = false;
                 }
             });
         }
     }
 
     private void checkAvailability(final String string, final String url) {
+        final Drawable x = getApplicationContext().getResources().getDrawable(R.drawable.x);
+        final Drawable checkmark = getApplicationContext().getResources().getDrawable(R.drawable.checkmark);
+        //scale image to the height of the editText field
+        //scale x drawable
+        x.setBounds(0, 0, x.getIntrinsicWidth() * username.getMeasuredHeight() / x.getIntrinsicHeight() / 2, username.getMeasuredHeight() / 2);
+        //scale checkmark drawable
+        checkmark.setBounds(0, 0, checkmark.getIntrinsicWidth() * username.getMeasuredHeight() / checkmark.getIntrinsicHeight() / 2, username.getMeasuredHeight() / 2);
         //validate email format
         if (url == CHECK_EMAIL_AVAILABILITY && isValidEmail(string) == false) {
             runOnUiThread(new Runnable() {
@@ -377,7 +376,7 @@ public class RegisterActivity extends Activity {
                     //if username contains illegal substring ("..")
                     if(string.contains("..")){
                         username.setCompoundDrawablesRelative(null, null, x, null);
-                        Toast toast = Toast.makeText(RegisterActivity.this, "Username can't have more than two periods in a row", Toast.LENGTH_SHORT);
+                        Toast toast = Toast.makeText(RegisterActivity.this, "Username can't have more than 2 periods in a row", Toast.LENGTH_SHORT);
                         toast.setGravity(Gravity.TOP, 0, 10);
                         toast.show();
                         validUsername = false;
@@ -448,6 +447,15 @@ public class RegisterActivity extends Activity {
             RequestQueue requestQueue = RequestSingleton.getInstance(RegisterActivity.this.getApplicationContext()).getRequestQueue();
             RequestSingleton.getInstance(RegisterActivity.this).addToRequestQueue(jsonObjectRequest);
         }
+
+        login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 
     //verify email method

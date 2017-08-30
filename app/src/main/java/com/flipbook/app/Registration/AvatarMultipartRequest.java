@@ -1,4 +1,4 @@
-package com.flipbook.app;
+package com.flipbook.app.Registration;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;

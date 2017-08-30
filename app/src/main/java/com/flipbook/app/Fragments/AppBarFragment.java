@@ -1,4 +1,4 @@
-package com.flipbook.app;
+package com.flipbook.app.Fragments;
 
 import android.support.v4.app.Fragment;
 import android.content.Intent;
@@ -7,6 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+
+import com.flipbook.app.Camera.CameraActivity;
+import com.flipbook.app.Users.ProfileActivity;
+import com.flipbook.app.R;
+import com.flipbook.app.Welcome.WelcomeActivity;
 
 /**
  * Created by Hayden on 2017-03-06.

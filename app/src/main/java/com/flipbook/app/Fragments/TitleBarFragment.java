@@ -1,4 +1,4 @@
-package com.flipbook.app;
+package com.flipbook.app.Fragments;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.flipbook.app.R;
 
 /**
  * Created by Hayden on 2017-03-07.

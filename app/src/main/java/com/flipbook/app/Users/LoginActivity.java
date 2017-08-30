@@ -1,4 +1,4 @@
-package com.flipbook.app;
+package com.flipbook.app.Users;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,7 +16,10 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
+import com.flipbook.app.R;
+import com.flipbook.app.Registration.RegisterActivity;
+import com.flipbook.app.Posting.RequestSingleton;
+import com.flipbook.app.Welcome.WelcomeActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
