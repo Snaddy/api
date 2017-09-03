@@ -77,11 +77,16 @@
             android:paddingBottom="15dp"
             android:paddingTop="15dp" />
 
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/gender" />
+
         <Button
             android:text="Sign up"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/button2"
+            android:id="@+id/register"
             android:background="@color/colorDark"
             android:textStyle="normal|bold" />
 

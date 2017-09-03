@@ -18,12 +18,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.flipbook.app.R;
-import com.flipbook.app.Posting.RequestSingleton;
+import com.flipbook.app.Posts.RequestSingleton;
 import com.flipbook.app.Users.LoginActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -35,24 +37,18 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class RegisterActivity extends Activity {
 
-//    private final static String URL = "https://railsphotoapp.herokuapp.com//api/v1/registrations.json";
     private static final String CHECK_USERNAME_AVAILABILITY = "https://railsphotoapp.herokuapp.com//api/v1/username/";
     private static final String CHECK_EMAIL_AVAILABILITY = "https://railsphotoapp.herokuapp.com//api/v1/email/";
 
     private EditText email, username, password, name;
     private Button next, login;
     private boolean validEmail, validUsername, validPassword, validName;
-
-//    JSONObject data = new JSONObject();
-//    JSONObject user = new JSONObject();
+    private String encodedName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-
-//        final SharedPreferences prefs = getSharedPreferences("prefs", Context.MODE_PRIVATE);
-//        final SharedPreferences.Editor editor = prefs.edit();
 
         email = (EditText) findViewById(R.id.email);
         username = (EditText) findViewById(R.id.username);
@@ -225,51 +221,21 @@ public class RegisterActivity extends Activity {
             public void onClick(View v) {
                 if(validName == true && validPassword == true &&
                         validEmail == true && validEmail == true){
-                    startActivity(new Intent(getApplicationContext(), PersonalizeActivity.class));
+                    try {
+                        encodedName = URLEncoder.encode(name.getText().toString(), "utf-8");
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                    Intent intent = new Intent(getApplicationContext(), PersonalizeActivity.class);
+                    intent.putExtra("email", email.getText().toString());
+                    intent.putExtra("username", username.getText().toString());
+                    intent.putExtra("name", encodedName);
+                    intent.putExtra("password", password.getText().toString());
+                    startActivity(intent);
+
                 }
             }
         });
-
-//        registerButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                try {
-//                    data.put("email", email.getText().toString());
-//                    data.put("username", username.getText().toString());
-//                    data.put("password", password.getText().toString());
-//                    data.put("password_confirmation", name.getText().toString());
-//                    user.put("user", data);
-//                } catch (JSONException e){
-//                    e.printStackTrace();
-//                }
-//                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, URL, user, new Response.Listener<JSONObject>() {
-//                    @Override
-//                    public void onResponse(JSONObject response) {
-//                        try {
-//                            System.out.println(response.getString("status"));
-//                            if(response.getString("status").equals("created")){
-//                                editor.putString("auth_token", response.getString("auth_token"));
-//                                editor.putString("email", response.getString("email"));
-//                                editor.apply();
-//                                registerButton.setClickable(false);
-//                                Intent intent = new Intent(getApplicationContext(), WelcomeActivity.class);
-//                                intent.addFlags(intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
-//                                startActivity(intent);
-//                            }
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }, new Response.ErrorListener() {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        Toast.makeText(RegisterActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-//                RequestQueue requestQueue = RequestSingleton.getInstance(RegisterActivity.this.getApplicationContext()).getRequestQueue();
-//                RequestSingleton.getInstance(RegisterActivity.this).addToRequestQueue(jsonObjectRequest);
-//            }
-//        });
     }
 
     private void validatePassword(final String pass){
@@ -400,7 +366,6 @@ public class RegisterActivity extends Activity {
             final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url + string, null, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
-                    System.out.println(response);
                     try {
                         if (response.getBoolean("status") == true) {
                             if (url == CHECK_USERNAME_AVAILABILITY) {

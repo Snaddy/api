@@ -29,7 +29,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.flipbook.app.Posting.ProcessingActivity;
+import com.flipbook.app.Posts.ProcessingActivity;
 import com.flipbook.app.R;
 
 import java.util.ArrayList;

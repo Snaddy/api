@@ -1,4 +1,4 @@
-package com.flipbook.app.Posting;
+package com.flipbook.app.Posts;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;

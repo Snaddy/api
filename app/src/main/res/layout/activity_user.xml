@@ -31,20 +31,85 @@
 
     </RelativeLayout>
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <fragment android:name="com.flipbook.app.Fragments.AppBarFragment"
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        tools:layout="@layout/appbar" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/profile"
+        android:layout_below="@+id/header"
+        android:layout_above="@+id/appbar">
+
+        <ProgressBar
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/loader"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"/>
+
+        <RelativeLayout
         android:layout_width="match_parent" android:layout_height="wrap_content"
         android:id="@+id/profile_info"
-        android:layout_below="@+id/header">
+        android:background="@drawable/divider"
+        android:layout_alignParentStart="true"
+            android:visibility="invisible">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/pic_button">
 
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/info"
+                android:layout_below="@+id/followButton"
+                android:layout_toRightOf="@+id/profilepic">
+
+                <TextView
+                    android:text="Posts"
+                    android:id="@+id/posts"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:textColor="@color/textColor"
+                    android:gravity="center" />
+
+                <TextView
+                    android:text="Following"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/following"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:textColor="@color/textColor"
+                    android:gravity="center"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:text="Followers"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/followers"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:textColor="@color/textColor"
+                    android:gravity="center"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
             <ImageView
                 android:layout_width="80dp"
-                app:srcCompat="@drawable/profile_selected"
+                app:srcCompat="@color/dividerColor"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
@@ -56,10 +121,10 @@
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:background="@color/colorAccent"
+                android:background="@drawable/follow_button"
                 android:id="@+id/followButton"
                 android:layout_marginRight="5dp"
-                android:layout_centerVertical="true"
+                android:layout_alignTop="@+id/profilepic"
                 android:layout_toEndOf="@+id/profilepic" />
         </RelativeLayout>
 
@@ -79,8 +144,7 @@
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
                 android:layout_marginTop="5dp"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp" />
+                android:layout_marginBottom="5dp" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -89,67 +153,26 @@
                 android:textColor="@color/textColor"
                 android:layout_below="@+id/name"
                 android:paddingLeft="20dp"
-                android:paddingRight="20dp" />
+                android:paddingRight="20dp"
+                android:layout_marginBottom="5dp" />
 
         </RelativeLayout>
 
-        <LinearLayout
-            android:orientation="horizontal"
+    </RelativeLayout>
+
+        <GridView
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_below="@+id/bio_name"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/divider"
-            android:id="@+id/info">
-
-            <TextView
-                android:text="Posts"
-                android:id="@+id/posts"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:textColor="@color/textColor"
-                android:gravity="center" />
-
-            <TextView
-                android:text="Following"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/following"
-                android:layout_weight="1"
-                android:clickable="true"
-                android:textColor="@color/textColor"
-                android:gravity="center" />
-
-            <TextView
-                android:text="Followers"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/followers"
-                android:layout_weight="1"
-                android:clickable="true"
-                android:textColor="@color/textColor"
-                android:gravity="center" />
-
-        </LinearLayout>
+            android:layout_height="match_parent"
+            android:id="@+id/showPosts"
+            android:numColumns="2"
+            android:scrollbars="none"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/profile_info"
+            android:visibility="invisible">
+        </GridView>
 
     </RelativeLayout>
 
-    <fragment android:name="com.flipbook.app.Fragments.AppBarFragment"
-        android:id="@+id/appbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        tools:layout="@layout/appbar" />
-
-    <GridView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/showPosts"
-        android:numColumns="2"
-        android:scrollbars="none|vertical"
-        android:layout_below="@+id/profile_info"
-        android:layout_alignParentStart="true"
-        android:layout_above="@+id/appbar" />
 
 </RelativeLayout>

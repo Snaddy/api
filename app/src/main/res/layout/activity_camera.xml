@@ -21,7 +21,7 @@
             android:background="@color/colorWhite">
 
             <ImageButton
-                android:layout_width="50dp"
+                android:layout_width="35dp"
                 android:layout_height="match_parent"
                 app:srcCompat="@drawable/close"
                 android:layout_alignParentTop="true"
@@ -31,7 +31,7 @@
                 android:background="@color/colorPrimary" />
 
             <ImageButton
-                android:layout_width="50dp"
+                android:layout_width="35dp"
                 android:layout_height="match_parent"
                 app:srcCompat="@drawable/arrow"
                 android:layout_alignParentTop="true"
@@ -41,13 +41,13 @@
                 android:background="@color/colorPrimary" />
         </RelativeLayout>
 
-        <com.flipbook.app.Posting.SquareLayout
+        <com.flipbook.app.Posts.SquareLayout
            android:layout_width="match_parent"
            android:layout_height="match_parent"
            android:id="@+id/imagePreview"
            android:clickable="true" >
 
-            <com.flipbook.app.Posting.SquareImageView
+            <com.flipbook.app.Posts.SquareImageView
                 android:layout_width="match_parent"
                 app:srcCompat="@android:color/transparent"
                 android:id="@+id/imageView"
@@ -84,7 +84,7 @@
                     android:layout_alignParentBottom="true" />
             </RelativeLayout>
 
-        </com.flipbook.app.Posting.SquareLayout>
+        </com.flipbook.app.Posts.SquareLayout>
 
         <LinearLayout
             android:id="@+id/layout1"

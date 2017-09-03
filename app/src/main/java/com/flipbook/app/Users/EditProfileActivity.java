@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -24,10 +26,13 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.flipbook.app.R;
-import com.flipbook.app.Posting.RequestSingleton;
+import com.flipbook.app.Posts.RequestSingleton;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
@@ -49,6 +54,7 @@ public class EditProfileActivity extends Activity {
     private ImageView profilePic;
     private EditText editUsername, editName, editEmail, editBio;
     private Button saveProfile;
+    private Bitmap avatar;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +66,8 @@ public class EditProfileActivity extends Activity {
 
         getEmail = prefs.getString("email", "");
         getToken = prefs.getString("auth_token", "");
+        System.out.println(getEmail);
+        System.out.println(getToken);
 
         validUsername = true;
         validEmail = true;
@@ -67,13 +75,26 @@ public class EditProfileActivity extends Activity {
         Bundle bundle = getIntent().getExtras();
         username = bundle.getString("username");
         name = bundle.getString("name");
+        try {
+            name = URLDecoder.decode(name, "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         email = bundle.getString("email");
         bio = bundle.getString("bio");
+        try {
+            bio = URLDecoder.decode(bio, "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        avatar = bundle.getParcelable("avatar");
+
 
         editUsername = (EditText) findViewById(R.id.editUsername);
         editName = (EditText) findViewById(R.id.editName);
         editEmail = (EditText) findViewById(R.id.editEmail);
         editBio = (EditText) findViewById(R.id.editBio);
+        profilePic = (ImageView) findViewById(R.id.editAvatar);
 
         //save profile button
         saveProfile = (Button) findViewById(R.id.saveButton);
@@ -83,6 +104,7 @@ public class EditProfileActivity extends Activity {
         editName.setText(name);
         editEmail.setText(email);
         editBio.setText(bio);
+        profilePic.setImageBitmap(avatar);
 
         //dialog builder
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -343,11 +365,12 @@ public class EditProfileActivity extends Activity {
         final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, EDIT_USER_URL, user, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                System.out.println(response);
+                System.out.println(response.toString());
                 try {
                     if(response.getString("result").equals("success")){
                         ProfileActivity.profileActivity.finish();
                         editor.putString("email", email);
+                        editor.putString("username", username);
                         editor.apply();
                         startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
                         finish();

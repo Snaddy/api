@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,12 +22,14 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.flipbook.app.Posting.RequestSingleton;
+import com.flipbook.app.Posts.RequestSingleton;
 import com.flipbook.app.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,8 +47,10 @@ public class UserActivity extends AppCompatActivity {
     private Button profileButton;
     private TextView textUsername, textName, textPosts, textFollowing, textFollowers, textBio;
     private ImageView profilePic;
+    private RelativeLayout profileInfo;
     private GridView showPosts;
     private String getEmail, getToken, userId;
+    private ProgressBar loader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +66,7 @@ public class UserActivity extends AppCompatActivity {
         userId = bundle.getString("userId");
 
         profileButton = (Button) findViewById(R.id.followButton);
+        profileInfo = (RelativeLayout) findViewById(R.id.profile_info);
         textName = (TextView) findViewById(R.id.name);
         textPosts = (TextView) findViewById(R.id.posts);
         textFollowers = (TextView) findViewById(R.id.followers);
@@ -68,6 +75,7 @@ public class UserActivity extends AppCompatActivity {
         textBio = (TextView) findViewById(R.id.bio);
         showPosts = (GridView) findViewById(R.id.showPosts);
         back = (ImageButton) findViewById(R.id.back);
+        loader = (ProgressBar) findViewById(R.id.loader);
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -87,13 +95,26 @@ public class UserActivity extends AppCompatActivity {
             public void onResponse(JSONObject response) {
                 System.out.println(response);
                 try {
+                    loader.setVisibility(View.GONE);
+                    profileInfo.setVisibility(View.VISIBLE);
+                    showPosts.setVisibility(View.VISIBLE);
                     JSONObject user = (JSONObject) response.get("user");
                     String username = user.getString("username");
                     String name = user.getString("name");
+                    try {
+                        name = URLDecoder.decode(name, "utf-8");
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
                     String posts = user.getString("get_posts");
                     String followers = user.getString("get_followers");
                     String followings = user.getString("get_followings");
                     String bio = user.getString("bio");
+                    try {
+                        bio = URLDecoder.decode(bio, "utf-8");
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
 
                     textName.setText(name);
                     textPosts.setText(posts + "  Posts");

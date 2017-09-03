@@ -1,4 +1,4 @@
-package com.flipbook.app.Posting;
+package com.flipbook.app.Posts;
 
 import android.graphics.drawable.AnimationDrawable;
 import android.os.SystemClock;

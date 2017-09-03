@@ -4,29 +4,40 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="10dp">
+    android:layout_marginTop="20dp">
 
-    <ImageView
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:id="@+id/editAvatar"
-        android:layout_gravity="center"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="10dp"
-        android:contentDescription="Profile Picture"
-        android:background="@color/dividerColor"
-        app:srcCompat="@drawable/profile_selected" />
-
-    <TextView
-        android:text="Change Photo"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/changePhoto"
-        android:textSize="14sp"
-        android:layout_gravity="center"
-        android:textColor="@color/colorPrimary"
-        android:layout_marginBottom="15dp"
-        android:clickable="true" />
+        android:background="@drawable/border"
+        android:id="@+id/changePicture"
+        android:clickable="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="5dp">
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            app:srcCompat="@drawable/profile_selected"
+            android:id="@+id/editAvatar"
+            android:background="@color/dividerColor"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="1dp"
+            android:layout_marginLeft="1dp"
+            android:layout_marginTop="1dp" />
+
+        <TextView
+            android:text="Tap to change profile image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/info"
+            android:textColor="@color/textColor"
+            android:textSize="14sp"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/editAvatar" />
+
+    </RelativeLayout>
 
     <EditText
         android:layout_width="match_parent"

@@ -13,7 +13,7 @@
         android:background="@color/colorWhite">
 
         <ImageButton
-        android:layout_width="50dp"
+        android:layout_width="35dp"
         android:layout_height="match_parent"
         app:srcCompat="@drawable/backarrow"
         android:layout_alignParentTop="true"
@@ -23,7 +23,7 @@
         android:background="@color/colorPrimary" />
 
         <ImageButton
-            android:layout_width="50dp"
+            android:layout_width="35dp"
             android:layout_height="match_parent"
             app:srcCompat="@drawable/arrow"
             android:layout_alignParentTop="true"
@@ -33,7 +33,7 @@
             android:background="@color/colorPrimary" />
     </RelativeLayout>
 
-    <com.flipbook.app.Posting.SquareImageView
+    <com.flipbook.app.Posts.SquareImageView
         android:layout_width="match_parent"
         app:srcCompat="@android:color/transparent"
         android:id="@+id/imageView"

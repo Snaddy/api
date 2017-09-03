@@ -23,10 +23,11 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.flipbook.app.Posting.PostAdapter;
-import com.flipbook.app.Posting.Posts;
-import com.flipbook.app.Posting.RequestSingleton;
+import com.flipbook.app.Posts.PostAdapter;
+import com.flipbook.app.Posts.Posts;
+import com.flipbook.app.Posts.RequestSingleton;
 import com.flipbook.app.R;
+import com.flipbook.app.Users.LoginActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -58,13 +59,15 @@ public class WelcomeActivity extends AppCompatActivity {
     private ListView feed;
     private PostAdapter postAdapter;
     private ProgressBar loader;
+    public static SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
 
-        final SharedPreferences prefs = getSharedPreferences("prefs", Context.MODE_PRIVATE);
+        prefs = getSharedPreferences("prefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
 
         if (prefs.getString("auth_token", "") == "" && prefs.getString("email", "") == "") {
             startActivity(new Intent(getApplicationContext(), LaunchActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
@@ -90,11 +93,11 @@ public class WelcomeActivity extends AppCompatActivity {
                 loader.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorAccent), PorterDuff.Mode.SRC_IN);
             }
 
-            update(builder);
+            update(builder, editor);
         }
     }
 
-    private void update(final AlertDialog.Builder builder){
+    private void update(final AlertDialog.Builder builder, final SharedPreferences.Editor editor){
             final JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(Request.Method.GET, GET_POSTS_URL, null, new Response.Listener<JSONArray>() {
                 @Override
                 public void onResponse(JSONArray response) {
@@ -141,6 +144,8 @@ public class WelcomeActivity extends AppCompatActivity {
                     }
                     if (networkResponse != null && (networkResponse.statusCode == HttpsURLConnection.HTTP_UNAUTHORIZED ||
                             networkResponse.statusCode == HttpsURLConnection.HTTP_CLIENT_TIMEOUT)) {
+                        editor.clear();
+                        editor.commit();
                         LayoutInflater inflater = WelcomeActivity.this.getLayoutInflater();
                         View dialogView = inflater.inflate(R.layout.dialog, null);
                         builder.setView(dialogView);
@@ -154,7 +159,7 @@ public class WelcomeActivity extends AppCompatActivity {
                             @Override
                             public void onClick(View v) {
                                 alertDialog.cancel();
-                                startActivity(new Intent(getApplicationContext(), LaunchActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
+                                startActivity(new Intent(getApplicationContext(), LoginActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
                                 finish();
                             }
                         });

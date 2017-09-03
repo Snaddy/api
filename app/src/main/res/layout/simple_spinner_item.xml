@@ -1,0 +1,13 @@
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@android:id/text1"
+    style="@style/spinnerItemStyle"
+    android:hint="gender"
+    android:maxLines="1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:textColor="@color/hintColor"
+    android:paddingTop="15dp"
+    android:paddingBottom="15dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:ellipsize="marquee" />

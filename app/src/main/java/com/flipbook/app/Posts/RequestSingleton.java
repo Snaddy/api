@@ -1,4 +1,4 @@
-package com.flipbook.app.Posting;
+package com.flipbook.app.Posts;
 
 import android.content.Context;
 import android.graphics.Bitmap;

@@ -15,7 +15,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.flipbook.app.R;
-import com.flipbook.app.Posting.RequestSingleton;
+import com.flipbook.app.Posts.RequestSingleton;
 
 import org.json.JSONObject;
 

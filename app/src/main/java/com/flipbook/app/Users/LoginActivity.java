@@ -18,7 +18,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.flipbook.app.R;
 import com.flipbook.app.Registration.RegisterActivity;
-import com.flipbook.app.Posting.RequestSingleton;
+import com.flipbook.app.Posts.RequestSingleton;
 import com.flipbook.app.Welcome.WelcomeActivity;
 
 import org.json.JSONException;
@@ -67,11 +67,13 @@ public class LoginActivity extends AppCompatActivity {
                 JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, URL, user ,new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        System.out.println(response.toString());
                         try {
                             if(response.getString("status").equals("success")){
                                 loginButton.setClickable(false);
                                 editor.putString("auth_token", response.getString("auth_token"));
                                 editor.putString("email", response.getString("email"));
+                                editor.putString("username", response.getString("user_name"));
                                 editor.apply();
                                 Intent intent = new Intent(getApplicationContext(), WelcomeActivity.class);
                                 intent.addFlags(intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);

@@ -19,7 +19,7 @@
         tools:ignore="HardcodedText" />
 
     <ImageButton
-        android:layout_width="50dp"
+        android:layout_width="35dp"
         android:layout_height="35dp"
         app:srcCompat="@drawable/backarrow"
         android:id="@+id/back"
@@ -48,7 +48,7 @@
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp" />
 
-    <com.flipbook.app.Posting.SquareImageView
+    <com.flipbook.app.Posts.SquareImageView
         android:layout_width="match_parent"
         android:id="@+id/imageView"
         android:layout_height="wrap_content"

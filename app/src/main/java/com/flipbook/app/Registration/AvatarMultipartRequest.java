@@ -60,7 +60,7 @@ public class AvatarMultipartRequest extends Request<NetworkResponse> {
                 textParse(dos, params, getParamsEncoding());
             }
 
-            //add arraylist of dataparts
+            //add dataparams
             Map<String, DataPart> data = getByteData();
             if (data != null && data.size() > 0) {
                 dataParse(dos, data);
@@ -160,11 +160,19 @@ public class AvatarMultipartRequest extends Request<NetworkResponse> {
         private byte[] content;
         private String type;
 
+        public DataPart() {
+        }
+
 
         public DataPart(String name, byte[] data, String mimeType) {
             fileName = name;
             content = data;
             type = mimeType;
+        }
+
+        public DataPart(String name, byte[] data) {
+            fileName = name;
+            content = data;
         }
 
         public String getFileName() {

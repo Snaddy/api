@@ -1,7 +1,8 @@
-package com.flipbook.app.Posting;
+package com.flipbook.app.Posts;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.BitmapDrawable;
@@ -24,6 +25,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.flipbook.app.R;
+import com.flipbook.app.Users.ProfileActivity;
 import com.flipbook.app.Users.UserActivity;
 import com.flipbook.app.Welcome.WelcomeActivity;
 
@@ -44,6 +46,7 @@ public class PostAdapter extends ArrayAdapter {
 
     private final String likeURL = "https://railsphotoapp.herokuapp.com//api/v1/like/";
     private final String unlikeURL = "https://railsphotoapp.herokuapp.com//api/v1/unlike/";
+    private String userId;
 
     List list = new ArrayList();
 
@@ -105,7 +108,7 @@ public class PostAdapter extends ArrayAdapter {
         }
 
         //if post is liked
-        if( posts.getLiked() == true){
+        if(posts.getLiked() == true){
             postHolder.likeButton.setImageDrawable(getContext().getResources().getDrawable(R.drawable.liked));
         } else {
             postHolder.likeButton.setImageDrawable(getContext().getResources().getDrawable(R.drawable.unliked));
@@ -113,7 +116,7 @@ public class PostAdapter extends ArrayAdapter {
 
         //download first display image :)
         if(posts.getImages().size() > 0) {
-            Glide.with(getContext()).load(posts.getImages().get(0)).downloadOnly(1024, 1024);
+            Glide.with(getContext()).load(posts.getImages().get(0)).downloadOnly(1600, 1600);
             Glide.with(getContext()).load(posts.getImages().get(0)).diskCacheStrategy(DiskCacheStrategy.SOURCE).placeholder(R.color.colorWhite).dontAnimate().into(postHolder.images);
         }
             //set click listener for imageview
@@ -127,9 +130,14 @@ public class PostAdapter extends ArrayAdapter {
         postHolder.username.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), UserActivity.class);
-                intent.putExtra("userId", posts.getUserId());
-                getContext().startActivity(intent);
+                if(posts.getUsername().equals(WelcomeActivity.prefs.getString("username", ""))) {
+                    Intent intent = new Intent(getContext(), ProfileActivity.class);
+                    getContext().startActivity(intent);
+                } else {
+                    Intent intent = new Intent(getContext(), UserActivity.class);
+                    intent.putExtra("userId", posts.getUserId());
+                    getContext().startActivity(intent);
+                }
             }
         });
 
@@ -249,7 +257,7 @@ public class PostAdapter extends ArrayAdapter {
                 for (int i = 0; i < posts.getImages().size(); i++) {
                     Bitmap b = null;
                     try {
-                        b = Glide.with(getContext()).load(posts.getImages().get(i)).asBitmap().into(1024, 1024).get();
+                        b = Glide.with(getContext()).load(posts.getImages().get(i)).asBitmap().into(1600, 1600).get();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     } catch (ExecutionException e) {

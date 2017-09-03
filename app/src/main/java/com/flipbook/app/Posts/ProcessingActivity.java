@@ -1,4 +1,4 @@
-package com.flipbook.app.Posting;
+package com.flipbook.app.Posts;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -17,8 +17,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.flipbook.app.Camera.CameraActivity;
-import com.flipbook.app.Posting.CustomAnimation;
-import com.flipbook.app.Posting.PostActivity;
 import com.flipbook.app.R;
 
 import java.util.ArrayList;
