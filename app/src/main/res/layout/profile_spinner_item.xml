@@ -1,0 +1,12 @@
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@android:id/text1"
+    style="@style/profileSpinnerItemStyle"
+    android:hint="gender"
+    android:maxLines="1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:textSize="15sp"
+    android:textColor="@color/textColor"
+    android:gravity="bottom"
+    android:paddingBottom="5dp"
+    android:ellipsize="marquee" />

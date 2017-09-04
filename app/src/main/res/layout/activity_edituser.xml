@@ -111,6 +111,14 @@
         android:hint="Bio"
         android:textColorHint="@color/hintColor" />
 
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/gender"
+        android:background="@drawable/divider"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp" />
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

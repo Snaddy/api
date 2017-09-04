@@ -46,7 +46,7 @@ public class ProcessingActivity extends AppCompatActivity{
 
         imageArray = CameraActivity.imageList;
         processedImages = new ArrayList<>();
-        imageView = (ImageView) findViewById(R.id.imageView);
+        imageView = (ImageView) findViewById(R.id.editAvatar);
         speedBar = (SeekBar) findViewById(R.id.speedBar);
         speedText = (TextView) findViewById(R.id.speedText);
         saturationText = (TextView) findViewById(R.id.saturationText);

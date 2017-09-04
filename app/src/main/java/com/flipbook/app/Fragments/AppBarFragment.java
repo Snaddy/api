@@ -43,7 +43,7 @@ public class AppBarFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getActivity(), ProfileActivity.class));
-                //getActivity().overridePendingTransition(0, 0);
+                getActivity().overridePendingTransition(0, 0);
             }
         });
 

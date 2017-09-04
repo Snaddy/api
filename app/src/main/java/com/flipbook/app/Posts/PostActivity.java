@@ -66,7 +66,7 @@ public class PostActivity extends AppCompatActivity{
         //get processed array from processing activity
         processedArray = ProcessingActivity.processedImages;
 
-        imageView = (ImageView) findViewById(R.id.imageView);
+        imageView = (ImageView) findViewById(R.id.editAvatar);
         back = (ImageButton) findViewById(R.id.back);
         post = (Button) findViewById(R.id.post);
         caption = (EditText) findViewById(R.id.caption);

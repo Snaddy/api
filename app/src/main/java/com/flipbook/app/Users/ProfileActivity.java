@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -26,6 +27,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.flipbook.app.R;
 import com.flipbook.app.Posts.RequestSingleton;
 
@@ -47,16 +49,15 @@ import javax.net.ssl.HttpsURLConnection;
 public class ProfileActivity extends AppCompatActivity {
 
     private final static String GET_POSTS_URL = "https://railsphotoapp.herokuapp.com//api/v1/profile.json";
-    private final String cloudFront = "dytun7vbm6t2g.cloudfront.net";
-    private final String host = "flipapiphotos.s3.amazonaws.com";
 
     private ImageButton profile;
     private Button editProfile;
     private TextView textName, textUsername,textPosts, textFollowing, textFollowers, textBio;
     private ImageView profilePic;
     private GridView showPosts;
-    private String getEmail, getToken, username, name, bio, followers, followings, posts, email, avatarUrl;
+    private String getEmail, getToken, username, name, bio, followers, followings, posts, email;
     private Bitmap profilePicture;
+    private int gender;
     public static Activity profileActivity;
 
     @Override
@@ -85,8 +86,6 @@ public class ProfileActivity extends AppCompatActivity {
         showPosts = (GridView) findViewById(R.id.showPosts);
         profilePic = (ImageView) findViewById(R.id.profilepic);
 
-        profilePicture = null;
-
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         final Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
@@ -98,6 +97,7 @@ public class ProfileActivity extends AppCompatActivity {
                 intent.putExtra("username", username);
                 intent.putExtra("email", email);
                 intent.putExtra("bio", bio);
+                intent.putExtra("gender", gender);
                 startActivity(intent);
             }
         });
@@ -110,7 +110,6 @@ public class ProfileActivity extends AppCompatActivity {
         final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, GET_POSTS_URL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                System.out.println(response);
                 try {
                     //get user info
                     JSONObject user = (JSONObject) response.get("user");
@@ -132,10 +131,10 @@ public class ProfileActivity extends AppCompatActivity {
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
+                    gender = user.getInt("gender");
                     String avatarUrl = avatarObject.getString("url");
-                    String cloudUrl = avatarUrl.replaceAll(host, cloudFront);
-                    //Glide.with(getApplicationContext()).load(cloudUrl).dontAnimate().into(profilePic);
-                    getProfilePicture(cloudUrl, profilePic, intent);
+                    Glide.with(getApplicationContext()).load(avatarUrl).into(profilePic);
+                    intent.putExtra("avatar", avatarUrl);
 
                     //set user info
                     textName.setText(name);
@@ -177,30 +176,30 @@ public class ProfileActivity extends AppCompatActivity {
         RequestSingleton.getInstance(ProfileActivity.this).addToRequestQueue(jsonObjectRequest);
     }
 
-    private void getProfilePicture(final String url, final ImageView imageView, final Intent intent){
-        //async task to set profile picture
-        new AsyncTask<String, String, Bitmap>() {
-            @Override
-            protected Bitmap doInBackground(String... params) {
-                Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
-                Bitmap avatar = null;
-                try {
-                    avatar = Glide.with(getApplicationContext()).load(url).asBitmap().into(200, 200).get();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
-                return avatar;
-            }
-
-            //after all images are downloaded and animation is complete, start animation on loop
-            //set animation to image view
-            @Override
-            protected void onPostExecute(Bitmap bitmap) {
-                imageView.setImageBitmap(bitmap);
-                intent.putExtra("avatar", bitmap);
-            }
-        }.execute();
-    }
+//    private void getProfilePicture(final String url, final ImageView imageView, final Intent intent){
+//        //async task to set profile picture
+//        new AsyncTask<String, String, Bitmap>() {
+//            @Override
+//            protected Bitmap doInBackground(String... params) {
+//                Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
+//                Bitmap avatar = null;
+//                try {
+//                    avatar = Glide.with(getApplicationContext()).load(url).asBitmap().into(200, 200).get();
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                } catch (ExecutionException e) {
+//                    e.printStackTrace();
+//                }
+//                return avatar;
+//            }
+//
+//            //after all images are downloaded and animation is complete, start animation on loop
+//            //set animation to image view
+//            @Override
+//            protected void onPostExecute(Bitmap bitmap) {
+//                imageView.setImageBitmap(bitmap);
+//                intent.putExtra("avatar", bitmap);
+//            }
+//        }.execute();
+//    }
 }

@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -60,11 +59,12 @@ public class PersonalizeActivity extends AppCompatActivity{
 
     private int PICK_IMAGE_REQUEST = 1;
     private Bitmap centeredBitmap, resizedBitmap;
-    private ImageView imageView;
+    private ImageView profilePic;
     private EditText bio;
     private RelativeLayout changePic;
     private Button registerButton;
     private String encodedBio, username, name, email, password;
+    private Spinner spinner;
     private boolean spinnerInitialized;
     int gender;
 
@@ -72,11 +72,11 @@ public class PersonalizeActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personalize);
-        imageView = (ImageView) findViewById(R.id.imageView);
+        profilePic = (ImageView) findViewById(R.id.editAvatar);
         bio = (EditText) findViewById(R.id.bio);
         changePic = (RelativeLayout) findViewById(R.id.changePicture);
         registerButton = (Button) findViewById(R.id.register);
-        Spinner spinner = (Spinner) findViewById(R.id.gender);
+        spinner = (Spinner) findViewById(R.id.gender);
 
         String[] genders = new String[]{
                 "Gender",
@@ -105,18 +105,14 @@ public class PersonalizeActivity extends AppCompatActivity{
                 if(position==0) {
                     // Set the disable item text color
                     tv.setTextColor(getResources().getColor(R.color.hintColor));
-                }
-                else {
+                } else {
                     tv.setTextColor(getResources().getColor(R.color.textColor));
                 }
                 return view;
             }
-
         };
         adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
-
         spinner.setAdapter(adapter);
-
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -276,6 +272,7 @@ public class PersonalizeActivity extends AppCompatActivity{
         return byteArrayOutputStream.toByteArray();
     }
 
+    //image selection
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
@@ -302,8 +299,8 @@ public class PersonalizeActivity extends AppCompatActivity{
 
                 resizedBitmap = Bitmap.createScaledBitmap(centeredBitmap, 200, 200, true);
 
-                imageView = (ImageView) findViewById(R.id.imageView);
-                imageView.setImageBitmap(resizedBitmap);
+                profilePic = (ImageView) findViewById(R.id.editAvatar);
+                profilePic.setImageBitmap(resizedBitmap);
             } catch (IOException e) {
                 e.printStackTrace();
             }

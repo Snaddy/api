@@ -69,7 +69,7 @@ public class CameraActivity extends AppCompatActivity {
         exit = (ImageButton) findViewById(R.id.exit);
         next = (ImageButton) findViewById(R.id.next);
         preview = (FrameLayout) findViewById(R.id.imagePreview);
-        imageView = (ImageView) findViewById(R.id.imageView);
+        imageView = (ImageView) findViewById(R.id.editAvatar);
         imageView.bringToFront();
         imageArrayLayout = (LinearLayout) findViewById(R.id.imageArray);
         scrollView = (HorizontalScrollView) findViewById(R.id.scrollView);

@@ -50,7 +50,7 @@
             <com.flipbook.app.Posts.SquareImageView
                 android:layout_width="match_parent"
                 app:srcCompat="@android:color/transparent"
-                android:id="@+id/imageView"
+                android:id="@+id/editAvatar"
                 android:layout_height="match_parent"
                 tools:ignore="ContentDescription"
                 android:scaleType="fitXY"/>
