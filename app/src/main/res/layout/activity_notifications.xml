@@ -13,7 +13,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_above="@+id/appbar"
-        android:layout_below="@+id/search" />
+        android:layout_below="@+id/searchLayout" />
 
     <fragment android:name="com.flipbook.app.Fragments.AppBarFragment"
         android:id="@+id/appbar"

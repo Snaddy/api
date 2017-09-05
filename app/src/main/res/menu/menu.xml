@@ -22,7 +22,7 @@
         android:icon="@drawable/newpost" />
 
     <item
-        android:id="@+id/search"
+        android:id="@+id/searchLayout"
         app:showAsAction="always"
         android:title="search"
         android:icon="@drawable/search" />

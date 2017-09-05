@@ -29,7 +29,7 @@ public class AppBarFragment extends Fragment {
         home = (ImageButton) view.findViewById(R.id.home);
         notifications = (ImageButton) view.findViewById(R.id.notifications);
         newPost = (ImageButton) view.findViewById(R.id.newPost);
-        search = (ImageButton) view.findViewById(R.id.search);
+        search = (ImageButton) view.findViewById(R.id.searchButton);
         profile = (ImageButton) view.findViewById(R.id.profile);
 
         home.setOnClickListener(new View.OnClickListener() {

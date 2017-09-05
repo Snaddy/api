@@ -6,9 +6,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -39,6 +39,7 @@ public class SearchActivity extends AppCompatActivity {
 
     private static final String SEARCH_URL = "https://railsphotoapp.herokuapp.com//api/v1/search/";
 
+    private ImageButton searchButton;
     private EditText searchField;
     private ListView results;
     private UserAdapter userAdapter;
@@ -54,6 +55,9 @@ public class SearchActivity extends AppCompatActivity {
         prefs = getSharedPreferences("prefs", Context.MODE_PRIVATE);
         getEmail = prefs.getString("email", "");
         getToken = prefs.getString("auth_token", "");
+
+        searchButton = (ImageButton) findViewById(R.id.searchButton);
+        searchButton.setImageResource(R.drawable.search_selected);
 
         searchField = (EditText) findViewById(R.id.search_field);
         results = (ListView) findViewById(R.id.results);
