@@ -11,6 +11,7 @@ import android.widget.ImageButton;
 import com.flipbook.app.Camera.CameraActivity;
 import com.flipbook.app.Users.ProfileActivity;
 import com.flipbook.app.R;
+import com.flipbook.app.Users.SearchActivity;
 import com.flipbook.app.Welcome.WelcomeActivity;
 
 /**
@@ -51,6 +52,14 @@ public class AppBarFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getActivity(), CameraActivity.class));
+                getActivity().overridePendingTransition(0, 0);
+            }
+        });
+
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), SearchActivity.class));
                 getActivity().overridePendingTransition(0, 0);
             }
         });

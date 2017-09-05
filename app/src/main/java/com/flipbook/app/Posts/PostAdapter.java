@@ -46,7 +46,6 @@ public class PostAdapter extends ArrayAdapter {
 
     private final String likeURL = "https://railsphotoapp.herokuapp.com//api/v1/like/";
     private final String unlikeURL = "https://railsphotoapp.herokuapp.com//api/v1/unlike/";
-    private String userId;
 
     List list = new ArrayList();
 

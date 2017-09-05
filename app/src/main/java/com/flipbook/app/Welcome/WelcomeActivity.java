@@ -28,6 +28,7 @@ import com.flipbook.app.Posts.Posts;
 import com.flipbook.app.Posts.RequestSingleton;
 import com.flipbook.app.R;
 import com.flipbook.app.Users.LoginActivity;
+import com.flipbook.app.Users.ProfileActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -99,90 +100,90 @@ public class WelcomeActivity extends AppCompatActivity {
 
     private void update(final AlertDialog.Builder builder, final SharedPreferences.Editor editor){
             final JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(Request.Method.GET, GET_POSTS_URL, null, new Response.Listener<JSONArray>() {
-                @Override
-                public void onResponse(JSONArray response) {
-                    System.out.println(response);
-                    try {
-                        //loop through json Array
-                        for (int i = 0; i < response.length(); i++) {
-                            JSONObject postObj = (JSONObject)response.get(i);
-                            JSONObject post = (JSONObject)postObj.get("post");
-                            JSONObject user = (JSONObject) post.get("user");
-                            JSONArray images = (JSONArray) post.get("images");
-                            String id = post.getString("id");
-                            String username = user.getString("username");
-                            String caption = post.getString("caption");
-                            String decodedCaption = URLDecoder.decode(caption, "utf-8");
-                            String userId = user.getString("id");
-                            int postDate = Integer.parseInt(post.getString("posted"));
-                            int likes_count = post.getInt("get_likes_count");
-                            int speed = post.getInt("speed");
-                            boolean isLiked = post.getBoolean("liked");
-                            ArrayList<String> imageUrls = new ArrayList<>();
-                            for (int j = 0; j < images.length(); j++) {
-                                String url = "https://dytun7vbm6t2g.cloudfront.net/uploads/post/images/" + id + "/image" + j + ".jpg";
-                                imageUrls.add(url);
-                            }
-                            Posts posts = new Posts(username, decodedCaption, id, likes_count, speed ,imageUrls, isLiked, userId, getTimeAgo(postDate));
-                            postAdapter.add(posts);
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
+        @Override
+        public void onResponse(JSONArray response) {
+            System.out.println(response);
+            try {
+                //loop through json Array
+                for (int i = 0; i < response.length(); i++) {
+                    JSONObject postObj = (JSONObject)response.get(i);
+                    JSONObject post = (JSONObject)postObj.get("post");
+                    JSONObject user = (JSONObject) post.get("user");
+                    JSONArray images = (JSONArray) post.get("images");
+                    String id = post.getString("id");
+                    String username = user.getString("username");
+                    String caption = post.getString("caption");
+                    String decodedCaption = URLDecoder.decode(caption, "utf-8");
+                    String userId = user.getString("id");
+                    int postDate = Integer.parseInt(post.getString("posted"));
+                    int likes_count = post.getInt("get_likes_count");
+                    int speed = post.getInt("speed");
+                    boolean isLiked = post.getBoolean("liked");
+                    ArrayList<String> imageUrls = new ArrayList<>();
+                    for (int j = 0; j < images.length(); j++) {
+                        String url = "https://dytun7vbm6t2g.cloudfront.net/uploads/post/images/" + id + "/image" + j + ".jpg";
+                        imageUrls.add(url);
                     }
-                    loader.setVisibility(View.GONE);
+                    Posts posts = new Posts(username, decodedCaption, id, likes_count, speed ,imageUrls, isLiked, userId, getTimeAgo(postDate));
+                    postAdapter.add(posts);
                 }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(WelcomeActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
-                    NetworkResponse networkResponse = error.networkResponse;
-                    if(networkResponse == null){
-                        loader.setVisibility(View.GONE);
-                        Toast.makeText(WelcomeActivity.this, "Unable to update feed. Check internet connection", Toast.LENGTH_SHORT).show();
-                    }
-                    if (networkResponse != null && (networkResponse.statusCode == HttpsURLConnection.HTTP_UNAUTHORIZED ||
-                            networkResponse.statusCode == HttpsURLConnection.HTTP_CLIENT_TIMEOUT)) {
-                        editor.clear();
-                        editor.commit();
-                        LayoutInflater inflater = WelcomeActivity.this.getLayoutInflater();
-                        View dialogView = inflater.inflate(R.layout.dialog, null);
-                        builder.setView(dialogView);
-                        TextView title = (TextView) dialogView.findViewById(R.id.title);
-                        TextView message = (TextView) dialogView.findViewById(R.id.message);
-                        Button ok = (Button) dialogView.findViewById(R.id.okButton);
-                        title.setText("Connection timeout...");
-                        message.setText("Please sign in again");
-                        final AlertDialog alertDialog = builder.create();
-                        ok.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                alertDialog.cancel();
-                                startActivity(new Intent(getApplicationContext(), LoginActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
-                                finish();
-                            }
-                        });
-                        alertDialog.show();
-                    }
-                }
-            }) {
-                @Override
-                public String getBodyContentType() {
-                    return "application/json; charset=utf-8";
-                }
-
-                @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    HashMap<String, String> headers = new HashMap<>();
-                    headers.put("X-User-Token", getToken);
-                    headers.put("X-User-Email", getEmail);
-                    return headers;
-                }
-            };
-            RequestQueue requestQueue = RequestSingleton.getInstance(WelcomeActivity.this.getApplicationContext()).getRequestQueue();
-            RequestSingleton.getInstance(WelcomeActivity.this).addToRequestQueue(jsonObjectRequest);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            loader.setVisibility(View.GONE);
         }
+    }, new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            Toast.makeText(WelcomeActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+            NetworkResponse networkResponse = error.networkResponse;
+            if(networkResponse == null){
+                loader.setVisibility(View.GONE);
+                Toast.makeText(WelcomeActivity.this, "Unable to update feed. Check internet connection", Toast.LENGTH_SHORT).show();
+            }
+            if (networkResponse != null && (networkResponse.statusCode == HttpsURLConnection.HTTP_UNAUTHORIZED ||
+                    networkResponse.statusCode == HttpsURLConnection.HTTP_CLIENT_TIMEOUT)) {
+                editor.clear();
+                editor.commit();
+                LayoutInflater inflater = WelcomeActivity.this.getLayoutInflater();
+                View dialogView = inflater.inflate(R.layout.dialog, null);
+                builder.setView(dialogView);
+                TextView title = (TextView) dialogView.findViewById(R.id.title);
+                TextView message = (TextView) dialogView.findViewById(R.id.message);
+                Button ok = (Button) dialogView.findViewById(R.id.okButton);
+                title.setText("Connection timeout...");
+                message.setText("Please sign in again");
+                final AlertDialog alertDialog = builder.create();
+                ok.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        alertDialog.cancel();
+                        startActivity(new Intent(getApplicationContext(), LoginActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
+                        finish();
+                    }
+                });
+                alertDialog.show();
+            }
+        }
+    }) {
+        @Override
+        public String getBodyContentType() {
+            return "application/json; charset=utf-8";
+        }
+
+        @Override
+        public Map<String, String> getHeaders() throws AuthFailureError {
+            HashMap<String, String> headers = new HashMap<>();
+            headers.put("X-User-Token", getToken);
+            headers.put("X-User-Email", getEmail);
+            return headers;
+        }
+    };
+    RequestQueue requestQueue = RequestSingleton.getInstance(WelcomeActivity.this.getApplicationContext()).getRequestQueue();
+    RequestSingleton.getInstance(WelcomeActivity.this).addToRequestQueue(jsonObjectRequest);
+}
 
     public static String getTimeAgo(long time) {
         if (time < 1000000000000L) {

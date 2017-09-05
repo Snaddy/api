@@ -75,6 +75,12 @@
             android:screenOrientation="portrait">
         </activity>
 
+        <activity android:name=".Users.SearchActivity"
+            android:launchMode = "singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+
         <activity android:name=".Camera.CameraActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait">

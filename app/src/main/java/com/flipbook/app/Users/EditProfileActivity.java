@@ -456,7 +456,7 @@ public class EditProfileActivity extends Activity {
                     if(json.getString("result").equals("success")) {
                         ProfileActivity.profileActivity.finish();
                         editor.putString("email", editEmail.getText().toString());
-                        editor.putString("username", editName.getText().toString());
+                        editor.putString("username", editUsername.getText().toString());
                         editor.apply();
                         Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
                         intent.addFlags(intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
