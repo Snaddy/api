@@ -228,7 +228,6 @@ public class PostAdapter extends ArrayAdapter {
                     };
                     RequestQueue requestQueue = RequestSingleton.getInstance(getContext().getApplicationContext()).getRequestQueue();
                     RequestSingleton.getInstance(getContext()).addToRequestQueue(jsonObjectRequest);
-                    System.out.println(jsonObjectRequest);
                 }
             }
         });

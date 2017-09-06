@@ -72,7 +72,7 @@
                 android:layout_centerHorizontal="true"
                 android:id="@+id/info"
                 android:layout_below="@+id/followButton"
-                android:layout_toRightOf="@+id/profilepic">
+                android:layout_toRightOf="@+id/profilePic">
 
                 <TextView
                     android:text="Posts"
@@ -113,7 +113,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:id="@+id/profilepic"
+                android:id="@+id/profilePic"
                 android:layout_height="80dp"
                 android:layout_margin="5dp"
                 android:background="@color/dividerColor" />
@@ -124,8 +124,9 @@
                 android:background="@drawable/follow_button"
                 android:id="@+id/followButton"
                 android:layout_marginRight="5dp"
-                android:layout_alignTop="@+id/profilepic"
-                android:layout_toEndOf="@+id/profilepic" />
+                android:layout_alignTop="@+id/profilePic"
+                android:layout_toEndOf="@+id/profilePic"
+                android:textColor="@color/colorPrimary" />
         </RelativeLayout>
 
         <RelativeLayout

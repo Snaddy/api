@@ -22,8 +22,10 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.bumptech.glide.Glide;
 import com.flipbook.app.Posts.RequestSingleton;
 import com.flipbook.app.R;
+import com.flipbook.app.Welcome.WelcomeActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,8 +44,9 @@ import javax.net.ssl.HttpsURLConnection;
 public class UserActivity extends AppCompatActivity {
 
     private final static String GET_USER_URL = "https://railsphotoapp.herokuapp.com//api/v1/users/";
+    private final static String FOLLOW_URL = "https://railsphotoapp.herokuapp.com//api/v1/relationships/";
 
-    private ImageButton profile, back;
+    private ImageButton back;
     private Button profileButton;
     private TextView textUsername, textName, textPosts, textFollowing, textFollowers, textBio;
     private ImageView profilePic;
@@ -51,6 +54,7 @@ public class UserActivity extends AppCompatActivity {
     private GridView showPosts;
     private String getEmail, getToken, userId;
     private ProgressBar loader;
+    private Boolean isFollowing;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +70,7 @@ public class UserActivity extends AppCompatActivity {
         userId = bundle.getString("userId");
 
         profileButton = (Button) findViewById(R.id.followButton);
+        profilePic = (ImageView) findViewById(R.id.profilePic);
         profileInfo = (RelativeLayout) findViewById(R.id.profile_info);
         textName = (TextView) findViewById(R.id.name);
         textPosts = (TextView) findViewById(R.id.posts);
@@ -77,9 +82,7 @@ public class UserActivity extends AppCompatActivity {
         back = (ImageButton) findViewById(R.id.back);
         loader = (ProgressBar) findViewById(R.id.loader);
 
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-        getProfile(builder);
+        getProfile();
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,7 +92,7 @@ public class UserActivity extends AppCompatActivity {
         });
     }
 
-    private void getProfile(final AlertDialog.Builder builder) {
+    private void getProfile() {
         final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, GET_USER_URL + userId, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -110,6 +113,9 @@ public class UserActivity extends AppCompatActivity {
                     String followers = user.getString("get_followers");
                     String followings = user.getString("get_followings");
                     String bio = user.getString("bio");
+                    Boolean following = user.getBoolean("is_following");
+                    String avatar = user.getString("avatar");
+                    Glide.with(getApplicationContext()).load(avatar).dontAnimate().into(profilePic);
                     try {
                         bio = URLDecoder.decode(bio, "utf-8");
                     } catch (UnsupportedEncodingException e) {
@@ -122,6 +128,7 @@ public class UserActivity extends AppCompatActivity {
                     textFollowing.setText(followings + "  Following");
                     textUsername.setText("@" + username);
                     textBio.setText(bio);
+                    isFollowing = following;
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -155,6 +162,72 @@ public class UserActivity extends AppCompatActivity {
         };
         RequestQueue requestQueue = RequestSingleton.getInstance(UserActivity.this.getApplicationContext()).getRequestQueue();
         RequestSingleton.getInstance(UserActivity.this).addToRequestQueue(jsonObjectRequest);
+
+        profileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!isFollowing) {
+                    //profileButton.setEnabled(false);
+                    profileInfo.setSelected(!profileButton.isSelected());
+                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, FOLLOW_URL + userId, null, new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            profileButton.setText("Following");
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    }) {
+
+                        @Override
+                        public String getBodyContentType() {
+                            return "application/json; charset=utf-8";
+                        }
+
+                        @Override
+                        public Map<String, String> getHeaders() throws AuthFailureError {
+                            HashMap<String, String> headers = new HashMap<>();
+                            headers.put("X-User-Token", WelcomeActivity.getToken);
+                            headers.put("X-User-Email", WelcomeActivity.getEmail);
+                            return headers;
+                        }
+                    };
+                    RequestQueue requestQueue = RequestSingleton.getInstance(getApplicationContext().getApplicationContext()).getRequestQueue();
+                    RequestSingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjectRequest);
+                } else {
+                    //profileButton.setEnabled(false);
+                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, FOLLOW_URL + userId, null, new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            profileButton.setText("Follow");
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    }) {
+
+                        @Override
+                        public String getBodyContentType() {
+                            return "application/json; charset=utf-8";
+                        }
+
+                        @Override
+                        public Map<String, String> getHeaders() throws AuthFailureError {
+                            HashMap<String, String> headers = new HashMap<>();
+                            headers.put("X-User-Token", WelcomeActivity.getToken);
+                            headers.put("X-User-Email", WelcomeActivity.getEmail);
+                            return headers;
+                        }
+                    };
+                    RequestQueue requestQueue = RequestSingleton.getInstance(getApplicationContext().getApplicationContext()).getRequestQueue();
+                    RequestSingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjectRequest);
+                }
+            }
+        });
     }
 
     public void onPause(){
