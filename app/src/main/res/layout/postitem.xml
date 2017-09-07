@@ -14,10 +14,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="25dp"
-            android:layout_toRightOf="@+id/profilePic"
+            android:layout_toRightOf="@+id/userAvatar"
             android:id="@+id/username"
             android:layout_alignParentTop="true"
-            android:layout_alignBottom="@+id/profilePic"
+            android:layout_alignBottom="@+id/userAvatar"
             android:gravity="center_vertical"
             android:paddingLeft="10dp"
             android:textColor="@color/textColor"
@@ -29,7 +29,7 @@
         <ImageView
             android:layout_width="40dp"
             android:layout_height="match_parent"
-            android:id="@+id/profilePic"
+            android:id="@+id/userAvatar"
             android:padding="3dp" />
 
         <TextView

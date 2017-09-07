@@ -91,6 +91,11 @@
             android:screenOrientation="portrait" >
         </activity>
 
+        <activity android:name=".Posts.ShowActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" >
+        </activity>
+
         <activity android:name=".Posts.PostActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"

@@ -60,13 +60,11 @@ public class SearchActivity extends AppCompatActivity {
         searchButton.setImageResource(R.drawable.search_selected);
 
         searchField = (EditText) findViewById(R.id.search_field);
-        results = (ListView) findViewById(R.id.results);
         userAdapter = new UserAdapter(this, R.layout.user_item);
         loader = (ProgressBar) findViewById(R.id.loader);
         loader.setVisibility(View.INVISIBLE);
         results = (ListView) findViewById(R.id.results);
         results.setAdapter(userAdapter);
-        userAdapter.notifyDataSetChanged();
 
         searchField.addTextChangedListener(new TextWatcher() {
             //setup timer to run api request 0.5 secs after user is done typing

@@ -68,8 +68,6 @@ public class UserAdapter extends ArrayAdapter{
         userHolder.searchItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println(user.getUsername());
-                System.out.println(WelcomeActivity.prefs.getString("username", ""));
                 if(user.getUsername().equals(WelcomeActivity.prefs.getString("username", ""))) {
                     Intent intent = new Intent(getContext(), ProfileActivity.class);
                     getContext().startActivity(intent);

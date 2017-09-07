@@ -3,7 +3,6 @@ package com.flipbook.app.Users;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -52,9 +51,10 @@ public class UserActivity extends AppCompatActivity {
     private ImageView profilePic;
     private RelativeLayout profileInfo;
     private GridView showPosts;
-    private String getEmail, getToken, userId;
+    private String getEmail, getToken, userId, profilePicture;
     private ProgressBar loader;
     private Boolean isFollowing;
+    private int followerCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +70,7 @@ public class UserActivity extends AppCompatActivity {
         userId = bundle.getString("userId");
 
         profileButton = (Button) findViewById(R.id.followButton);
-        profilePic = (ImageView) findViewById(R.id.profilePic);
+        profilePic = (ImageView) findViewById(R.id.userAvatar);
         profileInfo = (RelativeLayout) findViewById(R.id.profile_info);
         textName = (TextView) findViewById(R.id.name);
         textPosts = (TextView) findViewById(R.id.posts);
@@ -96,7 +96,6 @@ public class UserActivity extends AppCompatActivity {
         final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, GET_USER_URL + userId, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                System.out.println(response);
                 try {
                     loader.setVisibility(View.GONE);
                     profileInfo.setVisibility(View.VISIBLE);
@@ -114,14 +113,20 @@ public class UserActivity extends AppCompatActivity {
                     String followings = user.getString("get_followings");
                     String bio = user.getString("bio");
                     Boolean following = user.getBoolean("is_following");
-                    String avatar = user.getString("avatar");
+                    if(!following){
+                        profileButton.setText("Follow");
+                    } else {
+                        profileButton.setText("Following");
+                    }
+                    //get avatar
+                    JSONObject avatarObj = (JSONObject) user.get("avatar");
+                    String avatar = avatarObj.getString("url");
                     Glide.with(getApplicationContext()).load(avatar).dontAnimate().into(profilePic);
                     try {
                         bio = URLDecoder.decode(bio, "utf-8");
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
-
                     textName.setText(name);
                     textPosts.setText(posts + "  Posts");
                     textFollowers.setText(followers + "  Followers");
@@ -129,6 +134,7 @@ public class UserActivity extends AppCompatActivity {
                     textUsername.setText("@" + username);
                     textBio.setText(bio);
                     isFollowing = following;
+                    followerCount = Integer.parseInt(followers);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -167,12 +173,23 @@ public class UserActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(!isFollowing) {
-                    //profileButton.setEnabled(false);
+                    profileButton.setEnabled(false);
+                    profileButton.setSelected(!profileButton.isSelected());
                     profileInfo.setSelected(!profileButton.isSelected());
                     JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, FOLLOW_URL + userId, null, new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
-                            profileButton.setText("Following");
+                            try {
+                                if(response.getString("status").equals("followed")) {
+                                    profileButton.setText("Following");
+                                    profileButton.setEnabled(true);
+                                    isFollowing = true;
+                                    followerCount++;
+                                    textFollowers.setText(String.valueOf(followerCount) + " Followers");
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }, new Response.ErrorListener() {
                         @Override
@@ -197,11 +214,21 @@ public class UserActivity extends AppCompatActivity {
                     RequestQueue requestQueue = RequestSingleton.getInstance(getApplicationContext().getApplicationContext()).getRequestQueue();
                     RequestSingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjectRequest);
                 } else {
-                    //profileButton.setEnabled(false);
+                    profileButton.setEnabled(false);
                     JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, FOLLOW_URL + userId, null, new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
-                            profileButton.setText("Follow");
+                            try {
+                                if(response.getString("status").equals("unfollowed")) {
+                                    profileButton.setText("Follow");
+                                    profileButton.setEnabled(true);
+                                    isFollowing = false;
+                                    followerCount--;
+                                    textFollowers.setText(String.valueOf(followerCount) + " Followers");
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }, new Response.ErrorListener() {
                         @Override

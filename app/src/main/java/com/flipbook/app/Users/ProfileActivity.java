@@ -23,9 +23,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.bumptech.glide.Glide;
+import com.flipbook.app.Posts.GridAdapter;
+import com.flipbook.app.Posts.GridImage;
+import com.flipbook.app.Posts.Posts;
 import com.flipbook.app.R;
 import com.flipbook.app.Posts.RequestSingleton;
+import com.google.gson.JsonArray;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -46,21 +51,20 @@ public class ProfileActivity extends AppCompatActivity {
 
     private ImageButton profile;
     private Button editProfile;
-    private TextView textName, textUsername,textPosts, textFollowing, textFollowers, textBio;
+    private TextView textName,textPosts, textFollowing, textFollowers, textBio;
     private ImageView profilePic;
     private GridView showPosts;
     private String getEmail, getToken, username, name, bio, followers, followings, posts, email;
     private int gender;
     public static Activity profileActivity;
+    private GridAdapter gridAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-       profileActivity = this;
-
-        System.out.print("restated");
+        profileActivity = this;
 
         final SharedPreferences prefs = getSharedPreferences("prefs", Context.MODE_PRIVATE);
 
@@ -76,8 +80,10 @@ public class ProfileActivity extends AppCompatActivity {
         textFollowers = (TextView) findViewById(R.id.followers);
         textFollowing = (TextView) findViewById(R.id.following);
         textBio = (TextView) findViewById(R.id.bio);
-        showPosts = (GridView) findViewById(R.id.showPosts);
-        profilePic = (ImageView) findViewById(R.id.profilePic);
+        profilePic = (ImageView) findViewById(R.id.userAvatar);
+        gridAdapter = new GridAdapter(this, R.layout.grid_item);
+        showPosts = (GridView) findViewById(R.id.profilePosts);
+        showPosts.setAdapter(gridAdapter);
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -94,9 +100,8 @@ public class ProfileActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
         getProfile(builder, intent);
-
+        System.out.print(showPosts.toString());
     }
 
     private void getProfile(final AlertDialog.Builder builder, final Intent intent) {
@@ -128,13 +133,29 @@ public class ProfileActivity extends AppCompatActivity {
                     String avatarUrl = avatarObject.getString("url");
                     Glide.with(getApplicationContext()).load(avatarUrl).into(profilePic);
                     intent.putExtra("avatar", avatarUrl);
-
                     //set user info
                     textName.setText(name);
                     textPosts.setText(posts + "  Posts");
                     textFollowers.setText(followers + "  Followers");
                     textFollowing.setText(followings + "  Following");
-                    textBio.setText(bio);
+                    if(bio.length() > 0) {
+                        textBio.setText(bio);
+                    } else {
+                        textBio.setVisibility(View.GONE);
+                    }
+
+                    //get posts
+                    JSONArray posts = user.getJSONArray("posts");
+                    for (int j = 0; j < posts.length(); j++) {
+                        JSONObject postObj = (JSONObject)posts.get(j);
+                        JSONObject post = (JSONObject)postObj.get("post");
+                        String id = post.getString("id");
+                        JSONArray images = post.getJSONArray("images");
+                        JSONObject url = images.getJSONObject(0);
+                        String avatar = url.getString("url");
+                        GridImage gridImage = new GridImage(id, avatar);
+                        gridAdapter.add(gridImage);
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
