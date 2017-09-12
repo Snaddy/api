@@ -1,4 +1,7 @@
-package com.flipbook.app.Registration;
+package com.flipbook.app.Uploads;
+
+import android.content.Context;
+import android.graphics.Bitmap;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -21,7 +24,7 @@ import java.util.Map;
  * FOR SINGLE IMAGE UPLOAD
  */
 
-public class AvatarMultipartRequest extends Request<NetworkResponse> {
+public class MultipartRequest extends Request<NetworkResponse> {
     private final String twoHyphens = "--";
     private final String lineEnd = "\r\n";
     private final String boundary = "apiclient-" + System.currentTimeMillis();
@@ -30,9 +33,9 @@ public class AvatarMultipartRequest extends Request<NetworkResponse> {
     private Response.ErrorListener mErrorListener;
     private Map<String, String> mHeaders;
 
-    public AvatarMultipartRequest(int method, String url,
-                                Response.Listener<NetworkResponse> listener,
-                                Response.ErrorListener errorListener) {
+    public MultipartRequest(int method, String url,
+                            Response.Listener<NetworkResponse> listener,
+                            Response.ErrorListener errorListener) {
         super(method, url, errorListener);
         this.mListener = listener;
         this.mErrorListener = errorListener;
@@ -60,10 +63,15 @@ public class AvatarMultipartRequest extends Request<NetworkResponse> {
                 textParse(dos, params, getParamsEncoding());
             }
 
-            //add dataparams
+            //add data params
             Map<String, DataPart> data = getByteData();
             if (data != null && data.size() > 0) {
                 dataParse(dos, data);
+            }
+
+            Map<String, ArrayList<DataPart>> dataArray = getArrayByteData();
+            if (dataArray != null && dataArray.size() > 0) {
+                dataParseArray(dos, dataArray);
             }
 
             // close multipart form data after text and file data
@@ -77,6 +85,10 @@ public class AvatarMultipartRequest extends Request<NetworkResponse> {
     }
 
     protected Map<String, DataPart> getByteData() throws AuthFailureError {
+        return null;
+    }
+
+    protected Map<String, ArrayList<DataPart>> getArrayByteData() throws AuthFailureError {
         return null;
     }
 
@@ -117,6 +129,22 @@ public class AvatarMultipartRequest extends Request<NetworkResponse> {
         }
     }
 
+    private void textParseArray(DataOutputStream dataOutputStream, Map<String, String> params, String encoding) throws IOException {
+        try {
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                buildTextPart(dataOutputStream, entry.getKey(), entry.getValue());
+            }
+        } catch (UnsupportedEncodingException uee) {
+            throw new RuntimeException("Encoding not supported: " + encoding, uee);
+        }
+    }
+
+    private void dataParseArray(DataOutputStream dataOutputStream, Map<String, ArrayList<DataPart>> data) throws IOException {
+        for (Map.Entry<String, ArrayList<DataPart>> entry : data.entrySet()) {
+            for(DataPart dataPart : entry.getValue())
+                buildDataPart(dataOutputStream, dataPart, entry.getKey());
+        }
+    }
 
     private void buildTextPart(DataOutputStream dataOutputStream, String parameterName, String parameterValue) throws IOException {
         dataOutputStream.writeBytes(twoHyphens + boundary + lineEnd);
@@ -154,25 +182,23 @@ public class AvatarMultipartRequest extends Request<NetworkResponse> {
         dataOutputStream.writeBytes(lineEnd);
     }
 
+    //compress image
+    public byte[] getFileDataFromDrawable(Context context, Bitmap bitmap) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 85, byteArrayOutputStream);
+        return byteArrayOutputStream.toByteArray();
+    }
 
     public class DataPart {
         private String fileName;
         private byte[] content;
         private String type;
 
-        public DataPart() {
-        }
-
 
         public DataPart(String name, byte[] data, String mimeType) {
             fileName = name;
             content = data;
             type = mimeType;
-        }
-
-        public DataPart(String name, byte[] data) {
-            fileName = name;
-            content = data;
         }
 
         public String getFileName() {

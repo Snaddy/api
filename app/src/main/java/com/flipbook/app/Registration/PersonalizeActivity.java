@@ -34,12 +34,12 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.flipbook.app.Posts.RequestSingleton;
 import com.flipbook.app.R;
+import com.flipbook.app.Uploads.MultipartRequest;
 import com.flipbook.app.Welcome.WelcomeActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -179,7 +179,7 @@ public class PersonalizeActivity extends AppCompatActivity{
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        AvatarMultipartRequest multipartRequest = new AvatarMultipartRequest(Request.Method.POST, URL, new Response.Listener<NetworkResponse>() {
+        MultipartRequest multipartRequest = new MultipartRequest(Request.Method.POST, URL, new Response.Listener<NetworkResponse>() {
             @Override
             public void onResponse(NetworkResponse response) {
                 pd.dismiss();
@@ -264,12 +264,6 @@ public class PersonalizeActivity extends AppCompatActivity{
         multipartRequest.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         RequestQueue requestQueue = RequestSingleton.getInstance(PersonalizeActivity.this.getApplicationContext()).getRequestQueue();
         RequestSingleton.getInstance(getBaseContext()).addToRequestQueue(multipartRequest);
-    }
-
-    public byte[] getFileDataFromDrawable(Context context, Bitmap bitmap) {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, byteArrayOutputStream);
-        return byteArrayOutputStream.toByteArray();
     }
 
     //image selection

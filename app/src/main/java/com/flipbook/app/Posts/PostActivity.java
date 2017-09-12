@@ -26,6 +26,7 @@ import com.android.volley.Response;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.flipbook.app.R;
+import com.flipbook.app.Uploads.MultipartRequest;
 import com.flipbook.app.Welcome.WelcomeActivity;
 
 import org.json.JSONException;
@@ -115,7 +116,7 @@ public class PostActivity extends AppCompatActivity{
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        PostMultipartRequest multipartRequest = new PostMultipartRequest(Request.Method.POST, CREATE_POSTS_URL, new Response.Listener<NetworkResponse>() {
+        MultipartRequest multipartRequest = new MultipartRequest(Request.Method.POST, CREATE_POSTS_URL, new Response.Listener<NetworkResponse>() {
             @Override
             public void onResponse(NetworkResponse response) {
                 pd.dismiss();
@@ -178,7 +179,7 @@ public class PostActivity extends AppCompatActivity{
             }
 
             @Override
-            protected Map<String, ArrayList<DataPart>> getByteData() {
+            protected Map<String, ArrayList<DataPart>> getArrayByteData() {
                 Map<String, ArrayList<DataPart>> dataParams = new HashMap<>();
                 ArrayList<DataPart> arrayList = new ArrayList<>();
                 for (int i = 0; i < processedArray.size(); i++) {
@@ -191,11 +192,5 @@ public class PostActivity extends AppCompatActivity{
         multipartRequest.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         RequestQueue requestQueue = RequestSingleton.getInstance(PostActivity.this.getApplicationContext()).getRequestQueue();
         RequestSingleton.getInstance(getBaseContext()).addToRequestQueue(multipartRequest);
-    }
-
-    public byte[] getFileDataFromDrawable(Context context, Bitmap bitmap) {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, byteArrayOutputStream);
-        return byteArrayOutputStream.toByteArray();
     }
 }

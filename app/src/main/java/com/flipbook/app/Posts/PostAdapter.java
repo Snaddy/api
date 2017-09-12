@@ -115,7 +115,7 @@ public class PostAdapter extends ArrayAdapter {
 
         //download first display image :)
         if(posts.getImages().size() > 0) {
-            Glide.with(getContext()).load(posts.getImages().get(0)).downloadOnly(1600, 1600);
+            Glide.with(getContext()).load(posts.getImages().get(0)).downloadOnly(1080, 1080);
             Glide.with(getContext()).load(posts.getImages().get(0)).diskCacheStrategy(DiskCacheStrategy.SOURCE).placeholder(R.color.colorWhite).dontAnimate().into(postHolder.images);
         }
             //set click listener for imageview

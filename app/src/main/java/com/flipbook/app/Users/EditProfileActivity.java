@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -43,9 +42,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.bumptech.glide.Glide;
 import com.flipbook.app.R;
 import com.flipbook.app.Posts.RequestSingleton;
-import com.flipbook.app.Registration.AvatarMultipartRequest;
-import com.flipbook.app.Registration.PersonalizeActivity;
-import com.flipbook.app.Welcome.WelcomeActivity;
+import com.flipbook.app.Uploads.MultipartRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,7 +51,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -446,7 +442,7 @@ public class EditProfileActivity extends Activity {
         pd.setCanceledOnTouchOutside(false);
         pd.setMessage("Updating, please wait...");
         pd.show();
-        AvatarMultipartRequest multipartRequest = new AvatarMultipartRequest(Request.Method.PUT, EDIT_USER_URL, new Response.Listener<NetworkResponse>() {
+        MultipartRequest multipartRequest = new MultipartRequest(Request.Method.PUT, EDIT_USER_URL, new Response.Listener<NetworkResponse>() {
             @Override
             public void onResponse(NetworkResponse response) {
                 pd.dismiss();

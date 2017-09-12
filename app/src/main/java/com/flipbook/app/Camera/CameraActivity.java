@@ -291,12 +291,12 @@ public class CameraActivity extends AppCompatActivity {
                     m.preScale(-1, 1);
                     Bitmap image = Bitmap.createBitmap(picture, 0, 0, picture.getWidth(), picture.getHeight(), m2, true);
                     Bitmap flip = Bitmap.createBitmap(image, 0, 0, image.getWidth(), image.getWidth(), m, true);
-                    picture = Bitmap.createScaledBitmap(flip, 1600, 1600, true);
+                    picture = Bitmap.createScaledBitmap(flip, 1080, 1080, true);
                 }
                 if(currentCameraId == Camera.CameraInfo.CAMERA_FACING_BACK) {
                     Bitmap image = Bitmap.createBitmap(picture, 0, 0, picture.getWidth(), picture.getHeight(), matrix, true);
                     Bitmap croppedImage = Bitmap.createBitmap(image, 0, 0, image.getWidth(), image.getWidth());
-                    picture = Bitmap.createScaledBitmap(croppedImage, 1600, 1600, true);
+                    picture = Bitmap.createScaledBitmap(croppedImage, 1080, 1080, true);
                 }
             imageList.add(picture);
             final ImageView view = new ImageView(getApplicationContext());
@@ -336,7 +336,7 @@ public class CameraActivity extends AppCompatActivity {
             //add button and image to relative layout
             close.setLayoutParams(params);
             layout.addView(view);
-            layout.addView(close, dpToPixels(30), dpToPixels(30));
+            layout.addView(close, view.getWidth()/6, view.getHeight()/6);
             layout.setPadding(imagePadding, imagePadding, imagePadding, imagePadding);
             imageArrayLayout.addView(layout, imageArrayLayout.getHeight(), picture.getHeight());
 

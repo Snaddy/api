@@ -2,41 +2,15 @@ package com.flipbook.app.Posts;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.AnimationDrawable;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.flipbook.app.R;
-import com.flipbook.app.Users.ProfileActivity;
-import com.flipbook.app.Users.UserActivity;
-import com.flipbook.app.Welcome.WelcomeActivity;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Created by Hayden on 2017-09-06.
@@ -83,7 +57,7 @@ public class GridAdapter extends ArrayAdapter {
         final GridImage gridImage = (GridImage) this.getItem(position);
 
         //download first display image :)
-        Glide.with(getContext()).load(gridImage.getImage()).override(400, 400).into(gridHolder.imageView);
+        Glide.with(getContext()).load(gridImage.getImage()).override(200, 200).dontAnimate().into(gridHolder.imageView);
 
         gridHolder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
