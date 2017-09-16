@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -54,6 +55,7 @@ public class WelcomeActivity extends AppCompatActivity {
     private static final int HOUR_MILLIS = 60 * MINUTE_MILLIS;
     private static final int DAY_MILLIS = 24 * HOUR_MILLIS;
     private static final int WEEK_MILLIS = 7 * DAY_MILLIS;
+    private static final int SOCKET_TIMEOUT_MS = 10000;
 
     public static String getEmail, getToken;
     private ImageButton home;
@@ -102,7 +104,6 @@ public class WelcomeActivity extends AppCompatActivity {
             final JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(Request.Method.GET, GET_POSTS_URL, null, new Response.Listener<JSONArray>() {
         @Override
         public void onResponse(JSONArray response) {
-            System.out.println(response);
             try {
                 //loop through json Array
                 for (int i = 0; i < response.length(); i++) {
@@ -115,16 +116,19 @@ public class WelcomeActivity extends AppCompatActivity {
                     String caption = post.getString("caption");
                     String decodedCaption = URLDecoder.decode(caption, "utf-8");
                     String userId = user.getString("id");
+                    JSONObject userAvatar = user.getJSONObject("avatar");
+                    String userAvatarUrl = userAvatar.getString("url");
                     int postDate = Integer.parseInt(post.getString("posted"));
                     int likes_count = post.getInt("get_likes_count");
                     int speed = post.getInt("speed");
                     boolean isLiked = post.getBoolean("liked");
                     ArrayList<String> imageUrls = new ArrayList<>();
                     for (int j = 0; j < images.length(); j++) {
-                        String url = "https://dytun7vbm6t2g.cloudfront.net/uploads/post/images/" + id + "/image" + j + ".jpg";
+                        JSONObject image = images.getJSONObject(j);
+                        String url = image.getString("url");
                         imageUrls.add(url);
                     }
-                    Posts posts = new Posts(username, decodedCaption, id, likes_count, speed ,imageUrls, isLiked, userId, getTimeAgo(postDate));
+                    Posts posts = new Posts(username, decodedCaption, id, userAvatarUrl,likes_count, speed ,imageUrls, isLiked, userId, getTimeAgo(postDate), false);
                     postAdapter.add(posts);
                 }
             } catch (JSONException e) {
@@ -181,9 +185,19 @@ public class WelcomeActivity extends AppCompatActivity {
             return headers;
         }
     };
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
+                SOCKET_TIMEOUT_MS,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
     RequestQueue requestQueue = RequestSingleton.getInstance(WelcomeActivity.this.getApplicationContext()).getRequestQueue();
     RequestSingleton.getInstance(WelcomeActivity.this).addToRequestQueue(jsonObjectRequest);
 }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        overridePendingTransition(0, 0);
+    }
 
     public static String getTimeAgo(long time) {
         if (time < 1000000000000L) {

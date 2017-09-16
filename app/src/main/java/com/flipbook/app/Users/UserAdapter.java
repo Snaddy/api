@@ -63,7 +63,7 @@ public class UserAdapter extends ArrayAdapter{
         userHolder.username.setText(user.getUsername());
         userHolder.name.setText(user.getName());
         //show user profile picture
-        Glide.with(getContext()).load(user.getAvatar()).dontAnimate().error(R.drawable.profile_selected).into(userHolder.avatar);
+        Glide.with(getContext()).load(user.getAvatar()).into(userHolder.avatar);
 
         userHolder.searchItem.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -23,6 +23,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.flipbook.app.Posts.GridAdapter;
 import com.flipbook.app.Posts.GridImage;
 import com.flipbook.app.Posts.Posts;
@@ -85,8 +86,6 @@ public class ProfileActivity extends AppCompatActivity {
         showPosts = (GridView) findViewById(R.id.profilePosts);
         showPosts.setAdapter(gridAdapter);
 
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
         final Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
 
         editProfile.setOnClickListener(new View.OnClickListener() {
@@ -100,11 +99,11 @@ public class ProfileActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        getProfile(builder, intent);
+        getProfile(intent);
         System.out.print(showPosts.toString());
     }
 
-    private void getProfile(final AlertDialog.Builder builder, final Intent intent) {
+    private void getProfile(final Intent intent) {
         final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, GET_POSTS_URL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -131,7 +130,7 @@ public class ProfileActivity extends AppCompatActivity {
                     }
                     gender = user.getInt("gender");
                     String avatarUrl = avatarObject.getString("url");
-                    Glide.with(getApplicationContext()).load(avatarUrl).into(profilePic);
+                    Glide.with(getApplicationContext()).load(avatarUrl).apply(new RequestOptions().circleCrop()).into(profilePic);
                     intent.putExtra("avatar", avatarUrl);
                     //set user info
                     textName.setText(name);
@@ -153,7 +152,7 @@ public class ProfileActivity extends AppCompatActivity {
                         JSONArray images = post.getJSONArray("images");
                         JSONObject url = images.getJSONObject(0);
                         String avatar = url.getString("url");
-                        GridImage gridImage = new GridImage(id, avatar);
+                        GridImage gridImage = new GridImage(id, avatar, username);
                         gridAdapter.add(gridImage);
                     }
                 } catch (JSONException e) {
@@ -190,30 +189,9 @@ public class ProfileActivity extends AppCompatActivity {
         RequestSingleton.getInstance(ProfileActivity.this).addToRequestQueue(jsonObjectRequest);
     }
 
-//    private void getProfilePicture(final String url, final ImageView imageView, final Intent intent){
-//        //async task to set profile picture
-//        new AsyncTask<String, String, Bitmap>() {
-//            @Override
-//            protected Bitmap doInBackground(String... params) {
-//                Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
-//                Bitmap avatar = null;
-//                try {
-//                    avatar = Glide.with(getApplicationContext()).load(url).asBitmap().into(200, 200).get();
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                } catch (ExecutionException e) {
-//                    e.printStackTrace();
-//                }
-//                return avatar;
-//            }
-//
-//            //after all images are downloaded and animation is complete, start animation on loop
-//            //set animation to image view
-//            @Override
-//            protected void onPostExecute(Bitmap bitmap) {
-//                imageView.setImageBitmap(bitmap);
-//                intent.putExtra("avatar", bitmap);
-//            }
-//        }.execute();
-//    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        overridePendingTransition(0, 0);
+    }
 }

@@ -7,20 +7,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <Button
-        android:text="Post"
-        android:layout_width="wrap_content"
-        android:layout_height="35dp"
-        android:id="@+id/post"
-        android:background="@color/colorPrimary"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/images"
         android:textSize="18sp"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        tools:ignore="HardcodedText" />
+        android:background="@drawable/checkmark"
+        android:padding="10dp" />
 
     <ImageButton
-        android:layout_width="35dp"
-        android:layout_height="35dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         app:srcCompat="@drawable/backarrow"
         android:id="@+id/back"
         android:background="@color/colorPrimary"
@@ -37,10 +36,10 @@
         android:id="@+id/caption"
         android:textColor="@color/textColor"
         android:textColorHint="@color/hintColor"
-        android:hint="Write your caption"
+        android:hint="Write a caption"
         android:textSize="18sp"
         tools:ignore="HardcodedText"
-        android:layout_below="@+id/post"
+        android:layout_below="@+id/images"
         android:background="@drawable/divider"
         android:layout_marginTop="30dp"
         android:paddingTop="5dp"

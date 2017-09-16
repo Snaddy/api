@@ -1,5 +1,6 @@
 package com.flipbook.app.Posts;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,12 +9,14 @@ import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.android.volley.AuthFailureError;
@@ -23,7 +26,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 import com.flipbook.app.R;
 import com.flipbook.app.Users.ProfileActivity;
 import com.flipbook.app.Users.UserActivity;
@@ -81,9 +89,12 @@ public class PostAdapter extends ArrayAdapter {
             postHolder.caption = (TextView) row.findViewById(R.id.caption);
             postHolder.likes = (TextView) row.findViewById(R.id.likes);
             postHolder.images = (ImageView) row.findViewById(R.id.images);
+            postHolder.avatarImageView = (ImageView) row.findViewById(R.id.userAvatar);
             postHolder.likeButton = (ImageButton) row.findViewById(R.id.imageButton);
             postHolder.postDate = (TextView) row.findViewById(R.id.postDate);
+            postHolder.loader = (ProgressBar) row.findViewById(R.id.loader);
             row.setTag(postHolder);
+            postHolder.loader.setVisibility(View.INVISIBLE);
         } else {
             postHolder = (PostHolder) row.getTag();
         }
@@ -91,6 +102,10 @@ public class PostAdapter extends ArrayAdapter {
         final Posts posts = (Posts) this.getItem(position);
         postHolder.username.setText(posts.getUsername());
         postHolder.postDate.setText(posts.getPostDate());
+
+        //set user profile picture
+        Glide.with(getContext()).load(posts.getUserAvatar()).apply(new RequestOptions().circleCrop()).into(postHolder.avatarImageView);
+
         //if no caption
         if(posts.getCaption().length() == 0){
             postHolder.caption.setVisibility(View.GONE);
@@ -114,15 +129,20 @@ public class PostAdapter extends ArrayAdapter {
         }
 
         //download first display image :)
-        if(posts.getImages().size() > 0) {
-            Glide.with(getContext()).load(posts.getImages().get(0)).downloadOnly(1080, 1080);
-            Glide.with(getContext()).load(posts.getImages().get(0)).diskCacheStrategy(DiskCacheStrategy.SOURCE).placeholder(R.color.colorWhite).dontAnimate().into(postHolder.images);
-        }
-            //set click listener for imageview
+        Glide.with(getContext()).load(posts.getImages().get(0)).into(postHolder.images);
+        //set click listener for imageview
         postHolder.images.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createPhotoAnimation(posts, postHolder.images);
+                System.out.println(posts.isChecked());
+                if(!posts.isChecked()) {
+                    postHolder.loader.setVisibility(View.VISIBLE);
+                    createPhotoAnimation(posts, postHolder.images, postHolder);
+                    posts.setChecked(true);
+                } else {
+                    postHolder.loader.setVisibility(View.GONE);
+                    createPhotoAnimation(posts, postHolder.images, postHolder);
+                }
             }
         });
 
@@ -238,14 +258,14 @@ public class PostAdapter extends ArrayAdapter {
     static class PostHolder {
         TextView username, caption, likes, postDate;
         ImageButton likeButton;
-        ImageView images;
+        ImageView images, avatarImageView;
+        ProgressBar loader;
     }
 
-    //method to download all images in a post and making it into an animation
-    public void createPhotoAnimation(final Posts posts, final ImageView imageView) {
+    //download all images in a post and make it into an animation
+    private void createPhotoAnimation(final Posts posts, final ImageView imageView, final PostHolder postHolder) {
         final AnimationDrawable animation = new AnimationDrawable();
         final int speed = Math.round(1.0f / posts.getSpeed() * 1000.0f);
-
         //async task to cache all images
         new AsyncTask<String, String, AnimationDrawable>() {
             @Override
@@ -253,16 +273,15 @@ public class PostAdapter extends ArrayAdapter {
                 Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
                 //iterate through all images and convert into bitmaps
                 for (int i = 0; i < posts.getImages().size(); i++) {
-                    Bitmap b = null;
+                    Drawable d = null;
                     try {
-                        b = Glide.with(getContext()).load(posts.getImages().get(i)).asBitmap().into(1600, 1600).get();
+                        d = Glide.with(getContext()).load(posts.getImages().get(i)).into(1080,1080).get();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     } catch (ExecutionException e) {
                         e.printStackTrace();
                     }
                     //add images to animation
-                    Drawable d = new BitmapDrawable(getContext().getResources(), b);
                     animation.addFrame(d, speed);
                 }
                 return animation;
@@ -272,6 +291,7 @@ public class PostAdapter extends ArrayAdapter {
             //set animation to image view
             @Override
             protected void onPostExecute(AnimationDrawable animationDrawable) {
+                postHolder.loader.setVisibility(View.GONE);
                 animation.start();
                 animation.setOneShot(false);
                 imageView.setImageDrawable(animation);

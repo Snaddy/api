@@ -22,10 +22,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.flipbook.app.Posts.GridAdapter;
+import com.flipbook.app.Posts.GridImage;
 import com.flipbook.app.Posts.RequestSingleton;
 import com.flipbook.app.R;
 import com.flipbook.app.Welcome.WelcomeActivity;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -51,10 +55,11 @@ public class UserActivity extends AppCompatActivity {
     private ImageView profilePic;
     private RelativeLayout profileInfo;
     private GridView showPosts;
-    private String getEmail, getToken, userId, profilePicture;
+    private String getEmail, getToken, userId, username, name, bio, followers, followings, posts;
     private ProgressBar loader;
     private Boolean isFollowing;
     private int followerCount;
+    private GridAdapter gridAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,10 +83,11 @@ public class UserActivity extends AppCompatActivity {
         textFollowing = (TextView) findViewById(R.id.following);
         textUsername = (TextView) findViewById(R.id.username);
         textBio = (TextView) findViewById(R.id.bio);
-        showPosts = (GridView) findViewById(R.id.showPosts);
         back = (ImageButton) findViewById(R.id.back);
         loader = (ProgressBar) findViewById(R.id.loader);
-
+        gridAdapter = new GridAdapter(this, R.layout.grid_item);
+        showPosts = (GridView) findViewById(R.id.showPosts);
+        showPosts.setAdapter(gridAdapter);
         getProfile();
 
         back.setOnClickListener(new View.OnClickListener() {
@@ -100,42 +106,58 @@ public class UserActivity extends AppCompatActivity {
                     loader.setVisibility(View.GONE);
                     profileInfo.setVisibility(View.VISIBLE);
                     showPosts.setVisibility(View.VISIBLE);
+                    //get user info
                     JSONObject user = (JSONObject) response.get("user");
-                    String username = user.getString("username");
-                    String name = user.getString("name");
+                    JSONObject avatarObject = (JSONObject) user.get("avatar");
+                    name = user.getString("name");
                     try {
                         name = URLDecoder.decode(name, "utf-8");
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
-                    String posts = user.getString("get_posts");
-                    String followers = user.getString("get_followers");
-                    String followings = user.getString("get_followings");
-                    String bio = user.getString("bio");
+                    username = user.getString("username");
+                    posts = user.getString("get_posts");
+                    followers = user.getString("get_followers");
+                    followings = user.getString("get_followings");
+                    bio = user.getString("bio");
+                    try {
+                        bio = URLDecoder.decode(bio, "utf-8");
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                    String avatarUrl = avatarObject.getString("url");
+                    Glide.with(getApplicationContext()).load(avatarUrl).apply(new RequestOptions().circleCrop()).into(profilePic);
+                    //set user info
+                    textName.setText(name);
+                    textPosts.setText(posts + "  Posts");
+                    textFollowers.setText(followers + "  Followers");
+                    textFollowing.setText(followings + "  Following");
+                    if(bio.length() > 0) {
+                        textBio.setText(bio);
+                    } else {
+                        textBio.setVisibility(View.GONE);
+                    }
+                    //see if user is currently following the selected user
                     Boolean following = user.getBoolean("is_following");
                     if(!following){
                         profileButton.setText("Follow");
                     } else {
                         profileButton.setText("Following");
                     }
-                    //get avatar
-                    JSONObject avatarObj = (JSONObject) user.get("avatar");
-                    String avatar = avatarObj.getString("url");
-                    Glide.with(getApplicationContext()).load(avatar).dontAnimate().into(profilePic);
-                    try {
-                        bio = URLDecoder.decode(bio, "utf-8");
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
-                    textName.setText(name);
-                    textPosts.setText(posts + "  Posts");
-                    textFollowers.setText(followers + "  Followers");
-                    textFollowing.setText(followings + "  Following");
-                    textUsername.setText("@" + username);
-                    textBio.setText(bio);
+                    //set the following boolean
                     isFollowing = following;
-                    followerCount = Integer.parseInt(followers);
-
+                    //get posts
+                    JSONArray posts = user.getJSONArray("posts");
+                    for (int j = 0; j < posts.length(); j++) {
+                        JSONObject postObj = (JSONObject)posts.get(j);
+                        JSONObject post = (JSONObject)postObj.get("post");
+                        String id = post.getString("id");
+                        JSONArray images = post.getJSONArray("images");
+                        JSONObject url = images.getJSONObject(0);
+                        String avatar = url.getString("url");
+                        GridImage gridImage = new GridImage(id, avatar, username);
+                        gridAdapter.add(gridImage);
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

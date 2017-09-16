@@ -5,11 +5,13 @@ package com.flipbook.app.Posts;
  */
 
 public class GridImage {
-    private String id, image;
+    private String id, image, username;
+    private boolean checked;
 
-    public GridImage(String id, String image) {
+    public GridImage(String id, String image, String username) {
         this.id = id;
         this.setImage(image);
+        this.username = username;
     }
 
     public String getId() {
@@ -19,6 +21,8 @@ public class GridImage {
     public String getImage() {
         return image;
     }
+
+    public String getUsername() {return username;}
 
     public void setImage(String image) {
         this.image = image;

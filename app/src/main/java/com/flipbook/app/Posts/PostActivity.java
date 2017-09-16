@@ -32,7 +32,6 @@ import com.flipbook.app.Welcome.WelcomeActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -69,7 +68,7 @@ public class PostActivity extends AppCompatActivity{
 
         imageView = (ImageView) findViewById(R.id.editAvatar);
         back = (ImageButton) findViewById(R.id.back);
-        post = (Button) findViewById(R.id.post);
+        post = (Button) findViewById(R.id.images);
         caption = (EditText) findViewById(R.id.caption);
 
         animation = new AnimationDrawable();
@@ -85,6 +84,7 @@ public class PostActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(), ProcessingActivity.class));
+                overridePendingTransition(0, 0);
                 ProcessingActivity.processedImages.clear();
                 finish();
             }
@@ -192,5 +192,11 @@ public class PostActivity extends AppCompatActivity{
         multipartRequest.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         RequestQueue requestQueue = RequestSingleton.getInstance(PostActivity.this.getApplicationContext()).getRequestQueue();
         RequestSingleton.getInstance(getBaseContext()).addToRequestQueue(multipartRequest);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        overridePendingTransition(0, 0);
     }
 }

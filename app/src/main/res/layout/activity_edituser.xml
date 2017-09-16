@@ -19,9 +19,7 @@
         <ImageView
             android:layout_width="80dp"
             android:layout_height="80dp"
-            app:srcCompat="@drawable/profile_selected"
             android:id="@+id/editAvatar"
-            android:background="@color/dividerColor"
             android:layout_marginRight="10dp"
             android:layout_marginBottom="1dp"
             android:layout_marginLeft="1dp"

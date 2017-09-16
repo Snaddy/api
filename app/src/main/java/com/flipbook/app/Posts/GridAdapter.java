@@ -57,14 +57,14 @@ public class GridAdapter extends ArrayAdapter {
         final GridImage gridImage = (GridImage) this.getItem(position);
 
         //download first display image :)
-        Glide.with(getContext()).load(gridImage.getImage()).override(200, 200).dontAnimate().into(gridHolder.imageView);
+        Glide.with(getContext()).load(gridImage.getImage()).into(gridHolder.imageView);
 
         gridHolder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.print("Clicked");
                 Intent intent = new Intent(getContext(), ShowActivity.class);
                 intent.putExtra("postId", gridImage.getId());
+                intent.putExtra("username", gridImage.getUsername());
                 getContext().startActivity(intent);
             }
         });

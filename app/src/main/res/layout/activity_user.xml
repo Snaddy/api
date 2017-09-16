@@ -6,39 +6,6 @@
     android:background="@android:color/white">
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:id="@+id/header">
-
-        <ImageButton
-            android:layout_width="35dp"
-            android:layout_height="match_parent"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:id="@+id/back"
-            android:background="@color/colorPrimary"
-            app:srcCompat="@drawable/backarrow" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:layout_centerHorizontal="true"
-            android:id="@+id/username"
-            android:textColor="@color/textColor"
-            android:textSize="16sp" />
-
-    </RelativeLayout>
-
-    <fragment android:name="com.flipbook.app.Fragments.AppBarFragment"
-        android:id="@+id/appbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        tools:layout="@layout/appbar" />
-
-    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/profile"
@@ -112,14 +79,14 @@
 
             <ImageView
                 android:layout_width="80dp"
-                app:srcCompat="@color/dividerColor"
+                app:srcCompat="@drawable/profile_selected"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:id="@+id/userAvatar"
                 android:layout_height="80dp"
                 android:layout_margin="5dp"
-                android:background="@color/dividerColor" />
+                android:background="@drawable/circle_shape" />
 
             <Button
                 android:layout_width="match_parent"
@@ -165,19 +132,55 @@
 
     </RelativeLayout>
 
-        <GridView
-            android:layout_width="match_parent"
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/header"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:background="@drawable/divider">
+
+        <ImageButton
+            android:layout_width="50dp"
             android:layout_height="match_parent"
-            android:id="@+id/showPosts"
-            android:numColumns="2"
-            android:scrollbars="none"
-            android:layout_alignParentBottom="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/profile_info"
-            android:visibility="invisible">
-        </GridView>
+            android:id="@+id/back"
+            android:background="@color/colorPrimary"
+            app:srcCompat="@drawable/backarrow" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/username"
+            android:textColor="@color/textColor"
+            android:textSize="18sp" />
 
     </RelativeLayout>
 
+    <GridView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/showPosts"
+        android:numColumns="2"
+        android:scrollbars="none"
+        android:visibility="invisible"
+        android:layout_alignParentStart="false"
+        android:layout_above="@+id/appbar"
+        android:layout_below="@+id/profile">
+    </GridView>
+
+    <fragment android:name="com.flipbook.app.Fragments.AppBarFragment"
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        tools:layout="@layout/appbar"
+ />
 
 </RelativeLayout>

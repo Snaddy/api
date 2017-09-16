@@ -40,6 +40,7 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.flipbook.app.R;
 import com.flipbook.app.Posts.RequestSingleton;
 import com.flipbook.app.Uploads.MultipartRequest;
@@ -128,7 +129,7 @@ public class EditProfileActivity extends Activity {
         editName.setText(name);
         editEmail.setText(email);
         editBio.setText(bio);
-        Glide.with(getApplicationContext()).load(avatarUrl).into(profilePic);
+        Glide.with(getApplicationContext()).load(avatarUrl).apply(new RequestOptions().circleCrop()).into(profilePic);
         spinner = (Spinner) findViewById(R.id.gender);
 
         //start image picking activity
@@ -533,12 +534,6 @@ public class EditProfileActivity extends Activity {
         multipartRequest.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         RequestQueue requestQueue = RequestSingleton.getInstance(EditProfileActivity.this.getApplicationContext()).getRequestQueue();
         RequestSingleton.getInstance(getBaseContext()).addToRequestQueue(multipartRequest);
-    }
-
-    public byte[] getFileDataFromDrawable(Context context, Bitmap bitmap) {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, byteArrayOutputStream);
-        return byteArrayOutputStream.toByteArray();
     }
 
     //image selection

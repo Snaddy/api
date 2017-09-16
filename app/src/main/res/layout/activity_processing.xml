@@ -8,12 +8,12 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="35dp"
+        android:layout_height="50dp"
         android:layout_weight="0"
         android:background="@color/colorWhite">
 
         <ImageButton
-        android:layout_width="35dp"
+        android:layout_width="50dp"
         android:layout_height="match_parent"
         app:srcCompat="@drawable/backarrow"
         android:layout_alignParentTop="true"
@@ -23,7 +23,7 @@
         android:background="@color/colorPrimary" />
 
         <ImageButton
-            android:layout_width="35dp"
+            android:layout_width="50dp"
             android:layout_height="match_parent"
             app:srcCompat="@drawable/arrow"
             android:layout_alignParentTop="true"

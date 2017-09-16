@@ -64,14 +64,14 @@
 
             <ImageView
                 android:layout_width="80dp"
-                app:srcCompat="@color/dividerColor"
+                app:srcCompat="@drawable/profile_selected"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:id="@+id/userAvatar"
                 android:layout_height="80dp"
                 android:layout_margin="5dp"
-                android:background="@color/dividerColor" />
+                android:background="@drawable/circle_shape" />
 
             <Button
                 android:layout_width="match_parent"

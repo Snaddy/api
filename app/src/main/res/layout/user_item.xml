@@ -12,7 +12,7 @@
         android:layout_centerVertical="true"
         android:layout_alignParentStart="true"
         android:id="@+id/avatar"
-        android:padding="5dp" />
+        android:padding="3dp" />
 
     <TextView
         android:layout_width="wrap_content"
