@@ -95,7 +95,6 @@ public class WelcomeActivity extends AppCompatActivity {
             if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                 loader.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorAccent), PorterDuff.Mode.SRC_IN);
             }
-
             update(builder, editor);
         }
     }
@@ -141,7 +140,7 @@ public class WelcomeActivity extends AppCompatActivity {
     }, new Response.ErrorListener() {
         @Override
         public void onErrorResponse(VolleyError error) {
-            Toast.makeText(WelcomeActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(WelcomeActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
             NetworkResponse networkResponse = error.networkResponse;
             if(networkResponse == null){
                 loader.setVisibility(View.GONE);

@@ -227,11 +227,11 @@ public class PersonalizeActivity extends AppCompatActivity{
                         if (networkResponse.statusCode == 404) {
                             errorMessage = "Resource not found";
                         } else if (networkResponse.statusCode == 401) {
-                            errorMessage = message+" Please login again";
+                            errorMessage = message+"Incorrect login. Please try again";
                         } else if (networkResponse.statusCode == 400) {
                             errorMessage = message+ " Check your inputs";
                         } else if (networkResponse.statusCode == 500) {
-                            errorMessage = message+" Something is getting wrong";
+                            errorMessage = message+"Uh oh! Something went wrong";
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();

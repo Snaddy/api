@@ -53,7 +53,7 @@ public class RecoverAccount extends AppCompatActivity {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(RecoverAccount.this, error.toString(), Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(RecoverAccount.this, error.toString(), Toast.LENGTH_SHORT).show();
                     }
                 });
                 RequestQueue requestQueue = RequestSingleton.getInstance(RecoverAccount.this.getApplicationContext()).getRequestQueue();

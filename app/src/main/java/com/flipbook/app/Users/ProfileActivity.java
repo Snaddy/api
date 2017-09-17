@@ -162,7 +162,7 @@ public class ProfileActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(ProfileActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(ProfileActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
                 NetworkResponse networkResponse = error.networkResponse;
                 if (networkResponse == null) {
                     Toast.makeText(ProfileActivity.this, "Unable to load user profile. Check internet connection", Toast.LENGTH_SHORT).show();

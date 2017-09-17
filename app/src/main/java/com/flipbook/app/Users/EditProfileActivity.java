@@ -381,13 +381,13 @@ public class EditProfileActivity extends Activity {
                         if (response.getBoolean("status") == true) {
                             if (url == CHECK_USERNAME_AVAILABILITY) {
                                 editUsername.setCompoundDrawablesRelative(null, null, x, null);
-                                Toast toast = Toast.makeText(EditProfileActivity.this, "This username is already taken :(", Toast.LENGTH_SHORT);
+                                Toast toast = Toast.makeText(EditProfileActivity.this, "This username is already taken", Toast.LENGTH_SHORT);
                                 toast.setGravity(Gravity.TOP, 0, 10);
                                 toast.show();
                                 validUsername = false;
                             } else {
                                 editEmail.setCompoundDrawablesRelative(null, null, x, null);
-                                Toast toast =  Toast.makeText(EditProfileActivity.this, "This email is already taken :(", Toast.LENGTH_SHORT);
+                                Toast toast =  Toast.makeText(EditProfileActivity.this, "This email is already taken", Toast.LENGTH_SHORT);
                                 toast.setGravity(Gravity.TOP, 0, 10);
                                 toast.show();
                                 validEmail = false;
@@ -410,7 +410,7 @@ public class EditProfileActivity extends Activity {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(EditProfileActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(EditProfileActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
                     NetworkResponse networkResponse = error.networkResponse;
                     if (networkResponse == null) {
                         Toast.makeText(EditProfileActivity.this, "Can't edit profile. Check internet connection", Toast.LENGTH_SHORT).show();

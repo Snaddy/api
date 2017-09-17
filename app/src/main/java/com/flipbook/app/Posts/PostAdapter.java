@@ -129,16 +129,14 @@ public class PostAdapter extends ArrayAdapter {
         }
 
         //download first display image :)
-        Glide.with(getContext()).load(posts.getImages().get(0)).into(postHolder.images);
+        Glide.with(getContext()).load(posts.getImages().get(0)).apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.DATA)).into(postHolder.images);
         //set click listener for imageview
         postHolder.images.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println(posts.isChecked());
                 if(!posts.isChecked()) {
                     postHolder.loader.setVisibility(View.VISIBLE);
                     createPhotoAnimation(posts, postHolder.images, postHolder);
-                    posts.setChecked(true);
                 } else {
                     postHolder.loader.setVisibility(View.GONE);
                     createPhotoAnimation(posts, postHolder.images, postHolder);
@@ -295,6 +293,7 @@ public class PostAdapter extends ArrayAdapter {
                 animation.start();
                 animation.setOneShot(false);
                 imageView.setImageDrawable(animation);
+                posts.setChecked(true);
             }
         }.execute();
     }

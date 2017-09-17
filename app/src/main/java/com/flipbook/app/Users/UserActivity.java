@@ -116,6 +116,7 @@ public class UserActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                     username = user.getString("username");
+                    textUsername.setText(username);
                     posts = user.getString("get_posts");
                     followers = user.getString("get_followers");
                     followings = user.getString("get_followings");
@@ -165,7 +166,6 @@ public class UserActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(UserActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
                 NetworkResponse networkResponse = error.networkResponse;
                 if (networkResponse == null) {
                     Toast.makeText(UserActivity.this, "Unable to load user profile. Check internet connection", Toast.LENGTH_SHORT).show();
@@ -216,7 +216,7 @@ public class UserActivity extends AppCompatActivity {
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
                         }
                     }) {
 
@@ -255,7 +255,7 @@ public class UserActivity extends AppCompatActivity {
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
                         }
                     }) {
 

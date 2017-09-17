@@ -336,7 +336,7 @@ public class CameraActivity extends AppCompatActivity {
             //add button and image to relative layout
             close.setLayoutParams(params);
             layout.addView(view);
-            layout.addView(close, view.getWidth()/6, view.getHeight()/6);
+            layout.addView(close, 20, 20);
             layout.setPadding(imagePadding, imagePadding, imagePadding, imagePadding);
             imageArrayLayout.addView(layout, imageArrayLayout.getHeight(), picture.getHeight());
 
