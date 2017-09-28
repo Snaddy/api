@@ -78,6 +78,7 @@ public class PersonalizeActivity extends AppCompatActivity{
         registerButton = (Button) findViewById(R.id.register);
         spinner = (Spinner) findViewById(R.id.gender);
 
+        //custom spinner
         String[] genders = new String[]{
                 "Gender",
                 "Male",
@@ -123,6 +124,12 @@ public class PersonalizeActivity extends AppCompatActivity{
                     TextView tv = (TextView) selectedItemView;
                     tv.setTextColor(getResources().getColor(R.color.textColor));
                     gender = position;
+                    if(spinner.getSelectedItemPosition() == 0) {
+                        //set gender to not specified
+                        spinner.setSelection(4);
+                    } else {
+                        spinner.setSelection(gender);
+                    }
                 }
             }
 

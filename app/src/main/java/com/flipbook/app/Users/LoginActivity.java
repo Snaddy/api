@@ -67,7 +67,7 @@ public class LoginActivity extends AppCompatActivity {
                 JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, URL, user ,new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        System.out.println(response.toString());
+                        System.out.println(response);
                         try {
                             if(response.getString("status").equals("success")){
                                 loginButton.setClickable(false);
@@ -87,7 +87,7 @@ public class LoginActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        //Toast.makeText(LoginActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
                     }
                 });
                 RequestQueue requestQueue = RequestSingleton.getInstance(LoginActivity.this.getApplicationContext()).getRequestQueue();

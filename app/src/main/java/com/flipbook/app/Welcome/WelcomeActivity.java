@@ -29,7 +29,6 @@ import com.flipbook.app.Posts.Posts;
 import com.flipbook.app.Posts.RequestSingleton;
 import com.flipbook.app.R;
 import com.flipbook.app.Users.LoginActivity;
-import com.flipbook.app.Users.ProfileActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -79,7 +78,8 @@ public class WelcomeActivity extends AppCompatActivity {
             getEmail = prefs.getString("email", "");
             getToken = prefs.getString("auth_token", "");
 
-            postAdapter = new PostAdapter(this, R.layout.postitem);
+            postAdapter = new PostAdapter(this, R.layout.post_item);
+            postAdapter.notifyDataSetChanged();
 
             home = (ImageButton) findViewById(R.id.home);
             home.setImageResource(R.drawable.home_selected);

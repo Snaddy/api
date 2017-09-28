@@ -47,9 +47,8 @@ public class PostActivity extends AppCompatActivity{
     private final static String CREATE_POSTS_URL = "https://railsphotoapp.herokuapp.com//api/v1/posts.json";
     private ArrayList<Bitmap> processedArray;
     private ImageView imageView;
-    private ImageButton back;
+    private ImageButton back, post;
     private EditText caption;
-    private Button post;
     private AnimationDrawable animation;
     private String getEmail, getToken, encodedCaption;
 
@@ -68,7 +67,7 @@ public class PostActivity extends AppCompatActivity{
 
         imageView = (ImageView) findViewById(R.id.editAvatar);
         back = (ImageButton) findViewById(R.id.back);
-        post = (Button) findViewById(R.id.images);
+        post = (ImageButton) findViewById(R.id.images);
         caption = (EditText) findViewById(R.id.caption);
 
         animation = new AnimationDrawable();

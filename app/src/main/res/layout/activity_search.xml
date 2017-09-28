@@ -5,28 +5,35 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <RelativeLayout
+        android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/searchLayout">
+        android:layout_above="@+id/searchLayout">
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/searchLayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+>
 
         <EditText
+            android:id="@+id/search_field"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:inputType="textPersonName"
-            android:ems="10"
-            android:id="@+id/search_field"
-            android:textColorHint="@color/hintColor"
-            android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:background="@drawable/divider"
-            android:hint="@android:string/search_go"
-            android:textColor="@color/textColor"
-            android:drawableLeft="@drawable/search"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp" />
+            android:layout_marginRight="5dp"
+            android:background="@drawable/divider"
+            android:drawableLeft="@drawable/search"
+            android:ems="10"
+            android:hint="@android:string/search_go"
+            android:inputType="textPersonName"
+            android:textColor="@color/textColor"
+            android:textColorHint="@color/hintColor" />
 
     </RelativeLayout>
 
@@ -36,6 +43,16 @@
         android:id="@+id/loaderLayout"
         android:layout_below="@+id/searchLayout"
         android:padding="5dp">
+
+        <TextView
+            android:id="@+id/empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="No search results found :("
+            android:textColor="@color/hintColor"
+            android:textSize="16sp"
+            android:visibility="invisible" />
 
         <ProgressBar
             style="?android:attr/progressBarStyleSmall"

@@ -164,16 +164,15 @@
     </RelativeLayout>
 
     <GridView
+        android:id="@+id/showPosts"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/showPosts"
-        android:numColumns="2"
-        android:scrollbars="none"
-        android:visibility="invisible"
-        android:layout_alignParentStart="false"
         android:layout_above="@+id/appbar"
-        android:layout_below="@+id/profile">
-    </GridView>
+        android:layout_alignParentStart="false"
+        android:layout_below="@+id/profile"
+        android:numColumns="3"
+        android:scrollbars="none"
+        android:visibility="invisible"></GridView>
 
     <fragment android:name="com.flipbook.app.Fragments.AppBarFragment"
         android:id="@+id/appbar"

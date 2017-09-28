@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -46,6 +47,7 @@ public class SearchActivity extends AppCompatActivity {
     private ProgressBar loader;
     private SharedPreferences prefs;
     private String getEmail, getToken;
+    private TextView empty;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +62,7 @@ public class SearchActivity extends AppCompatActivity {
         searchButton.setImageResource(R.drawable.search_selected);
 
         searchField = (EditText) findViewById(R.id.search_field);
+        empty = (TextView) findViewById(R.id.empty);
         userAdapter = new UserAdapter(this, R.layout.user_item);
         loader = (ProgressBar) findViewById(R.id.loader);
         loader.setVisibility(View.INVISIBLE);
@@ -85,6 +88,7 @@ public class SearchActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 userAdapter.list.clear();
                 userAdapter.notifyDataSetChanged();
+                empty.setVisibility(View.INVISIBLE);
                 if(searchField.getText().length() == 0){
                     loader.setVisibility(View.INVISIBLE);
                 } else {
@@ -112,24 +116,28 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onResponse(JSONArray response) {
                 loader.setVisibility(View.INVISIBLE);
-                try {
-                    //loop through json Array
-                    for (int i = 0; i < response.length(); i++) {
-                        JSONObject postObj = (JSONObject)response.get(i);
-                        JSONObject user = (JSONObject) postObj.get("user");
-                        String id = user.getString("id");
-                        String username = user.getString("username");
-                        String name = user.getString("name");
-                        String decodedName = URLDecoder.decode(name, "utf-8");
-                        JSONObject url = (JSONObject) user.get("avatar");
-                        String avatar = url.getString("url");
-                        UserItem users = new UserItem(username, decodedName, id, avatar);
-                        userAdapter.add(users);
+                if (response.length() == 0) {
+                    empty.setVisibility(View.VISIBLE);
+                } else {
+                    try {
+                        //loop through json Array
+                        for (int i = 0; i < response.length(); i++) {
+                            JSONObject postObj = (JSONObject) response.get(i);
+                            JSONObject user = (JSONObject) postObj.get("user");
+                            String id = user.getString("id");
+                            String username = user.getString("username");
+                            String name = user.getString("name");
+                            String decodedName = URLDecoder.decode(name, "utf-8");
+                            JSONObject url = (JSONObject) user.get("avatar");
+                            String avatar = url.getString("url");
+                            UserItem users = new UserItem(username, decodedName, id, avatar);
+                            userAdapter.add(users);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
                 }
             }
         }, new Response.ErrorListener() {

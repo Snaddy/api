@@ -18,6 +18,7 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
@@ -305,6 +306,7 @@ public class CameraActivity extends AppCompatActivity {
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
             close.setImageResource(R.drawable.close);
+            close.setScaleType(ImageView.ScaleType.FIT_CENTER);
             close.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary));
             //imageview config
             view.setImageBitmap(picture);
@@ -336,7 +338,7 @@ public class CameraActivity extends AppCompatActivity {
             //add button and image to relative layout
             close.setLayoutParams(params);
             layout.addView(view);
-            layout.addView(close, 20, 20);
+            layout.addView(close, imageArrayLayout.getHeight() / 4, imageArrayLayout.getHeight() / 4);
             layout.setPadding(imagePadding, imagePadding, imagePadding, imagePadding);
             imageArrayLayout.addView(layout, imageArrayLayout.getHeight(), picture.getHeight());
 

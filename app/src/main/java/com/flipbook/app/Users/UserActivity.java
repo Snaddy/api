@@ -121,6 +121,7 @@ public class UserActivity extends AppCompatActivity {
                     followers = user.getString("get_followers");
                     followings = user.getString("get_followings");
                     bio = user.getString("bio");
+                    followerCount = Integer.parseInt(followers);
                     try {
                         bio = URLDecoder.decode(bio, "utf-8");
                     } catch (UnsupportedEncodingException e) {
