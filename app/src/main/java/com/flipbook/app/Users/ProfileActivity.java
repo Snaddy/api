@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -26,10 +25,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.flipbook.app.Posts.GridAdapter;
 import com.flipbook.app.Posts.GridImage;
-import com.flipbook.app.Posts.Posts;
 import com.flipbook.app.R;
 import com.flipbook.app.Posts.RequestSingleton;
-import com.google.gson.JsonArray;
+import com.flipbook.app.Settings.SettingActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,14 +47,15 @@ import javax.net.ssl.HttpsURLConnection;
 public class ProfileActivity extends AppCompatActivity {
 
     private final static String GET_POSTS_URL = "https://railsphotoapp.herokuapp.com//api/v1/profile.json";
+    private final static String GET_FOLLOWERS = "https://railsphotoapp.herokuapp.com//api/v1/profile/followers";
+    private final static String GET_FOLLOWINGS = "https://railsphotoapp.herokuapp.com//api/v1/profile/followings";
 
-    private ImageButton profile;
+    private ImageButton profile, settings;
     private Button editProfile;
     private TextView textName,textPosts, textFollowing, textFollowers, textBio;
     private ImageView profilePic;
     private GridView showPosts;
-    private String getEmail, getToken, username, name, bio, followers, followings, posts, email;
-    private int gender;
+    private String getEmail, getToken, username, name, bio, followers, followings, posts;
     public static Activity profileActivity;
     private GridAdapter gridAdapter;
 
@@ -76,6 +75,7 @@ public class ProfileActivity extends AppCompatActivity {
         profile.setImageResource(R.drawable.profile_selected);
 
         editProfile = (Button) findViewById(R.id.followButton);
+        settings = (ImageButton) findViewById(R.id.settings);
         textName = (TextView) findViewById(R.id.name);
         textPosts = (TextView) findViewById(R.id.posts);
         textFollowers = (TextView) findViewById(R.id.followers);
@@ -86,24 +86,44 @@ public class ProfileActivity extends AppCompatActivity {
         showPosts = (GridView) findViewById(R.id.profilePosts);
         showPosts.setAdapter(gridAdapter);
 
-        final Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
-
         editProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                intent.putExtra("name", name);
-                intent.putExtra("username", username);
-                intent.putExtra("email", email);
-                intent.putExtra("bio", bio);
-                intent.putExtra("gender", gender);
+                final Intent intent = new Intent(getApplicationContext(), EditProfileActivity.class);
                 startActivity(intent);
             }
         });
-        getProfile(intent);
+        getProfile();
         System.out.print(showPosts.toString());
+
+        textFollowers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), UserList.class);
+                intent.putExtra("url", GET_FOLLOWERS);
+                startActivity(intent);
+            }
+        });
+
+        textFollowing.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), UserList.class);
+                intent.putExtra("url", GET_FOLLOWINGS);
+                startActivity(intent);
+            }
+        });
+
+        settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), SettingActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
-    private void getProfile(final Intent intent) {
+    private void getProfile() {
         final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, GET_POSTS_URL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -118,7 +138,6 @@ public class ProfileActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                     username = user.getString("username");
-                    email = user.getString("email");
                     posts = user.getString("get_posts");
                     followers = user.getString("get_followers");
                     followings = user.getString("get_followings");
@@ -128,10 +147,8 @@ public class ProfileActivity extends AppCompatActivity {
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
-                    gender = user.getInt("gender");
                     String avatarUrl = avatarObject.getString("url");
                     Glide.with(getApplicationContext()).load(avatarUrl).apply(new RequestOptions().circleCrop()).into(profilePic);
-                    intent.putExtra("avatar", avatarUrl);
                     //set user info
                     textName.setText(name);
                     textPosts.setText(posts + "  Posts");

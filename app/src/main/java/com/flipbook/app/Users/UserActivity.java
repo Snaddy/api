@@ -1,6 +1,7 @@
 package com.flipbook.app.Users;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -48,6 +49,8 @@ public class UserActivity extends AppCompatActivity {
 
     private final static String GET_USER_URL = "https://railsphotoapp.herokuapp.com//api/v1/users/";
     private final static String FOLLOW_URL = "https://railsphotoapp.herokuapp.com//api/v1/relationships/";
+    private final static String GET_FOLLOWERS = "https://railsphotoapp.herokuapp.com//api/v1/user/";
+    private final static String GET_FOLLOWINGS = "https://railsphotoapp.herokuapp.com//api/v1/profile/";
 
     private ImageButton back;
     private Button profileButton;
@@ -89,6 +92,24 @@ public class UserActivity extends AppCompatActivity {
         showPosts = (GridView) findViewById(R.id.showPosts);
         showPosts.setAdapter(gridAdapter);
         getProfile();
+
+        textFollowers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), UserList.class);
+                intent.putExtra("url", GET_FOLLOWERS + userId + "/followers");
+                getApplication().startActivity(intent);
+            }
+        });
+
+        textFollowing.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), UserList.class);
+                intent.putExtra("url", GET_FOLLOWINGS + userId + "/followings");
+                getApplication().startActivity(intent);
+            }
+        });
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override

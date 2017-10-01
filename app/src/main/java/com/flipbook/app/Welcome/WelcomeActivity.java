@@ -5,11 +5,15 @@ import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.NotificationCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -59,6 +63,7 @@ public class WelcomeActivity extends AppCompatActivity {
     public static String getEmail, getToken;
     private ImageButton home;
     private ListView feed;
+    private SwipeRefreshLayout refresh;
     private PostAdapter postAdapter;
     private ProgressBar loader;
     public static SharedPreferences prefs;
@@ -69,7 +74,7 @@ public class WelcomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_welcome);
 
         prefs = getSharedPreferences("prefs", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
+        final SharedPreferences.Editor editor = prefs.edit();
 
         if (prefs.getString("auth_token", "") == "" && prefs.getString("email", "") == "") {
             startActivity(new Intent(getApplicationContext(), LaunchActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
@@ -79,10 +84,12 @@ public class WelcomeActivity extends AppCompatActivity {
             getToken = prefs.getString("auth_token", "");
 
             postAdapter = new PostAdapter(this, R.layout.post_item);
-            postAdapter.notifyDataSetChanged();
 
             home = (ImageButton) findViewById(R.id.home);
             home.setImageResource(R.drawable.home_selected);
+
+            //refresh layout
+            refresh = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
 
             feed = (ListView) findViewById(R.id.feed);
             feed.setAdapter(postAdapter);
@@ -95,9 +102,21 @@ public class WelcomeActivity extends AppCompatActivity {
             if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                 loader.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorAccent), PorterDuff.Mode.SRC_IN);
             }
+
             update(builder, editor);
+
+            refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    postAdapter.notifyDataSetChanged();
+                    postAdapter.list.clear();
+                    update(builder,editor);
+                    refresh.setRefreshing(false);
+                }
+            });
         }
     }
+
 
     private void update(final AlertDialog.Builder builder, final SharedPreferences.Editor editor){
             final JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(Request.Method.GET, GET_POSTS_URL, null, new Response.Listener<JSONArray>() {
@@ -127,8 +146,9 @@ public class WelcomeActivity extends AppCompatActivity {
                         String url = image.getString("url");
                         imageUrls.add(url);
                     }
-                    Posts posts = new Posts(username, decodedCaption, id, userAvatarUrl,likes_count, speed ,imageUrls, isLiked, userId, getTimeAgo(postDate), false);
+                    Posts posts = new Posts(username, decodedCaption, id, userAvatarUrl,likes_count, speed ,imageUrls, isLiked, userId, getTimeAgo(postDate), false, false);
                     postAdapter.add(posts);
+                    postAdapter.notifyDataSetChanged();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

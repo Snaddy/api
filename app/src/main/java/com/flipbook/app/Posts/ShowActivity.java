@@ -124,7 +124,7 @@ public class ShowActivity extends AppCompatActivity {
                             String url = image.getString("url");
                             imageUrls.add(url);
                         }
-                        Posts posts = new Posts(username, decodedCaption, postId, userAvatarUrl, likes_count, speed ,imageUrls, isLiked, userId, WelcomeActivity.getTimeAgo(postDate), false);
+                        Posts posts = new Posts(username, decodedCaption, postId, userAvatarUrl, likes_count, speed ,imageUrls, isLiked, userId, WelcomeActivity.getTimeAgo(postDate), false, false);
                         postAdapter.add(posts);
                         //add comments associated with post
                         JSONArray comments = post.getJSONArray("comments");

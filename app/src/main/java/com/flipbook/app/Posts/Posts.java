@@ -16,12 +16,14 @@ public class Posts {
     private String userAvatar;
 
     private String postDate;
-    private boolean isLiked, checked;
+    private boolean isLiked, loaded, clicked;
     private ArrayList<String> images;
     private int speed;
     private int likes_count;
 
-    public Posts(String username, String caption, String id, String userAvatar,int likes_count, int speed, ArrayList<String> images, boolean isLiked, String userId, String postDate, boolean checked){
+    public Posts(String username, String caption, String id, String userAvatar,int likes_count,
+                 int speed, ArrayList<String> images, boolean isLiked, String userId,
+                 String postDate, boolean loaded, boolean clicked){
         this.setUsername(username);
         this.setCaption(caption);
         this.id = id;
@@ -32,7 +34,8 @@ public class Posts {
         this.isLiked = isLiked;
         this.userId = userId;
         this.postDate = postDate;
-        this.checked = false;
+        this.loaded = false;
+        this.clicked = false;
     }
 
     public String getCaption() {
@@ -102,7 +105,11 @@ public class Posts {
         return postDate;
     }
 
-    public boolean isChecked(){return this.checked;}
+    public boolean isLoaded(){return this.loaded;}
 
-    public void setChecked(boolean checked){this.checked = checked;}
+    public void setLoaded(boolean loaded){this.loaded = loaded;}
+
+    public boolean isClicked(){return this.clicked;}
+
+    public void setClicked(boolean clicked){this.clicked = clicked;}
 }

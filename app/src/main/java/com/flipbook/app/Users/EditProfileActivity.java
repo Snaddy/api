@@ -24,7 +24,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -41,10 +44,12 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.flipbook.app.Posts.GridImage;
 import com.flipbook.app.R;
 import com.flipbook.app.Posts.RequestSingleton;
 import com.flipbook.app.Uploads.MultipartRequest;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -67,19 +72,23 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class EditProfileActivity extends Activity {
 
+    private final static String GET_PROFILE = "https://railsphotoapp.herokuapp.com//api/v1/profile.json";
     private static final String CHECK_USERNAME_AVAILABILITY = "https://railsphotoapp.herokuapp.com//api/v1/username/";
     private static final String CHECK_EMAIL_AVAILABILITY = "https://railsphotoapp.herokuapp.com//api/v1/email/";
     private static final String EDIT_USER_URL = "https://railsphotoapp.herokuapp.com//api/v1/update.json";
     private int PICK_IMAGE_REQUEST = 1;
 
-    private String getEmail, getToken, username, name, email, bio, avatarUrl;
+    private String getEmail, getToken, username, name, email, bio;
     private boolean validUsername, validEmail;
     private ImageView profilePic;
     private RelativeLayout changePic;
+    private LinearLayout layout;
     private EditText editUsername, editName, editEmail, editBio;
     private Button saveProfile;
+    private ImageButton back;
     private Bitmap centeredBitmap, resizedBitmap, image;
     private Spinner spinner;
+    private ProgressBar loader;
     int gender;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,23 +105,7 @@ public class EditProfileActivity extends Activity {
         validUsername = true;
         validEmail = true;
 
-        Bundle bundle = getIntent().getExtras();
-        username = bundle.getString("username");
-        name = bundle.getString("name");
-        try {
-            name = URLDecoder.decode(name, "utf-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        email = bundle.getString("email");
-        bio = bundle.getString("bio");
-        try {
-            bio = URLDecoder.decode(bio, "utf-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        gender = bundle.getInt("gender");
-        avatarUrl = bundle.getString("avatar");
+        back = (ImageButton) findViewById(R.id.back);
 
         editUsername = (EditText) findViewById(R.id.editUsername);
         editName = (EditText) findViewById(R.id.editName);
@@ -120,17 +113,22 @@ public class EditProfileActivity extends Activity {
         editBio = (EditText) findViewById(R.id.editBio);
         profilePic = (ImageView) findViewById(R.id.editAvatar);
         changePic = (RelativeLayout) findViewById(R.id.changePicture);
+        layout = (LinearLayout) findViewById(R.id.layout);
+        loader = (ProgressBar) findViewById(R.id.loader);
 
         //save profile button
         saveProfile = (Button) findViewById(R.id.saveButton);
-
-        editUsername.setText(username);
-        editUsername.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-        editName.setText(name);
-        editEmail.setText(email);
-        editBio.setText(bio);
-        Glide.with(getApplicationContext()).load(avatarUrl).apply(new RequestOptions().circleCrop()).into(profilePic);
+       //gender spinner
         spinner = (Spinner) findViewById(R.id.gender);
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        getProfile();
 
         //start image picking activity
         changePic.setOnClickListener(new View.OnClickListener() {
@@ -170,7 +168,7 @@ public class EditProfileActivity extends Activity {
                 public View getDropDownView(int position, View convertView, ViewGroup parent) {
                     View view = super.getDropDownView(position, convertView, parent);
                     TextView tv = (TextView) view;
-                    if(position==0) {
+                    if(position == 0) {
                         // Set the disable item text color
                         tv.setTextColor(getResources().getColor(R.color.hintColor));
                     } else {
@@ -436,6 +434,71 @@ public class EditProfileActivity extends Activity {
             RequestQueue requestQueue = RequestSingleton.getInstance(EditProfileActivity.this.getApplicationContext()).getRequestQueue();
             RequestSingleton.getInstance(EditProfileActivity.this).addToRequestQueue(jsonObjectRequest);
         }
+    }
+
+    private void getProfile() {
+        final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, GET_PROFILE, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                loader.setVisibility(View.GONE);
+                layout.setVisibility(View.VISIBLE);
+                try {
+                    //get user info
+                    JSONObject user = (JSONObject) response.get("user");
+                    JSONObject avatarObject = (JSONObject) user.get("avatar");
+                    name = user.getString("name");
+                    try {
+                        name = URLDecoder.decode(name, "utf-8");
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                    username = user.getString("username");
+                    email = user.getString("email");
+                    bio = user.getString("bio");
+                    try {
+                        bio = URLDecoder.decode(bio, "utf-8");
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                    String avatarUrl = avatarObject.getString("url");
+                    Glide.with(getApplicationContext()).load(avatarUrl).apply(new RequestOptions().circleCrop()).into(profilePic);
+                    //set user info
+                    editName.setText(name);
+                    editUsername.setText(username);
+                    editEmail.setText(email);
+                    editBio.setText(bio);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //Toast.makeText(ProfileActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+                NetworkResponse networkResponse = error.networkResponse;
+                if (networkResponse == null) {
+                    Toast.makeText(EditProfileActivity.this, "Unable to load user profile. Check internet connection", Toast.LENGTH_SHORT).show();
+                }
+                if (networkResponse != null && (networkResponse.statusCode == HttpsURLConnection.HTTP_UNAUTHORIZED ||
+                        networkResponse.statusCode == HttpsURLConnection.HTTP_CLIENT_TIMEOUT)) {
+                }
+            }
+        }) {
+            @Override
+            public String getBodyContentType() {
+                return "application/json; charset=utf-8";
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("X-User-Token", getToken);
+                headers.put("X-User-Email", getEmail);
+                return headers;
+            }
+        };
+        RequestQueue requestQueue = RequestSingleton.getInstance(EditProfileActivity.this.getApplicationContext()).getRequestQueue();
+        RequestSingleton.getInstance(EditProfileActivity.this).addToRequestQueue(jsonObjectRequest);
     }
 
     private void editProfileRequest(final SharedPreferences.Editor editor, final Bitmap bitmap){

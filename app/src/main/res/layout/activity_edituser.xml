@@ -1,136 +1,179 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginTop="20dp">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ProgressBar
+        android:id="@+id/loader"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true" />
 
     <RelativeLayout
+        android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/border"
-        android:id="@+id/changePicture"
-        android:clickable="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="5dp">
-
-        <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:id="@+id/editAvatar"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="1dp"
-            android:layout_marginLeft="1dp"
-            android:layout_marginTop="1dp" />
+        android:layout_height="50dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/divider">
 
         <TextView
-            android:text="Tap to change profile image"
+            android:id="@+id/title"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/info"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:text="Edit Profile"
             android:textColor="@color/textColor"
-            android:textSize="14sp"
-            android:layout_centerVertical="true"
-            android:layout_toEndOf="@+id/editAvatar" />
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
+        <ImageButton
+            android:id="@+id/back"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:background="@color/colorPrimary"
+            android:src="@drawable/backarrow" />
     </RelativeLayout>
 
-    <EditText
+    <LinearLayout
+        android:id="@+id/layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:id="@+id/editName"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:textColor="@color/textColor"
-        android:layout_marginBottom="10dp"
-        android:textSize="15sp"
-        android:background="@drawable/divider"
-        android:paddingBottom="5dp"
-        android:paddingTop="5dp"
-        android:hint="Name"
-        android:textColorHint="@color/hintColor"
-        android:maxLength="30" />
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/header"
+        android:orientation="vertical"
+        android:visibility="invisible">
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textFilter"
-        android:ems="10"
-        android:id="@+id/editUsername"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:textColor="@color/textColor"
-        android:layout_marginBottom="10dp"
-        android:textSize="15sp"
-        android:background="@drawable/divider"
-        android:paddingBottom="5dp"
-        android:paddingTop="5dp"
-        android:hint="Username"
-        android:textColorHint="@color/hintColor"
-        android:maxLength="20" />
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textEmailAddress"
-        android:ems="10"
-        android:id="@+id/editEmail"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:textColor="@color/textColor"
-        android:layout_marginBottom="10dp"
-        android:textSize="15sp"
-        android:background="@drawable/divider"
-        android:paddingBottom="5dp"
-        android:paddingTop="5dp"
-        android:hint="Email"
-        android:textColorHint="@color/hintColor"
-        android:maxLength="254" />
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textMultiLine"
-        android:text=""
-        android:ems="10"
-        android:id="@+id/editBio"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:textColor="@color/textColor"
-        android:textSize="15sp"
-        android:background="@drawable/divider"
-        android:maxLength="250"
-        android:paddingBottom="5dp"
-        android:paddingTop="5dp"
-        android:hint="Bio"
-        android:textColorHint="@color/hintColor" />
-
-    <Spinner
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/gender"
-        android:background="@drawable/divider"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="10dp" />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp">
-
-        <Button
-            android:text="Save"
+        <RelativeLayout
+            android:id="@+id/changePicture"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/saveButton"
-            android:background="@color/colorAccent"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginLeft="10dp" />
+            android:clickable="true">
 
-    </RelativeLayout>
+            <ImageView
+                android:id="@+id/editAvatar"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginBottom="1dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="1dp" />
 
-</LinearLayout>
+            <TextView
+                android:id="@+id/info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/editAvatar"
+                android:text="Tap to change profile image"
+                android:textColor="@color/textColor"
+                android:textSize="14sp" />
+
+        </RelativeLayout>
+
+        <EditText
+            android:id="@+id/editName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/divider"
+            android:ems="10"
+            android:hint="Name"
+            android:inputType="textPersonName"
+            android:maxLength="30"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:textColor="@color/textColor"
+            android:textColorHint="@color/hintColor"
+            android:textSize="15sp" />
+
+        <EditText
+            android:id="@+id/editUsername"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/divider"
+            android:ems="10"
+            android:hint="Username"
+            android:inputType="textFilter"
+            android:maxLength="20"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:textColor="@color/textColor"
+            android:textColorHint="@color/hintColor"
+            android:textSize="15sp" />
+
+        <EditText
+            android:id="@+id/editEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/divider"
+            android:ems="10"
+            android:hint="Email"
+            android:inputType="textEmailAddress"
+            android:maxLength="254"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:textColor="@color/textColor"
+            android:textColorHint="@color/hintColor"
+            android:textSize="15sp" />
+
+        <EditText
+            android:id="@+id/editBio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/divider"
+            android:ems="10"
+            android:hint="Bio"
+            android:inputType="textMultiLine"
+            android:maxLength="250"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:text=""
+            android:textColor="@color/textColor"
+            android:textColorHint="@color/hintColor"
+            android:textSize="15sp" />
+
+        <Spinner
+            android:id="@+id/gender"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/divider" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp">
+
+            <Button
+                android:id="@+id/saveButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@color/colorAccent"
+                android:text="Save" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+</RelativeLayout>

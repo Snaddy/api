@@ -82,6 +82,28 @@
             android:windowSoftInputMode="stateHidden">
         </activity>
 
+        <activity android:name=".Users.UserList"
+            android:launchMode = "singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+
+        <activity android:name=".Settings.SettingActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity android:name=".Settings.ChangePasswordActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+
+        <activity android:name=".Settings.NotificationSettingsActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
+        </activity>
+
         <activity android:name=".Camera.CameraActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait">

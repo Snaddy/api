@@ -27,6 +27,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.flipbook.app.R;
 import com.flipbook.app.Users.ProfileActivity;
 import com.flipbook.app.Users.UserActivity;
+import com.flipbook.app.Users.UserList;
 import com.flipbook.app.Welcome.WelcomeActivity;
 
 import org.json.JSONException;
@@ -44,12 +45,11 @@ import java.util.concurrent.ExecutionException;
 
 public class PostAdapter extends ArrayAdapter {
 
-    private final String likeURL = "https://railsphotoapp.herokuapp.com//api/v1/like/";
-    private final String unlikeURL = "https://railsphotoapp.herokuapp.com//api/v1/unlike/";
+    private final String LIKE_URL = "https://railsphotoapp.herokuapp.com//api/v1/like/";
+    private final String UNLIKE_URL = "https://railsphotoapp.herokuapp.com//api/v1/unlike/";
+    private final String GET_LIKES = "https://railsphotoapp.herokuapp.com//api/v1/post/";
 
-    AnimationDrawable animation;
-
-    List list = new ArrayList();
+    public List list = new ArrayList();
 
     public PostAdapter(Context context, int resource) {
         super(context, resource);
@@ -96,6 +96,8 @@ public class PostAdapter extends ArrayAdapter {
         }
 
         final Posts posts = (Posts) this.getItem(position);
+        posts.setClicked(false);
+        postHolder.images.setClickable(true);
         postHolder.position = position;
         postHolder.username.setText(posts.getUsername());
         postHolder.postDate.setText(posts.getPostDate());
@@ -106,7 +108,22 @@ public class PostAdapter extends ArrayAdapter {
         //set user profile picture
         Glide.with(getContext()).load(posts.getUserAvatar()).apply(new RequestOptions().circleCrop()).into(postHolder.avatarImageView);
 
+        //load images
         createPhotoAnimation(posts, postHolder, position);
+
+        postHolder.images.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                posts.setClicked(true);
+                postHolder.images.setClickable(false);
+                System.out.println("clicked: " + posts.isClicked() + ", loaded: " + posts.isLoaded());
+                if(posts.isLoaded()){
+                    playAnimation(createPhotoAnimation(posts, postHolder, position));
+                } else {
+                    postHolder.loader.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
         //if no caption
         if(posts.getCaption().length() == 0){
@@ -152,7 +169,7 @@ public class PostAdapter extends ArrayAdapter {
                 if(posts.getLiked() == false) {
                     postHolder.likeButton.setEnabled(false);
                     postHolder.likeButton.setSelected(!postHolder.likeButton.isSelected());
-                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, likeURL + posts.getId(), null, new Response.Listener<JSONObject>() {
+                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, LIKE_URL + posts.getId(), null, new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
                             try {
@@ -192,7 +209,7 @@ public class PostAdapter extends ArrayAdapter {
                     System.out.println(jsonObjectRequest);
                 } else {
                     postHolder.likeButton.setEnabled(false);
-                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, unlikeURL + posts.getId(), null, new Response.Listener<JSONObject>() {
+                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, UNLIKE_URL + posts.getId(), null, new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
                             try {
@@ -237,6 +254,15 @@ public class PostAdapter extends ArrayAdapter {
             }
         });
 
+        postHolder.likes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), UserList.class);
+                intent.putExtra("url", GET_LIKES + posts.getId() + "/likes");
+                getContext().startActivity(intent);
+            }
+        });
+
         postHolder.commentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -259,7 +285,7 @@ public class PostAdapter extends ArrayAdapter {
     }
 
     //download all images in a post and make it into an animation
-    private void createPhotoAnimation(final Posts posts, final PostHolder postHolder, final int position) {
+    private AnimationDrawable createPhotoAnimation(final Posts posts, final PostHolder postHolder, final int position) {
         final AnimationDrawable animation = new AnimationDrawable();
         final int speed = Math.round(1.0f / posts.getSpeed() * 1000.0f);
 
@@ -286,16 +312,20 @@ public class PostAdapter extends ArrayAdapter {
                 //set animation to image view
                 @Override
                 protected void onPostExecute(final AnimationDrawable animationDrawable) {
-                    System.out.println(position + ", " + postHolder.position);
                     if(postHolder.position == position) {
-                        System.out.println("correct async task for post");
-                        posts.setChecked(true);
                         postHolder.images.setImageDrawable(animation);
-                        animation.start();
-                    } else {
-                        System.out.println("incorrect async task for post");
+                        if(posts.isClicked()){
+                            animation.start();
+                        }
+                        posts.setLoaded(true);
                     }
+                    postHolder.loader.setVisibility(View.GONE);
                 }
             }.execute();
+        return animation;
+    }
+
+    private void playAnimation(AnimationDrawable animation){
+        animation.start();
     }
 }

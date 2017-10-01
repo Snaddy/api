@@ -9,7 +9,6 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent" android:layout_height="wrap_content"
         android:id="@+id/profile_info"
-        android:layout_below="@+id/username"
         android:background="@drawable/divider">
 
         <RelativeLayout
@@ -19,45 +18,47 @@
             android:padding="5dp">
 
             <LinearLayout
-                android:orientation="horizontal"
+                android:id="@+id/info"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_centerHorizontal="true"
-                android:id="@+id/info"
+                android:layout_above="@+id/followButton"
+                android:layout_alignTop="@+id/userAvatar"
                 android:layout_below="@+id/followButton"
+                android:layout_centerHorizontal="true"
                 android:layout_toRightOf="@+id/userAvatar"
+                android:orientation="horizontal"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp">
 
                 <TextView
-                    android:text="Posts"
                     android:id="@+id/posts"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:textColor="@color/textColor"
-                    android:gravity="center" />
+                    android:gravity="center"
+                    android:text="Posts"
+                    android:textColor="@color/textColor" />
 
                 <TextView
-                    android:text="Following"
+                    android:id="@+id/following"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/following"
                     android:layout_weight="1"
                     android:clickable="true"
-                    android:textColor="@color/textColor"
                     android:gravity="center"
+                    android:text="Following"
+                    android:textColor="@color/textColor"
                     android:textSize="14sp" />
 
                 <TextView
-                    android:text="Followers"
+                    android:id="@+id/followers"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/followers"
                     android:layout_weight="1"
                     android:clickable="true"
-                    android:textColor="@color/textColor"
                     android:gravity="center"
+                    android:text="Followers"
+                    android:textColor="@color/textColor"
                     android:textSize="14sp" />
 
             </LinearLayout>
@@ -74,15 +75,29 @@
                 android:background="@drawable/circle_shape" />
 
             <Button
+                android:id="@+id/followButton"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:background="@color/colorAccent"
-                android:id="@+id/followButton"
-                android:text="Edit profile"
+                android:layout_alignBottom="@+id/userAvatar"
+                android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
-                android:layout_alignTop="@+id/userAvatar"
                 android:layout_toEndOf="@+id/userAvatar"
-                android:layout_marginLeft="5dp" />
+                android:layout_toStartOf="@+id/settings"
+                android:background="@color/colorAccent"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:text="Edit profile" />
+
+            <ImageButton
+                android:id="@+id/settings"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@+id/info"
+                android:background="@android:color/transparent"
+                android:padding="10dp"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/menu" />
         </RelativeLayout>
 
         <RelativeLayout
