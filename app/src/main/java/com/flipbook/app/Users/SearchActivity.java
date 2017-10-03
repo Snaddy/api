@@ -40,7 +40,7 @@ public class SearchActivity extends AppCompatActivity {
 
     private static final String SEARCH_URL = "https://railsphotoapp.herokuapp.com//api/v1/search/";
 
-    private ImageButton searchButton;
+    private ImageButton searchButton, back;
     private EditText searchField;
     private ListView results;
     private UserAdapter userAdapter;
@@ -58,6 +58,7 @@ public class SearchActivity extends AppCompatActivity {
         getEmail = prefs.getString("email", "");
         getToken = prefs.getString("auth_token", "");
 
+        back = (ImageButton) findViewById(R.id.back);
         searchButton = (ImageButton) findViewById(R.id.searchButton);
         searchButton.setImageResource(R.drawable.search_selected);
 
@@ -68,6 +69,7 @@ public class SearchActivity extends AppCompatActivity {
         loader.setVisibility(View.INVISIBLE);
         results = (ListView) findViewById(R.id.results);
         results.setAdapter(userAdapter);
+
 
         searchField.addTextChangedListener(new TextWatcher() {
             //setup timer to run api request 0.5 secs after user is done typing
@@ -107,6 +109,13 @@ public class SearchActivity extends AppCompatActivity {
                             }
                         }, DELAY
                 );
+            }
+        });
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
     }

@@ -5,16 +5,55 @@
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:background="@android:color/white">
 
+    <RelativeLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/divider">
+
+        <ImageButton
+            android:id="@+id/settings"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/info"
+            android:background="@android:color/transparent"
+            android:padding="15dp"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/settings" />
+
+        <TextView
+            android:id="@+id/Profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:text="Profile"
+            android:textColor="@color/textColor"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:id="@+id/back"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:background="@color/colorPrimary"
+            app:srcCompat="@drawable/backarrow" />
+    </RelativeLayout>
+
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent" android:layout_height="wrap_content"
         android:id="@+id/profile_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/header"
         android:background="@drawable/divider">
 
         <RelativeLayout
+            android:id="@+id/pic_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/pic_button"
             android:padding="5dp">
 
             <LinearLayout
@@ -64,15 +103,15 @@
             </LinearLayout>
 
             <ImageView
+                android:id="@+id/userAvatar"
                 android:layout_width="80dp"
-                app:srcCompat="@drawable/profile_selected"
-                android:layout_alignParentTop="true"
+                android:layout_height="80dp"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:id="@+id/userAvatar"
-                android:layout_height="80dp"
+                android:layout_alignParentTop="true"
                 android:layout_margin="5dp"
-                android:background="@drawable/circle_shape" />
+                android:background="@drawable/circle_shape"
+                app:srcCompat="@drawable/profile_selected" />
 
             <Button
                 android:id="@+id/followButton"
@@ -88,44 +127,34 @@
                 android:paddingRight="20dp"
                 android:text="Edit profile" />
 
-            <ImageButton
-                android:id="@+id/settings"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_alignParentEnd="true"
-                android:layout_below="@+id/info"
-                android:background="@android:color/transparent"
-                android:padding="10dp"
-                android:scaleType="fitXY"
-                app:srcCompat="@drawable/menu" />
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/bio_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/bio_name"
             android:layout_below="@+id/pic_button"
+            android:paddingBottom="5dp"
             android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingBottom="5dp">
+            android:paddingRight="10dp">
 
             <TextView
+                android:id="@+id/name"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
                 android:textColor="@color/textColor"
                 android:textSize="18sp"
-                android:layout_height="wrap_content"
-                android:id="@+id/name"
-                android:textStyle="normal|bold"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp" />
+                android:textStyle="normal|bold" />
 
             <TextView
+                android:id="@+id/bio"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/bio"
-                android:textColor="@color/textColor"
                 android:layout_below="@+id/name"
-                android:layout_marginBottom="5dp" />
+                android:layout_marginBottom="5dp"
+                android:textColor="@color/textColor" />
 
         </RelativeLayout>
 

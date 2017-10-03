@@ -1,8 +1,10 @@
 package com.flipbook.app.Settings;
 
+import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Switch;
 
@@ -26,5 +28,13 @@ public class NotificationSettingsActivity extends AppCompatActivity {
         comments = (Switch) findViewById(R.id.likes_swtich);
         mentions = (Switch) findViewById(R.id.mentions_switch);
         newFollowers = (Switch) findViewById(R.id.follows_switch);
+        back = (ImageButton) findViewById(R.id.back);
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 }

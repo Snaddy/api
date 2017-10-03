@@ -98,7 +98,8 @@ public class UserActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), UserList.class);
                 intent.putExtra("url", GET_FOLLOWERS + userId + "/followers");
-                getApplication().startActivity(intent);
+                intent.putExtra("title", "Followers");
+                getApplicationContext().startActivity(intent);
             }
         });
 
@@ -107,7 +108,8 @@ public class UserActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), UserList.class);
                 intent.putExtra("url", GET_FOLLOWINGS + userId + "/followings");
-                getApplication().startActivity(intent);
+                intent.putExtra("title", "Following");
+                getApplicationContext().startActivity(intent);
             }
         });
 

@@ -67,6 +67,7 @@ public class WelcomeActivity extends AppCompatActivity {
     private PostAdapter postAdapter;
     private ProgressBar loader;
     public static SharedPreferences prefs;
+    private String cachedResponse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,14 +104,12 @@ public class WelcomeActivity extends AppCompatActivity {
                 loader.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorAccent), PorterDuff.Mode.SRC_IN);
             }
 
-            update(builder, editor);
+            update(builder, editor, postAdapter);
 
             refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
-                    postAdapter.notifyDataSetChanged();
-                    postAdapter.list.clear();
-                    update(builder,editor);
+                    update(builder, editor, postAdapter);
                     refresh.setRefreshing(false);
                 }
             });
@@ -118,44 +117,47 @@ public class WelcomeActivity extends AppCompatActivity {
     }
 
 
-    private void update(final AlertDialog.Builder builder, final SharedPreferences.Editor editor){
-            final JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(Request.Method.GET, GET_POSTS_URL, null, new Response.Listener<JSONArray>() {
+    private void update(final AlertDialog.Builder builder, final SharedPreferences.Editor editor, final PostAdapter postAdapter){
+        final JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(Request.Method.GET, GET_POSTS_URL, null, new Response.Listener<JSONArray>() {
         @Override
         public void onResponse(JSONArray response) {
-            try {
-                //loop through json Array
-                for (int i = 0; i < response.length(); i++) {
-                    JSONObject postObj = (JSONObject)response.get(i);
-                    JSONObject post = (JSONObject)postObj.get("post");
-                    JSONObject user = (JSONObject) post.get("user");
-                    JSONArray images = (JSONArray) post.get("images");
-                    String id = post.getString("id");
-                    String username = user.getString("username");
-                    String caption = post.getString("caption");
-                    String decodedCaption = URLDecoder.decode(caption, "utf-8");
-                    String userId = user.getString("id");
-                    JSONObject userAvatar = user.getJSONObject("avatar");
-                    String userAvatarUrl = userAvatar.getString("url");
-                    int postDate = Integer.parseInt(post.getString("posted"));
-                    int likes_count = post.getInt("get_likes_count");
-                    int speed = post.getInt("speed");
-                    boolean isLiked = post.getBoolean("liked");
-                    ArrayList<String> imageUrls = new ArrayList<>();
-                    for (int j = 0; j < images.length(); j++) {
-                        JSONObject image = images.getJSONObject(j);
-                        String url = image.getString("url");
-                        imageUrls.add(url);
+            if (!response.toString().equals(cachedResponse)) {
+                postAdapter.notifyDataSetChanged();
+                postAdapter.list.clear();
+                cachedResponse = response.toString();
+                try {
+                    //loop through json Array
+                    for (int i = 0; i < response.length(); i++) {
+                        JSONObject postObj = (JSONObject) response.get(i);
+                        JSONObject post = (JSONObject) postObj.get("post");
+                        JSONObject user = (JSONObject) post.get("user");
+                        JSONArray images = (JSONArray) post.get("images");
+                        String id = post.getString("id");
+                        String username = user.getString("username");
+                        String caption = post.getString("caption");
+                        String decodedCaption = URLDecoder.decode(caption, "utf-8");
+                        String userId = user.getString("id");
+                        JSONObject userAvatar = user.getJSONObject("avatar");
+                        String userAvatarUrl = userAvatar.getString("url");
+                        int postDate = Integer.parseInt(post.getString("posted"));
+                        int likes_count = post.getInt("get_likes_count");
+                        int speed = post.getInt("speed");
+                        boolean isLiked = post.getBoolean("liked");
+                        ArrayList<String> imageUrls = new ArrayList<>();
+                        for (int j = 0; j < images.length(); j++) {
+                            JSONObject image = images.getJSONObject(j);
+                            String url = image.getString("url");
+                            imageUrls.add(url);
+                        }
+                        Posts posts = new Posts(username, decodedCaption, id, userAvatarUrl, likes_count, speed, imageUrls, isLiked, userId, getTimeAgo(postDate), false, false);
+                        postAdapter.add(posts);
+                        postAdapter.notifyDataSetChanged();
                     }
-                    Posts posts = new Posts(username, decodedCaption, id, userAvatarUrl,likes_count, speed ,imageUrls, isLiked, userId, getTimeAgo(postDate), false, false);
-                    postAdapter.add(posts);
-                    postAdapter.notifyDataSetChanged();
+                } catch (JSONException | UnsupportedEncodingException e) {
+                    e.printStackTrace();
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
+                loader.setVisibility(View.GONE);
             }
-            loader.setVisibility(View.GONE);
         }
     }, new Response.ErrorListener() {
         @Override

@@ -59,7 +59,9 @@ public class AppBarFragment extends Fragment {
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), SearchActivity.class));
+                Intent intent = new Intent(getActivity(), SearchActivity.class);
+                intent.putExtra("title", "Search");
+                startActivity(intent);
                 getActivity().overridePendingTransition(0, 0);
             }
         });

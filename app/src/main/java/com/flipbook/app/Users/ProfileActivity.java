@@ -50,7 +50,7 @@ public class ProfileActivity extends AppCompatActivity {
     private final static String GET_FOLLOWERS = "https://railsphotoapp.herokuapp.com//api/v1/profile/followers";
     private final static String GET_FOLLOWINGS = "https://railsphotoapp.herokuapp.com//api/v1/profile/followings";
 
-    private ImageButton profile, settings;
+    private ImageButton profile, settings, back;
     private Button editProfile;
     private TextView textName,textPosts, textFollowing, textFollowers, textBio;
     private ImageView profilePic;
@@ -76,6 +76,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         editProfile = (Button) findViewById(R.id.followButton);
         settings = (ImageButton) findViewById(R.id.settings);
+        back = (ImageButton) findViewById(R.id.back);
         textName = (TextView) findViewById(R.id.name);
         textPosts = (TextView) findViewById(R.id.posts);
         textFollowers = (TextView) findViewById(R.id.followers);
@@ -101,6 +102,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), UserList.class);
                 intent.putExtra("url", GET_FOLLOWERS);
+                intent.putExtra("title", "Followers");
                 startActivity(intent);
             }
         });
@@ -110,6 +112,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), UserList.class);
                 intent.putExtra("url", GET_FOLLOWINGS);
+                intent.putExtra("title", "Following");
                 startActivity(intent);
             }
         });
@@ -119,6 +122,13 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), SettingActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
     }

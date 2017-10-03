@@ -3,7 +3,6 @@ package com.flipbook.app.Users;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -26,6 +25,8 @@ import com.flipbook.app.R;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.HashMap;
@@ -41,18 +42,18 @@ public class UserList extends AppCompatActivity {
 
     private static final String SEARCH_URL = "https://railsphotoapp.herokuapp.com//api/v1/search/";
 
-    private ImageButton searchButton;
+    private ImageButton back;
     private EditText searchField;
     private ListView results;
     private UserAdapter userAdapter;
     private ProgressBar loader;
     private SharedPreferences prefs;
-    private String getEmail, getToken, url;
-    private TextView empty;
+    private String getEmail, getToken, url, titleText;
+    private TextView empty, title;
 
     @Override
-    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_search);
 
@@ -60,19 +61,20 @@ public class UserList extends AppCompatActivity {
         getEmail = prefs.getString("email", "");
         getToken = prefs.getString("auth_token", "");
 
-        searchButton = (ImageButton) findViewById(R.id.searchButton);
-        searchButton.setImageResource(R.drawable.search_selected);
-
         searchField = (EditText) findViewById(R.id.search_field);
         empty = (TextView) findViewById(R.id.empty);
+        title = (TextView) findViewById(R.id.title);
+        back = (ImageButton) findViewById(R.id.back);
         userAdapter = new UserAdapter(this, R.layout.user_item);
         loader = (ProgressBar) findViewById(R.id.loader);
-        loader.setVisibility(View.VISIBLE);
+        loader.setVisibility(View.INVISIBLE);
         results = (ListView) findViewById(R.id.results);
         results.setAdapter(userAdapter);
 
         Bundle bundle = getIntent().getExtras();
         url = bundle.getString("url");
+        titleText = bundle.getString("title");
+        title.setText(titleText);
 
         getList(url);
 
@@ -116,6 +118,14 @@ public class UserList extends AppCompatActivity {
                 );
             }
         });
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
     }
 
     //populate listview with users who liked/followed/following

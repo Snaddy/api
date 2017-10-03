@@ -1,10 +1,12 @@
 package com.flipbook.app.Posts;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -94,7 +96,9 @@ public class ShowActivity extends AppCompatActivity {
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
+                hideKeyboard(ShowActivity.this);
                 sendComment(comment);
+                newComment.setText("");
             }
         });
     }
@@ -226,5 +230,16 @@ public class ShowActivity extends AppCompatActivity {
         };
         RequestQueue requestQueue = RequestSingleton.getInstance(ShowActivity.this.getApplicationContext()).getRequestQueue();
         RequestSingleton.getInstance(ShowActivity.this).addToRequestQueue(jsonObjectRequest);
+    }
+
+    private void hideKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = activity.getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(activity);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }

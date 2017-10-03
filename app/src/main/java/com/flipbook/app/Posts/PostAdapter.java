@@ -259,6 +259,7 @@ public class PostAdapter extends ArrayAdapter {
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), UserList.class);
                 intent.putExtra("url", GET_LIKES + posts.getId() + "/likes");
+                intent.putExtra("title", "Likes");
                 getContext().startActivity(intent);
             }
         });
