@@ -5,15 +5,12 @@ import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.NotificationCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -58,6 +55,7 @@ public class WelcomeActivity extends AppCompatActivity {
     private static final int HOUR_MILLIS = 60 * MINUTE_MILLIS;
     private static final int DAY_MILLIS = 24 * HOUR_MILLIS;
     private static final int WEEK_MILLIS = 7 * DAY_MILLIS;
+    private static final Double YEAR_MILLIS = 365.25 * DAY_MILLIS;
     private static final int SOCKET_TIMEOUT_MS = 10000;
 
     public static String getEmail, getToken;
@@ -68,6 +66,8 @@ public class WelcomeActivity extends AppCompatActivity {
     private ProgressBar loader;
     public static SharedPreferences prefs;
     private String cachedResponse;
+    private SharedPreferences.Editor editor;
+    private AlertDialog.Builder builder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,9 +121,10 @@ public class WelcomeActivity extends AppCompatActivity {
         final JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(Request.Method.GET, GET_POSTS_URL, null, new Response.Listener<JSONArray>() {
         @Override
         public void onResponse(JSONArray response) {
+            System.out.println(response);
             if (!response.toString().equals(cachedResponse)) {
-                postAdapter.notifyDataSetChanged();
                 postAdapter.list.clear();
+                postAdapter.notifyDataSetChanged();
                 cachedResponse = response.toString();
                 try {
                     //loop through json Array
@@ -141,6 +142,7 @@ public class WelcomeActivity extends AppCompatActivity {
                         String userAvatarUrl = userAvatar.getString("url");
                         int postDate = Integer.parseInt(post.getString("posted"));
                         int likes_count = post.getInt("get_likes_count");
+                        int comment_count = post.getInt("get_comment_count");
                         int speed = post.getInt("speed");
                         boolean isLiked = post.getBoolean("liked");
                         ArrayList<String> imageUrls = new ArrayList<>();
@@ -149,7 +151,7 @@ public class WelcomeActivity extends AppCompatActivity {
                             String url = image.getString("url");
                             imageUrls.add(url);
                         }
-                        Posts posts = new Posts(username, decodedCaption, id, userAvatarUrl, likes_count, speed, imageUrls, isLiked, userId, getTimeAgo(postDate), false, false);
+                        Posts posts = new Posts(username, decodedCaption, id, userAvatarUrl, likes_count, comment_count, speed, imageUrls, isLiked, userId, getTimeAgo(postDate), false, false);
                         postAdapter.add(posts);
                         postAdapter.notifyDataSetChanged();
                     }
@@ -157,6 +159,9 @@ public class WelcomeActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 loader.setVisibility(View.GONE);
+                System.out.println("new content!");
+            } else {
+                System.out.println("no new content!");
             }
         }
     }, new Response.ErrorListener() {
@@ -218,6 +223,7 @@ public class WelcomeActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         overridePendingTransition(0, 0);
+        update(builder, editor, postAdapter);
     }
 
     public static String getTimeAgo(long time) {
@@ -241,8 +247,10 @@ public class WelcomeActivity extends AppCompatActivity {
             return diff / HOUR_MILLIS + "h";
         } else if (diff < 7 * DAY_MILLIS){
             return diff / DAY_MILLIS + "d";
-        } else{
+        } else if(diff < 52 * WEEK_MILLIS){
             return diff / WEEK_MILLIS + "w";
+        } else {
+            return Math.round(diff / YEAR_MILLIS) + "y";
         }
     }
 }

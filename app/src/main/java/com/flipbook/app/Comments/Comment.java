@@ -6,15 +6,16 @@ package com.flipbook.app.Comments;
 
 public class Comment {
 
-    private String text, username, userAvatar, userId, postId, id;
+    private String text, username, userAvatar, userId, postId, id, postedAt;
 
-    public Comment(String id, String userId, String postId, String text, String username, String userAvatar){
+    public Comment(String id, String userId, String postId, String text, String username, String userAvatar, String postedAt){
         this.text = text;
         this.username = username;
         this.userAvatar = userAvatar;
         this.id = id;
         this.userId = userId;
         this.postId = postId;
+        this.postedAt = postedAt;
     }
 
     public String getText() {
@@ -40,5 +41,7 @@ public class Comment {
     public String getId(){
         return id;
     }
+
+    public String getPostedAt() {return postedAt;}
 
 }

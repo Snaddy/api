@@ -127,11 +127,10 @@
 
             <ImageButton
                 android:id="@+id/imageButton"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentTop="true"
-                android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
@@ -140,7 +139,7 @@
 
             <TextView
                 android:id="@+id/likes"
-                android:layout_width="30dp"
+                android:layout_width="35dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1"
@@ -150,8 +149,8 @@
 
             <ImageButton
                 android:id="@+id/commentButton"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:layout_alignParentTop="true"
                 android:layout_marginRight="5dp"
                 android:layout_toStartOf="@+id/imageButton"
@@ -162,13 +161,14 @@
 
             <TextView
                 android:id="@+id/comments"
-                android:layout_width="30dp"
+                android:layout_width="35dp"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="false"
                 android:layout_gravity="center"
                 android:layout_toEndOf="@+id/linearLayout3"
                 android:layout_weight="1"
-                android:textSize="15dp" />
+                android:textColor="@color/textColor"
+                android:textSize="13sp" />
 
         </LinearLayout>
 

@@ -19,9 +19,9 @@ public class Posts {
     private boolean isLiked, loaded, clicked;
     private ArrayList<String> images;
     private int speed;
-    private int likes_count;
+    private int likes_count, comment_count;
 
-    public Posts(String username, String caption, String id, String userAvatar,int likes_count,
+    public Posts(String username, String caption, String id, String userAvatar,int likes_count, int comment_count,
                  int speed, ArrayList<String> images, boolean isLiked, String userId,
                  String postDate, boolean loaded, boolean clicked){
         this.setUsername(username);
@@ -29,6 +29,7 @@ public class Posts {
         this.id = id;
         this.userAvatar = userAvatar;
         this.setLikesCount(likes_count);
+        this.setCommentCount(comment_count);
         this.setImages(images);
         this.setSpeed(speed);
         this.isLiked = isLiked;
@@ -52,6 +53,14 @@ public class Posts {
 
     public void setLikesCount(int likes_count) {
         this.likes_count = likes_count;
+    }
+
+    public int getCommentCount() {
+        return comment_count;
+    }
+
+    public void setCommentCount(int comment_count) {
+        this.comment_count = comment_count;
     }
 
     public String getUsername() {

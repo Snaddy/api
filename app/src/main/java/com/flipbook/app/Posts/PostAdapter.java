@@ -83,6 +83,7 @@ public class PostAdapter extends ArrayAdapter {
             postHolder.info = (RelativeLayout) row.findViewById(R.id.info);
             postHolder.caption = (TextView) row.findViewById(R.id.caption);
             postHolder.likes = (TextView) row.findViewById(R.id.likes);
+            postHolder.comments = (TextView) row.findViewById(R.id.comments);
             postHolder.images = (ImageView) row.findViewById(R.id.images);
             postHolder.avatarImageView = (ImageView) row.findViewById(R.id.userAvatar);
             postHolder.likeButton = (ImageButton) row.findViewById(R.id.imageButton);
@@ -140,6 +141,13 @@ public class PostAdapter extends ArrayAdapter {
             postHolder.likes.setText(posts.getLikesCount() + "");
         }
 
+        //show comments
+        if (posts.getCommentCount() == 0){
+            postHolder.comments.setText("");
+        } else {
+            postHolder.comments.setText(posts.getCommentCount() + "");
+        }
+
         //if post is liked
         if(posts.getLiked()){
             postHolder.likeButton.setImageDrawable(getContext().getResources().getDrawable(R.drawable.liked));
@@ -167,17 +175,21 @@ public class PostAdapter extends ArrayAdapter {
             public void onClick(View v) {
                 //initially unliked
                 if(posts.getLiked() == false) {
-                    postHolder.likeButton.setEnabled(false);
                     postHolder.likeButton.setSelected(!postHolder.likeButton.isSelected());
+                    postHolder.likeButton.setImageDrawable(getContext().getResources().getDrawable(R.drawable.liked));
+                    posts.setLikesCount(posts.getLikesCount() + 1);
+                    postHolder.likes.setText(posts.getLikesCount() + "");
+                    posts.setLiked(true);
+                    postHolder.likeButton.setEnabled(true);
                     JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, LIKE_URL + posts.getId(), null, new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
                             try {
-                                if (response.getString("info").equals("liked")) {
-                                    postHolder.likeButton.setImageDrawable(getContext().getResources().getDrawable(R.drawable.liked));
-                                    posts.setLikesCount(posts.getLikesCount() + 1);
+                                if (!response.getString("info").equals("liked")) {
+                                    postHolder.likeButton.setImageDrawable(getContext().getResources().getDrawable(R.drawable.unliked));
+                                    posts.setLikesCount(posts.getLikesCount() - 1);
                                     postHolder.likes.setText(posts.getLikesCount() + "");
-                                    posts.setLiked(true);
+                                    posts.setLiked(false);
                                     postHolder.likeButton.setEnabled(true);
                                 }
                             } catch (JSONException e) {
@@ -208,19 +220,22 @@ public class PostAdapter extends ArrayAdapter {
                     RequestSingleton.getInstance(getContext()).addToRequestQueue(jsonObjectRequest);
                     System.out.println(jsonObjectRequest);
                 } else {
-                    postHolder.likeButton.setEnabled(false);
+                    postHolder.likeButton.setImageDrawable(getContext().getResources().getDrawable(R.drawable.unliked));
+                    posts.setLikesCount(posts.getLikesCount() - 1);
+                    if(posts.getLikesCount() == 0) {
+                        postHolder.likes.setText("");
+                    } else {
+                        postHolder.likes.setText(posts.getLikesCount() + "");
+                    }
+                    posts.setLikedByUser(false);
+                    postHolder.likeButton.setEnabled(true);
                     JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, UNLIKE_URL + posts.getId(), null, new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
                             try {
-                                if (response.getString("info").equals("unliked")) {
+                                if (!response.getString("info").equals("unliked")) {
                                     postHolder.likeButton.setImageDrawable(getContext().getResources().getDrawable(R.drawable.unliked));
-                                    posts.setLikesCount(posts.getLikesCount() - 1);
-                                    if(posts.getLikesCount() == 0) {
-                                        postHolder.likes.setText("");
-                                    } else {
-                                        postHolder.likes.setText(posts.getLikesCount() + "");
-                                    }
+                                    posts.setLikesCount(posts.getLikesCount() + 1);
                                     posts.setLikedByUser(false);
                                     postHolder.likeButton.setEnabled(true);
                                 }
@@ -277,7 +292,7 @@ public class PostAdapter extends ArrayAdapter {
     }
 
     static class PostHolder {
-        TextView username, caption, likes, postDate;
+        TextView username, caption, likes, postDate, comments;
         ImageButton likeButton, commentButton;
         ImageView images, avatarImageView;
         ProgressBar loader;

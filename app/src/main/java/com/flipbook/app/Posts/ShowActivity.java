@@ -27,6 +27,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Array;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -42,15 +43,16 @@ import javax.net.ssl.HttpsURLConnection;
 public class ShowActivity extends AppCompatActivity {
 
     private final static String GET_POST_URL = "https://railsphotoapp.herokuapp.com//api/v1/post/";
-    private final static String POST_COMMENT = "https://railsphotoapp.herokuapp.com//api/v1/comments.json";
 
     private ListView comments, feed;
     private TextView usernameView;
     private EditText newComment;
     private ImageButton back, send;
-    private String getEmail, getToken, username, postId, comment;
+    private String getEmail, getToken, postId, comment;
     private PostAdapter postAdapter;
     private CommentAdapter commentAdapter;
+    public static String username;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,10 +106,10 @@ public class ShowActivity extends AppCompatActivity {
     }
 
     private void getPost(){
-            final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, GET_POST_URL + postId, null, new Response.Listener<JSONObject>() {
+            final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, GET_POST_URL +
+                    postId, null, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
-                    System.out.println(response);
                     try {
                         JSONObject post = (JSONObject)response.get("post");
                         JSONObject user = (JSONObject) post.get("user");
@@ -119,6 +121,7 @@ public class ShowActivity extends AppCompatActivity {
                         String userAvatarUrl = userAvatar.getString("url");
                         int postDate = Integer.parseInt(post.getString("posted"));
                         int likes_count = post.getInt("get_likes_count");
+                        int comment_count = post.getInt("get_comment_count");
                         int speed = post.getInt("speed");
                         boolean isLiked = post.getBoolean("liked");
                         ArrayList<String> imageUrls = new ArrayList<>();
@@ -128,29 +131,30 @@ public class ShowActivity extends AppCompatActivity {
                             String url = image.getString("url");
                             imageUrls.add(url);
                         }
-                        Posts posts = new Posts(username, decodedCaption, postId, userAvatarUrl, likes_count, speed ,imageUrls, isLiked, userId, WelcomeActivity.getTimeAgo(postDate), false, false);
+                        Posts posts = new Posts(username, decodedCaption, postId, userAvatarUrl, likes_count, comment_count,
+                                speed ,imageUrls, isLiked, userId, WelcomeActivity.getTimeAgo(postDate), false, false);
                         postAdapter.add(posts);
                         //add comments associated with post
                         JSONArray comments = post.getJSONArray("comments");
                         for (int k = 0; k < comments.length(); k++) {
                             JSONObject commentObject = comments.getJSONObject(k);
-                            String text = commentObject.getString("content");
-                            String postId = commentObject.getString("post_id");
-                            String id = commentObject.getString("id");
-                            JSONObject userObject = commentObject.getJSONObject("user");
+                            JSONObject commentObject2 = commentObject.getJSONObject("comment");
+                            String text = commentObject2.getString("content");
+                            String decodedText = URLDecoder.decode(text, "utf-8");
+                            String id = commentObject2.getString("id");
+                            int postedAt = Integer.parseInt(commentObject2.getString("posted_at"));
+                            JSONObject userObject = commentObject2.getJSONObject("user");
                             String username = userObject.getString("username");
                             String commenterId = userObject.getString("id");
-                            JSONObject commenterAvatarObject = user.getJSONObject("avatar");
+                            JSONObject commenterAvatarObject = userObject.getJSONObject("avatar");
                             String commenterAvatarUrl = commenterAvatarObject.getString("url");
-                            Comment comment = new Comment(id, commenterId, postId, text, username, commenterAvatarUrl);
+                            Comment comment = new Comment(id, commenterId, postId, decodedText, username,
+                                    commenterAvatarUrl, WelcomeActivity.getTimeAgo(postedAt));
                             commentAdapter.add(comment);
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    } catch (UnsupportedEncodingException e) {
+                    } catch (JSONException | UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
-
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -158,11 +162,13 @@ public class ShowActivity extends AppCompatActivity {
                     //Toast.makeText(ShowActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
                     NetworkResponse networkResponse = error.networkResponse;
                     if (networkResponse == null) {
-                        Toast.makeText(ShowActivity.this, "Unable to load user profile. Check internet connection", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ShowActivity.this, "Unable to load post. Check internet connection", Toast.LENGTH_SHORT).show();
                     }
-                    if (networkResponse != null && (networkResponse.statusCode == HttpsURLConnection.HTTP_UNAUTHORIZED ||
-                            networkResponse.statusCode == HttpsURLConnection.HTTP_CLIENT_TIMEOUT)) {
-                    }
+                    assert networkResponse != null;
+                    if (((networkResponse.statusCode == HttpsURLConnection.HTTP_UNAUTHORIZED) ||
+                            (networkResponse.statusCode == HttpsURLConnection.HTTP_CLIENT_TIMEOUT))) {
+                            //do stuff <- hahahhaha
+                            }
                 }
             }) {
                 @Override
@@ -183,13 +189,23 @@ public class ShowActivity extends AppCompatActivity {
     }
 
     private void sendComment(final String encodedComment){
-        final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, POST_COMMENT, null, new Response.Listener<JSONObject>() {
+        final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, GET_POST_URL + postId +
+                "/comments/" + encodedComment, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 System.out.println(response);
                 try {
-                    if(response.getString("status").equals("created")){
-
+                    if(response.getString("status").equals("success")){
+                        String id = response.getString("id");
+                        String userId = response.getString("user_id");
+                        String postId = response.getString("post_id");
+                        String content = response.getString("content");
+                        String username = response.getString("username");
+                        JSONObject avatarJson = response.getJSONObject("avatar");
+                        String avatar = avatarJson.getString("url");
+                        Comment comment = new Comment(id, userId, postId, content, username, avatar, "1s");
+                        commentAdapter.add(comment);
+                        commentAdapter.notifyDataSetChanged();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -198,31 +214,20 @@ public class ShowActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                //Toast.makeText(ShowActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
                 NetworkResponse networkResponse = error.networkResponse;
                 if (networkResponse == null) {
-                    Toast.makeText(ShowActivity.this, "Unable to load user profile. Check internet connection", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ShowActivity.this, "Unable to upload comment. Check internet connection", Toast.LENGTH_SHORT).show();
                 }
-                if (networkResponse != null && (networkResponse.statusCode == HttpsURLConnection.HTTP_UNAUTHORIZED ||
-                        networkResponse.statusCode == HttpsURLConnection.HTTP_CLIENT_TIMEOUT)) {
+                if ((networkResponse != null) && ((networkResponse.statusCode == HttpsURLConnection.HTTP_UNAUTHORIZED) ||
+                        (networkResponse.statusCode == HttpsURLConnection.HTTP_CLIENT_TIMEOUT))) {
                 }
             }
         }) {
-            @Override
-            public String getBodyContentType() {
-                return "application/json; charset=utf-8";
-            }
-
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("content", encodedComment);
-                return params;
-            }
 
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
                 headers.put("X-User-Token", getToken);
                 headers.put("X-User-Email", getEmail);
                 return headers;

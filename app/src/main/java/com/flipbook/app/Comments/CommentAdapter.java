@@ -1,6 +1,7 @@
 package com.flipbook.app.Comments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -16,9 +18,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.flipbook.app.Posts.RequestSingleton;
+import com.flipbook.app.Posts.ShowActivity;
 import com.flipbook.app.R;
-import com.flipbook.app.Users.UserAdapter;
+import com.flipbook.app.Users.ProfileActivity;
+import com.flipbook.app.Users.UserActivity;
 import com.flipbook.app.Welcome.WelcomeActivity;
 
 import org.json.JSONException;
@@ -35,9 +40,9 @@ import java.util.Map;
 
 public class CommentAdapter extends ArrayAdapter {
 
-    List list = new ArrayList();
+    public List list = new ArrayList();
 
-    private final static String DELETE_COMMENT = "https://railsphotoapp.herokuapp.com//api/v1/comments/";
+    private final static String DELETE_COMMENT = "https://railsphotoapp.herokuapp.com//api/v1/post/";
 
     public CommentAdapter(Context context, int resource){
         super(context, resource);
@@ -70,21 +75,43 @@ public class CommentAdapter extends ArrayAdapter {
             commentHolder = new CommentHolder();
             commentHolder.username = (TextView) row.findViewById(R.id.username);
             commentHolder.text = (TextView) row.findViewById(R.id.text);
-            commentHolder.avatar = (ImageView) row.findViewById(R.id.avatar);
+            commentHolder.avatar = (ImageView) row.findViewById(R.id.profilePicture);
             commentHolder.commentLayout = (RelativeLayout) row.findViewById(R.id.container);
+            commentHolder.posted = (TextView) row.findViewById(R.id.posted);
             row.setTag(commentHolder);
         } else {
             commentHolder = (CommentHolder) row.getTag();
         }
-        Comment comment = (Comment) this.getItem(position);
+        final Comment comment = (Comment) this.getItem(position);
         commentHolder.text.setText(comment.getText());
         commentHolder.username.setText(comment.getUsername());
-        Glide.with(getContext()).load(comment.getUserAvatar()).into(commentHolder.avatar);
+        commentHolder.posted.setText(comment.getPostedAt());
+        Glide.with(getContext()).load(comment.getUserAvatar()).apply(new RequestOptions().circleCrop()).into(commentHolder.avatar);
 
-        //option to delete comment
-        if(comment.getUsername().equals(WelcomeActivity.prefs.getString("username", ""))){
-            deleteComment(comment, position);
-        }
+        commentHolder.username.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(comment.getUsername().equals(WelcomeActivity.prefs.getString("username", ""))) {
+                    Intent intent = new Intent(getContext(), ProfileActivity.class);
+                    getContext().startActivity(intent);
+                } else {
+                    Intent intent = new Intent(getContext(), UserActivity.class);
+                    intent.putExtra("userId", comment.getUserId());
+                    getContext().startActivity(intent);
+                }
+            }
+        });
+
+        commentHolder.commentLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if(comment.getUsername().equals(WelcomeActivity.prefs.getString("username", "")) ||
+                        ShowActivity.username.equals(WelcomeActivity.prefs.getString("username", ""))){
+                    deleteComment(comment, position);
+                }
+                return false;
+            }
+        });
 
         return row;
     }
@@ -92,42 +119,45 @@ public class CommentAdapter extends ArrayAdapter {
     static class CommentHolder{
         RelativeLayout commentLayout;
         ImageView avatar;
-        TextView username, text;
+        TextView username, text, posted;
     }
 
-    public void deleteComment(final Comment comment, final int position){
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, DELETE_COMMENT + comment.getId(), null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    if(response.getString("status").equals("destroyed")) {
-                        list.remove(position);
+    private void deleteComment(final Comment comment, final int position){
+        //comment doesn't really exist in the comment adapter yet
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, DELETE_COMMENT + comment.getPostId() + "/comments/" + comment.getId(), null, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    System.out.println(response);
+                    try {
+                        if (response.getString("status").equals("destroyed")) {
+                            list.remove(position);
+                            notifyDataSetChanged();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                //Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
-            }
-        }) {
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(getContext(), "Unable to delete comment. Check internet connection", Toast.LENGTH_SHORT).show();
+                }
+            }) {
 
-            @Override
-            public String getBodyContentType() {
-                return "application/json; charset=utf-8";
-            }
+                @Override
+                public String getBodyContentType() {
+                    return "application/json; charset=utf-8";
+                }
 
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<>();
-                headers.put("X-User-Token", WelcomeActivity.getToken);
-                headers.put("X-User-Email", WelcomeActivity.getEmail);
-                return headers;
-            }
-        };
-        RequestQueue requestQueue = RequestSingleton.getInstance(getContext().getApplicationContext()).getRequestQueue();
-        RequestSingleton.getInstance(getContext()).addToRequestQueue(jsonObjectRequest);
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<>();
+                    headers.put("X-User-Token", WelcomeActivity.getToken);
+                    headers.put("X-User-Email", WelcomeActivity.getEmail);
+                    return headers;
+                }
+            };
+            RequestQueue requestQueue = RequestSingleton.getInstance(getContext().getApplicationContext()).getRequestQueue();
+            RequestSingleton.getInstance(getContext()).addToRequestQueue(jsonObjectRequest);
     }
 }
