@@ -192,10 +192,4 @@ public class PostActivity extends AppCompatActivity{
         RequestQueue requestQueue = RequestSingleton.getInstance(PostActivity.this.getApplicationContext()).getRequestQueue();
         RequestSingleton.getInstance(getBaseContext()).addToRequestQueue(multipartRequest);
     }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        overridePendingTransition(0, 0);
-    }
 }

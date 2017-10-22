@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -23,6 +25,8 @@ import com.flipbook.app.Welcome.WelcomeActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import javax.net.ssl.HttpsURLConnection;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -79,6 +83,8 @@ public class LoginActivity extends AppCompatActivity {
                                 intent.addFlags(intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
                                 finish();
+                            } else {
+                                Toast.makeText(LoginActivity.this, "Couldn't login. Try again later", Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -87,7 +93,11 @@ public class LoginActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(LoginActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+                        NetworkResponse networkResponse = error.networkResponse;
+                        if (networkResponse != null && (networkResponse.statusCode == HttpsURLConnection.HTTP_UNAUTHORIZED)){
+                            Toast.makeText(LoginActivity.this, "Invalid login. please try again", Toast.LENGTH_SHORT).show();
+                        }
+                        Toast.makeText(LoginActivity.this, "Can't connect to server. Please check your internet connection", Toast.LENGTH_SHORT).show();
                     }
                 });
                 RequestQueue requestQueue = RequestSingleton.getInstance(LoginActivity.this.getApplicationContext()).getRequestQueue();

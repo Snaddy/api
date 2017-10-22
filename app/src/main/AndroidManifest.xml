@@ -120,6 +120,12 @@
             android:windowSoftInputMode="stateHidden">
         </activity>
 
+        <activity android:name=".Posts.EditPostActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+
         <activity android:name=".Posts.PostActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"

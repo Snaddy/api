@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -16,28 +18,39 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.flipbook.app.Comments.Comment;
 import com.flipbook.app.R;
+import com.flipbook.app.Settings.SettingActivity;
 import com.flipbook.app.Users.ProfileActivity;
 import com.flipbook.app.Users.UserActivity;
+import com.flipbook.app.Users.UserItem;
 import com.flipbook.app.Users.UserList;
 import com.flipbook.app.Welcome.WelcomeActivity;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+
+import javax.net.ssl.HttpsURLConnection;
 
 /**
  * Created by Hayden on 2017-03-06.
@@ -47,7 +60,9 @@ public class PostAdapter extends ArrayAdapter {
 
     private final String LIKE_URL = "https://railsphotoapp.herokuapp.com//api/v1/like/";
     private final String UNLIKE_URL = "https://railsphotoapp.herokuapp.com//api/v1/unlike/";
-    private final String GET_LIKES = "https://railsphotoapp.herokuapp.com//api/v1/post/";
+    private final String DELETE_POST = "https://railsphotoapp.herokuapp.com//api/v1/post/";
+    private final static String REPORT_URL = "https://railsphotoapp.herokuapp.com//api/v1/report.json";
+    private final static String LIKES_URL = "https://railsphotoapp.herokuapp.com//api/v1/likes/";
 
     public List list = new ArrayList();
 
@@ -88,6 +103,7 @@ public class PostAdapter extends ArrayAdapter {
             postHolder.avatarImageView = (ImageView) row.findViewById(R.id.userAvatar);
             postHolder.likeButton = (ImageButton) row.findViewById(R.id.imageButton);
             postHolder.commentButton = (ImageButton) row.findViewById(R.id.commentButton);
+            postHolder.options = (ImageButton) row.findViewById(R.id.options);
             postHolder.postDate = (TextView) row.findViewById(R.id.postDate);
             postHolder.loader = (ProgressBar) row.findViewById(R.id.loader);
             row.setTag(postHolder);
@@ -273,7 +289,7 @@ public class PostAdapter extends ArrayAdapter {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), UserList.class);
-                intent.putExtra("url", GET_LIKES + posts.getId() + "/likes");
+                intent.putExtra("url", LIKES_URL + posts.getId() + "");
                 intent.putExtra("title", "Likes");
                 getContext().startActivity(intent);
             }
@@ -288,16 +304,204 @@ public class PostAdapter extends ArrayAdapter {
                 getContext().startActivity(intent);
             }
         });
+
+        postHolder.options.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (posts.getUsername().equals(WelcomeActivity.prefs.getString("username", ""))) {
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.options_dialog, null);
+                    builder.setView(dialogView);
+                    TextView edit = (TextView) dialogView.findViewById(R.id.title);
+                    TextView delete = (TextView) dialogView.findViewById(R.id.delete);
+                    TextView cancel = (TextView) dialogView.findViewById(R.id.cancel);
+                    final AlertDialog alertDialog = builder.create();
+                    edit.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            alertDialog.dismiss();
+                            Intent intent = new Intent(getContext(), EditPostActivity.class);
+                            intent.putExtra("postId", posts.getId());
+                            intent.putExtra("speed", posts.getSpeed());
+                            intent.putExtra("caption", posts.getCaption());
+                            intent.putExtra("images", posts.getImages());
+                            getContext().startActivity(intent);
+                        }
+                    });
+
+                    delete.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            alertDialog.dismiss();
+                            View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.ok_dialog, null);
+                            builder.setView(dialogView);
+                            TextView title = (TextView) dialogView.findViewById(R.id.title);
+                            Button ok = (Button) dialogView.findViewById(R.id.okButton);
+                            Button cancel = (Button) dialogView.findViewById(R.id.cancelButton);
+                            title.setText("Are you sure you want to delete this post?");
+                            final AlertDialog alertDialog = builder.create();
+                            ok.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    deletePost(posts, position);
+                                    alertDialog.dismiss();
+                                }
+                            });
+
+                            cancel.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    alertDialog.dismiss();
+                                }
+                            });
+
+                            alertDialog.show();
+                        }
+                    });
+
+                    cancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            alertDialog.dismiss();
+                        }
+                    });
+
+                    alertDialog.show();
+                } else {
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.content_dialog, null);
+                    builder.setView(dialogView);
+                    TextView title = (TextView) dialogView.findViewById(R.id.title);
+                    final TextView content = (TextView) dialogView.findViewById(R.id.message);
+                    Button ok = (Button) dialogView.findViewById(R.id.okButton);
+                    Button cancel = (Button) dialogView.findViewById(R.id.cancelButton);
+                    title.setText("Why are you reporting this post?");
+                    final AlertDialog alertDialog = builder.create();
+                    ok.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            sendReport(content.getText().toString(), REPORT_URL);
+                        }
+                    });
+
+                    cancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            alertDialog.dismiss();
+                        }
+                    });
+
+                    alertDialog.show();
+                }
+            }
+        });
+
         return row;
     }
 
     static class PostHolder {
         TextView username, caption, likes, postDate, comments;
-        ImageButton likeButton, commentButton;
+        ImageButton likeButton, commentButton, options;
         ImageView images, avatarImageView;
         ProgressBar loader;
         RelativeLayout info;
         int position;
+    }
+
+    private void deletePost(final Posts post, final int position){
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, DELETE_POST + post.getId(), null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                System.out.println(response);
+                try {
+                    if (response.getString("status").equals("destroyed")) {
+                        list.remove(position);
+                        notifyDataSetChanged();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getContext(), "Unable to delete post. Check internet connection", Toast.LENGTH_SHORT).show();
+            }
+        }) {
+
+            @Override
+            public String getBodyContentType() {
+                return "application/json; charset=utf-8";
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("X-User-Token", WelcomeActivity.getToken);
+                headers.put("X-User-Email", WelcomeActivity.getEmail);
+                return headers;
+            }
+        };
+        RequestQueue requestQueue = RequestSingleton.getInstance(getContext().getApplicationContext()).getRequestQueue();
+        RequestSingleton.getInstance(getContext()).addToRequestQueue(jsonObjectRequest);
+    }
+
+    private void sendReport(final String content, String url){
+        String encodedContent = "";
+        try {
+            encodedContent = URLEncoder.encode(content, "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        final String finalContent = encodedContent;
+
+        final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                System.out.println(response);
+                try {
+                    if(response.getString("status").equals("sent")){
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //Toast.makeText(ShowActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+                NetworkResponse networkResponse = error.networkResponse;
+                if (networkResponse == null) {
+                    Toast.makeText(getContext(), "Unable to send report. Check internet connection", Toast.LENGTH_SHORT).show();
+                }
+                if (networkResponse != null && (networkResponse.statusCode == HttpsURLConnection.HTTP_UNAUTHORIZED ||
+                        networkResponse.statusCode == HttpsURLConnection.HTTP_CLIENT_TIMEOUT)) {
+                }
+            }
+        }) {
+            @Override
+            public String getBodyContentType() {
+                return "application/json; charset=utf-8";
+            }
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("content", finalContent);
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("X-User-Token", WelcomeActivity.getToken);
+                headers.put("X-User-Email", WelcomeActivity.getToken);
+                return headers;
+            }
+        };
+        RequestQueue requestQueue = RequestSingleton.getInstance(getContext().getApplicationContext().getApplicationContext()).getRequestQueue();
+        RequestSingleton.getInstance(getContext().getApplicationContext()).addToRequestQueue(jsonObjectRequest);
     }
 
     //download all images in a post and make it into an animation

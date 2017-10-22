@@ -47,8 +47,8 @@ import javax.net.ssl.HttpsURLConnection;
 public class ProfileActivity extends AppCompatActivity {
 
     private final static String GET_POSTS_URL = "https://railsphotoapp.herokuapp.com//api/v1/profile.json";
-    private final static String GET_FOLLOWERS = "https://railsphotoapp.herokuapp.com//api/v1/profile/followers";
-    private final static String GET_FOLLOWINGS = "https://railsphotoapp.herokuapp.com//api/v1/profile/followings";
+    private final static String GET_FOLLOWERS = "https://railsphotoapp.herokuapp.com//api/v1/profile/followers.json";
+    private final static String GET_FOLLOWINGS = "https://railsphotoapp.herokuapp.com//api/v1/profile/following.json";
 
     private ImageButton profile, settings, back;
     private Button editProfile;
@@ -214,11 +214,5 @@ public class ProfileActivity extends AppCompatActivity {
         };
         RequestQueue requestQueue = RequestSingleton.getInstance(ProfileActivity.this.getApplicationContext()).getRequestQueue();
         RequestSingleton.getInstance(ProfileActivity.this).addToRequestQueue(jsonObjectRequest);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        overridePendingTransition(0, 0);
     }
 }

@@ -130,6 +130,23 @@ public class CameraActivity extends AppCompatActivity {
                         }
                     });
                     alertDialog.show();
+                } else if (imageList.size() > 60){
+                    LayoutInflater inflater = CameraActivity.this.getLayoutInflater();
+                    View dialogView = inflater.inflate(R.layout.dialog, null);
+                    builder.setView(dialogView);
+                    TextView title = (TextView) dialogView.findViewById(R.id.title);
+                    TextView message = (TextView) dialogView.findViewById(R.id.message);
+                    Button ok = (Button) dialogView.findViewById(R.id.okButton);
+                    title.setText("Uh oh! Error...");
+                    message.setText("Please make sure your post does not contain more than 60 photos");
+                    final AlertDialog alertDialog = builder.create();
+                    ok.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            alertDialog.cancel();
+                        }
+                    });
+                    alertDialog.show();
                 } else {
                     Intent intent = new Intent(getApplicationContext(), ProcessingActivity.class);
                     startActivity(intent);

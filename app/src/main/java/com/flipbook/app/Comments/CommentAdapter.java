@@ -2,10 +2,12 @@ package com.flipbook.app.Comments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -102,12 +104,38 @@ public class CommentAdapter extends ArrayAdapter {
             }
         });
 
+
         commentHolder.commentLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+                commentHolder.commentLayout.setBackgroundResource(R.color.dividerColor);
                 if(comment.getUsername().equals(WelcomeActivity.prefs.getString("username", "")) ||
                         ShowActivity.username.equals(WelcomeActivity.prefs.getString("username", ""))){
-                    deleteComment(comment, position);
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.ok_dialog, null);
+                    builder.setView(dialogView);
+                    TextView title = (TextView) dialogView.findViewById(R.id.title);
+                    Button ok = (Button) dialogView.findViewById(R.id.okButton);
+                    Button cancel = (Button) dialogView.findViewById(R.id.cancelButton);
+                    title.setText("Would you like to delete this comment?");
+                    final AlertDialog alertDialog = builder.create();
+                    ok.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            deleteComment(comment, position);
+                            alertDialog.dismiss();
+                        }
+                    });
+
+                    cancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            alertDialog.dismiss();
+                            commentHolder.commentLayout.setBackgroundResource(R.color.colorWhite);
+                        }
+                    });
+
+                    alertDialog.show();
                 }
                 return false;
             }

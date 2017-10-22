@@ -1,6 +1,5 @@
 package com.flipbook.app.Settings;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -43,7 +42,7 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class SettingActivity extends AppCompatActivity{
 
-    private final static String BLOCKED_USERS = "https://railsphotoapp.herokuapp.com//api/v1/users/blocked.json";
+    private final static String BLOCKED_USERS = "https://railsphotoapp.herokuapp.com//api/v1/blocks.json";
     private final static String REPORT_URL = "https://railsphotoapp.herokuapp.com//api/v1/report.json";
     private final static String SUGGESTION_URL = "https://railsphotoapp.herokuapp.com//api/v1/suggestion.json";
     private final static String LOGOUT_URL = "https://railsphotoapp.herokuapp.com//api/v1/sessions.json";
@@ -99,6 +98,7 @@ public class SettingActivity extends AppCompatActivity{
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), UserList.class);
                 intent.putExtra("url", BLOCKED_USERS);
+                intent.putExtra("title", "Blocked users");
                 startActivity(intent);
             }
         });
@@ -177,7 +177,7 @@ public class SettingActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 LayoutInflater inflater = SettingActivity.this.getLayoutInflater();
-                View dialogView = inflater.inflate(R.layout.logout_dialog, null);
+                View dialogView = inflater.inflate(R.layout.ok_dialog, null);
                 builder.setView(dialogView);
                 TextView title = (TextView) dialogView.findViewById(R.id.title);
                 Button ok = (Button) dialogView.findViewById(R.id.okButton);

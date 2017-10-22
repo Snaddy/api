@@ -200,14 +200,15 @@ public class ShowActivity extends AppCompatActivity {
                         String userId = response.getString("user_id");
                         String postId = response.getString("post_id");
                         String content = response.getString("content");
+                        String text = URLDecoder.decode(content, "utf-8");
                         String username = response.getString("username");
                         JSONObject avatarJson = response.getJSONObject("avatar");
                         String avatar = avatarJson.getString("url");
-                        Comment comment = new Comment(id, userId, postId, content, username, avatar, "1s");
+                        Comment comment = new Comment(id, userId, postId, text, username, avatar, "1s");
                         commentAdapter.add(comment);
                         commentAdapter.notifyDataSetChanged();
                     }
-                } catch (JSONException e) {
+                } catch (JSONException | UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
             }
@@ -235,6 +236,14 @@ public class ShowActivity extends AppCompatActivity {
         };
         RequestQueue requestQueue = RequestSingleton.getInstance(ShowActivity.this.getApplicationContext()).getRequestQueue();
         RequestSingleton.getInstance(ShowActivity.this).addToRequestQueue(jsonObjectRequest);
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        postAdapter.list.clear();
+        postAdapter.notifyDataSetChanged();
+        getPost();
     }
 
     private void hideKeyboard(Activity activity) {

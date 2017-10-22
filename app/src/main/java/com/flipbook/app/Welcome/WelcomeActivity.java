@@ -8,8 +8,10 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -49,7 +51,7 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class WelcomeActivity extends AppCompatActivity {
 
-    private static final String GET_POSTS_URL = "https://railsphotoapp.herokuapp.com//api/v1/posts.json";
+    private static final String GET_POSTS_URL = "https://railsphotoapp.herokuapp.com//api/v1/index/";
     private static final int SECOND_MILLIS = 1000;
     private static final int MINUTE_MILLIS = 60 * SECOND_MILLIS;
     private static final int HOUR_MILLIS = 60 * MINUTE_MILLIS;
@@ -68,6 +70,7 @@ public class WelcomeActivity extends AppCompatActivity {
     private String cachedResponse;
     private SharedPreferences.Editor editor;
     private AlertDialog.Builder builder;
+    private int currentPage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +98,8 @@ public class WelcomeActivity extends AppCompatActivity {
             feed = (ListView) findViewById(R.id.feed);
             feed.setAdapter(postAdapter);
 
+            currentPage = 1;
+
             loader = (ProgressBar) findViewById(R.id.loader);
 
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -104,12 +109,29 @@ public class WelcomeActivity extends AppCompatActivity {
                 loader.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorAccent), PorterDuff.Mode.SRC_IN);
             }
 
-            update(builder, editor, postAdapter);
+            update(builder, editor, postAdapter, currentPage);
+
+            feed.setOnScrollListener(new AbsListView.OnScrollListener() {
+
+                @Override
+                public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+                }
+
+                public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+                    if(firstVisibleItem+visibleItemCount == totalItemCount && totalItemCount!=0) {
+                        currentPage++;
+                        update(builder, editor, postAdapter, currentPage);
+                        System.out.println(currentPage);
+                    }
+                }
+            });
 
             refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
-                    update(builder, editor, postAdapter);
+                    update(builder, editor, postAdapter, 1);
                     refresh.setRefreshing(false);
                 }
             });
@@ -117,8 +139,8 @@ public class WelcomeActivity extends AppCompatActivity {
     }
 
 
-    private void update(final AlertDialog.Builder builder, final SharedPreferences.Editor editor, final PostAdapter postAdapter){
-        final JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(Request.Method.GET, GET_POSTS_URL, null, new Response.Listener<JSONArray>() {
+    private void update(final AlertDialog.Builder builder, final SharedPreferences.Editor editor, final PostAdapter postAdapter, int currentPage){
+        final JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(Request.Method.GET, GET_POSTS_URL + currentPage, null, new Response.Listener<JSONArray>() {
         @Override
         public void onResponse(JSONArray response) {
             System.out.println(response);
@@ -222,8 +244,7 @@ public class WelcomeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        overridePendingTransition(0, 0);
-        update(builder, editor, postAdapter);
+        update(builder, editor, postAdapter, 1);
     }
 
     public static String getTimeAgo(long time) {
@@ -247,7 +268,7 @@ public class WelcomeActivity extends AppCompatActivity {
             return diff / HOUR_MILLIS + "h";
         } else if (diff < 7 * DAY_MILLIS){
             return diff / DAY_MILLIS + "d";
-        } else if(diff < 52 * WEEK_MILLIS){
+        } else if(diff < YEAR_MILLIS){
             return diff / WEEK_MILLIS + "w";
         } else {
             return Math.round(diff / YEAR_MILLIS) + "y";

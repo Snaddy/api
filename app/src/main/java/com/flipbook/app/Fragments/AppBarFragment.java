@@ -36,7 +36,6 @@ public class AppBarFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getActivity(), WelcomeActivity.class));
-                getActivity().overridePendingTransition(0, 0);
             }
         });
 
@@ -44,7 +43,6 @@ public class AppBarFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getActivity(), ProfileActivity.class));
-                getActivity().overridePendingTransition(0, 0);
             }
         });
 
@@ -52,7 +50,6 @@ public class AppBarFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getActivity(), CameraActivity.class));
-                getActivity().overridePendingTransition(0, 0);
             }
         });
 
@@ -62,7 +59,6 @@ public class AppBarFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), SearchActivity.class);
                 intent.putExtra("title", "Search");
                 startActivity(intent);
-                getActivity().overridePendingTransition(0, 0);
             }
         });
 

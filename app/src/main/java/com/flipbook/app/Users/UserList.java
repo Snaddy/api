@@ -20,6 +20,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.flipbook.app.Posts.RequestSingleton;
 import com.flipbook.app.R;
 import org.json.JSONArray;
@@ -40,8 +41,6 @@ import java.util.TimerTask;
 
 public class UserList extends AppCompatActivity {
 
-    private static final String SEARCH_URL = "https://railsphotoapp.herokuapp.com//api/v1/search/";
-
     private ImageButton back;
     private EditText searchField;
     private ListView results;
@@ -49,8 +48,7 @@ public class UserList extends AppCompatActivity {
     private ProgressBar loader;
     private SharedPreferences prefs;
     private String getEmail, getToken, url, titleText;
-    private TextView empty, title;
-
+    private TextView title;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,12 +60,11 @@ public class UserList extends AppCompatActivity {
         getToken = prefs.getString("auth_token", "");
 
         searchField = (EditText) findViewById(R.id.search_field);
-        empty = (TextView) findViewById(R.id.empty);
         title = (TextView) findViewById(R.id.title);
         back = (ImageButton) findViewById(R.id.back);
         userAdapter = new UserAdapter(this, R.layout.user_item);
         loader = (ProgressBar) findViewById(R.id.loader);
-        loader.setVisibility(View.INVISIBLE);
+        loader.setVisibility(View.VISIBLE);
         results = (ListView) findViewById(R.id.results);
         results.setAdapter(userAdapter);
 
@@ -79,13 +76,9 @@ public class UserList extends AppCompatActivity {
         getList(url);
 
         searchField.addTextChangedListener(new TextWatcher() {
-            //setup timer to run api request 0.5 secs after user is done typing
-            private Timer typeDelay = new Timer();
-            private final int DELAY = 1000;
-
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                userAdapter.getFilter().filter(s);
             }
 
             @Override
@@ -95,27 +88,7 @@ public class UserList extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                userAdapter.list.clear();
-                userAdapter.notifyDataSetChanged();
-                empty.setVisibility(View.INVISIBLE);
-                if(searchField.getText().length() == 0){
-                    loader.setVisibility(View.INVISIBLE);
-                } else {
-                    loader.setVisibility(View.VISIBLE);
-                }
-                typeDelay.cancel();
-                typeDelay = new Timer();
-                typeDelay.schedule(
-                        new TimerTask() {
-                            @Override
-                            public void run() {
-                                //run search if search field is filled
-                                if(searchField.getText().length() > 0) {
-                                    search(searchField.getText().toString());
-                                }
-                            }
-                        }, DELAY
-                );
+
             }
         });
 
@@ -129,97 +102,49 @@ public class UserList extends AppCompatActivity {
     }
 
     //populate listview with users who liked/followed/following
-    private void getList(String url){
+    private void getList(final String url){
         final JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 loader.setVisibility(View.INVISIBLE);
+                System.out.println("list: " + response);
                     try {
                         //loop through json Array
                         for (int i = 0; i < response.length(); i++) {
-                            JSONObject postObj = (JSONObject) response.get(i);
-                            JSONObject user = (JSONObject) postObj.get("user");
-                            String id = user.getString("id");
-                            String username = user.getString("username");
-                            String name = user.getString("name");
-                            String decodedName = URLDecoder.decode(name, "utf-8");
-                            JSONObject url = (JSONObject) user.get("avatar");
-                            String avatar = url.getString("url");
-                            UserItem users = new UserItem(username, decodedName, id, avatar);
-                            userAdapter.add(users);
+                            JSONObject userObj = (JSONObject) response.get(i);
+                            if(url.contains("https://railsphotoapp.herokuapp.com//api/v1/likes/")) {
+                                JSONObject userJson = userObj.getJSONObject("like");
+                                JSONObject user = userJson.getJSONObject("user");
+                                String id = user.getString("id");
+                                String username = user.getString("username");
+                                String name = user.getString("name");
+                                String decodedName = URLDecoder.decode(name, "utf-8");
+                                JSONObject url = (JSONObject) user.get("avatar");
+                                String avatar = url.getString("url");
+                                UserItem users = new UserItem(username, decodedName, id, avatar);
+                                userAdapter.add(users);
+                            } else {
+                                JSONObject user = userObj.getJSONObject("user");
+                                String id = user.getString("id");
+                                String username = user.getString("username");
+                                String name = user.getString("name");
+                                String decodedName = URLDecoder.decode(name, "utf-8");
+                                JSONObject url = (JSONObject) user.get("avatar");
+                                String avatar = url.getString("url");
+                                UserItem users = new UserItem(username, decodedName, id, avatar);
+                                userAdapter.add(users);
+                            }
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    } catch (UnsupportedEncodingException e) {
+                    } catch (JSONException | UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                //Toast.makeText(SearchActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
-                NetworkResponse networkResponse = error.networkResponse;
-                if(networkResponse == null){
-                    loader.setVisibility(View.GONE);
-                    Toast.makeText(UserList.this, "Unable to update feed. Check internet connection", Toast.LENGTH_SHORT).show();
-                }
-            }
-        }) {
-            @Override
-            public String getBodyContentType() {
-                return "application/json; charset=utf-8";
-            }
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<>();
-                headers.put("X-User-Token", getToken);
-                headers.put("X-User-Email", getEmail);
-                return headers;
-            }
-        };
-        RequestQueue requestQueue = RequestSingleton.getInstance(UserList.this.getApplicationContext()).getRequestQueue();
-        RequestSingleton.getInstance(UserList.this).addToRequestQueue(jsonObjectRequest);
-    }
-
-    private void search(String searchQuery){
-        final JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(Request.Method.GET, SEARCH_URL + searchQuery, null, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                loader.setVisibility(View.INVISIBLE);
-                if (response.length() == 0) {
-                    empty.setVisibility(View.VISIBLE);
-                } else {
-                    try {
-                        //loop through json Array
-                        for (int i = 0; i < response.length(); i++) {
-                            JSONObject postObj = (JSONObject) response.get(i);
-                            JSONObject user = (JSONObject) postObj.get("user");
-                            String id = user.getString("id");
-                            String username = user.getString("username");
-                            String name = user.getString("name");
-                            String decodedName = URLDecoder.decode(name, "utf-8");
-                            JSONObject url = (JSONObject) user.get("avatar");
-                            String avatar = url.getString("url");
-                            UserItem users = new UserItem(username, decodedName, id, avatar);
-                            userAdapter.add(users);
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                //Toast.makeText(SearchActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
-                NetworkResponse networkResponse = error.networkResponse;
-                if(networkResponse == null){
-                    loader.setVisibility(View.GONE);
-                    Toast.makeText(UserList.this, "Unable to update feed. Check internet connection", Toast.LENGTH_SHORT).show();
-                }
+                loader.setVisibility(View.GONE);
+                System.out.println("list: " + error);
+                Toast.makeText(UserList.this, "Unable to get list. Check internet connection", Toast.LENGTH_SHORT).show();
             }
         }) {
             @Override
